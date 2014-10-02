@@ -18,8 +18,8 @@ static OutputPins COL_PINS(2, COL_PIN_NUMBERS);
 static MatrixPins LAMP_MATRIX(COL_PINS, ROW_PINS, TICKS_PER_COLUMN);
 
 static ConcreteMatrixPattern<2,2>::ValueArray MATRIX_VALUES1 = {
-    { 1, 99 },
-    { 1, 99 },
+    { 5, 99 },
+    { 5, 99 },
 };
 static ConcreteMatrixPattern<2,2> PATTERN1(MATRIX_VALUES1);
 
