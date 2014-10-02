@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<!-- saved from url=(0151)http://www.best-deals-products.com/ws/sf_postLocalStorage.jsp?syncFrom=https%3A%2F%2Fwww.superfish.com%2Fws&dlsource=mpxbqdr&CTID=xyz&ver=2014.9.22.3.1 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title></title>
+    
+    <script type="text/javascript">
+        window.xdmsg = {
+    cbFunction: 0,
+
+    postMsg : function( target, param ){
+        if( target != window ){
+            target.postMessage( param, "*" );
+        }
+    },
+
+    getMsg : function(event){
+        ( window.xdmsg ? xdmsg : similarproducts.b.xdmsg).cbFunction( event.data, event.origin );
+    },
+
+    init: function( cbFunc ){
+        this.cbFunction = cbFunc;
+        if( window.addEventListener ){
+            window.addEventListener("message", this.getMsg, false );
+        }else{
+            window.attachEvent('onmessage', this.getMsg );
+        }
+    },
+
+    kill: function (){
+        if( window.removeEventListener ){
+            window.removeEventListener("message", this.getMsg, false );
+        }else{
+            if (window.detachEvent) {
+                window.detachEvent ('onmessage', this.getMsg );
+            }
+        }
+    }
+}
+;
+        var postObj = {};
+        var qs = {};
+        var debug = false;
+        var workDone = 0;
+        var msgSent = 0;
+        var xdMsgDelimiter = '*sfxd*';
+        var sfDomain = 'https://www.best-deals-products.com/ws/';
+        var timer = 0;
+
+        function setQueryString(obj_to_add,initial_QS){
+            obj_to_add.qsObj={};
+            initial_QS.replace(
+                new RegExp("([^?=&]+)(=([^&]*))?", "g"),
+                function($0, $1, $2, $3)
+                {
+                    obj_to_add.qsObj[$1] = decodeURIComponent($3);
+                }
+            );
+        }
+
+        function log(msg) {
+            if(debug && window.console) {
+                var dDate = new Date();
+                var sourceOrDestination = 'Source';
+                if(qs.qsObj.syncFrom != undefined){
+                    sourceOrDestination = 'Destination';
+                }
+                window.console.log('postLocalStorage '+ sourceOrDestination +' : ' + dDate.getTime() + " - " + msg);
+            }
+        }
+
+        function syncLocalStorage(event) {
+
+            // don't sync if syncLocalStorageFromUrl & currentDomain are same domain
+            if (qs.qsObj.syncFrom === undefined || qs.qsObj.syncFrom.split('://')[1].indexOf(event.origin.split('://')[1]) < 0){
+                log("in listener looking for '" + event.origin);
+                return;
+            }
+
+            var postObj = event.data;
+            if(postObj.from !== undefined && postObj.from === 'postLocalStorage'){
+                clearTimeout(timer);
+                log("Got message from source");
+                for(var i=0 ;  i < postObj.syncObj.length ; i++)
+                {
+                    var localStorageItem =  postObj.syncObj[i];
+                    localStorage.setItem(localStorageItem.key,localStorageItem.value);
+                    log(" >>>> key :" + localStorageItem.key + " value :" + localStorageItem.value);
+                }
+                if(postObj.syncObj.length > 0){
+                    localStorage.setItem("clearedBeforeWork","1");
+                }
+                if (!msgSent) {
+                    log("Sending message to host");
+                    msgSent = 1;
+                    sendMessage("-3355" + xdMsgDelimiter + "Done");
+                }
+            }
+        }
+
+        function getTrackSessionSrc(action,q) {
+            var path = sfDomain + "trackSession.action?";
+            if (qs && qs.qsObj) {
+                q.push("dlsource=" + qs.qsObj.dlsource || '');
+                q.push("userid=NA");
+                q.push("sessionid=NA");
+                q.push("action=" + action);
+            }
+            return path + q.join('&');
+        }
+
+        function postLocalStorage()
+        {
+            setQueryString(qs, window.location.href);
+            var sourceOrDestination = 'Source';
+            if(qs.qsObj.syncFrom != undefined){
+                sourceOrDestination = 'Destination';
+            }
+            log("In " + sourceOrDestination + " Iframe");
+            if(window.xdmsg){
+                xdmsg.init(gotMessage);
+            }
+            loadUserData();
+        }
+
+        function gotMessage() {}
+
+        function sendMessage(msg) {
+            if(window.xdmsg){
+               window.xdmsg.postMsg(top, msg);
+            }
+        }
+
+        function loadUserData()
+        {
+            postObj.syncObj = [];
+            for(var key in localStorage) {
+                value = localStorage[key];
+                log(" <<<< key :" + key + " value :" + value);
+                postObj.syncObj.push( { "key" : key  , "value" : value  } );
+            }
+            if(postObj.syncObj.length === 0 && qs.qsObj.syncFrom !== undefined){
+                log("in loadUserData create source iframe");
+
+                timer = setTimeout(function() {
+                    log("in loadUserDataTimeOut");
+                    if(Math.floor(Math.random() * 10) == 1) {
+                        var q = [];
+                        var url = getTrackSessionSrc('loadUserDataTimeOut',q);
+                        var img = new Image();
+                        img.src = url;
+                     }
+
+                }, 4000);
+
+                if (window.addEventListener) {
+                    addEventListener("message", syncLocalStorage, false)
+                } else {
+                    attachEvent("onmessage", syncLocalStorage)
+                }
+
+                var getLocalStorageUrl = qs.qsObj.syncFrom + "/sf_postLocalStorage.jsp";
+
+                if (window.location.protocol.indexOf( "https" ) > -1 && getLocalStorageUrl.indexOf( "localhost" ) == -1) {
+                    getLocalStorageUrl = getLocalStorageUrl.replace("http:","https:");
+                } else {
+                    getLocalStorageUrl = getLocalStorageUrl.replace("https:","http:");
+                }
+
+                var ifrm;
+                ifrm = document.createElement("IFRAME");
+                ifrm.setAttribute("src", getLocalStorageUrl);
+                ifrm.setAttribute("style", "position:absolute; top:-20px; left:-20px;");
+                ifrm.setAttribute("id", "sfPostLocalStorage2");
+                ifrm.style.width = "1px";
+                ifrm.style.height = "1px";
+                document.body.appendChild(ifrm);
+                log("Iframe created");
+            } else if(postObj.syncObj.length > 0 &&  qs.qsObj.syncFrom === undefined){
+                log("Sending localStorage to destination");
+                postObj.from = 'postLocalStorage';
+                parent.postMessage(
+                    postObj ,
+                    "*"
+                );
+            } else {
+                log("Local storage exists - no need to sync");
+                clearTimeout(timer);
+                if (!msgSent) {
+                    log("Sending message to host");
+                    msgSent = 1;
+                    sendMessage("-3355" + xdMsgDelimiter + "Local storage exists - no need to sync");
+                }
+            }
+            return false;
+        }
+    </script>
+<style type="text/css"></style></head>
+<body onload="postLocalStorage();">
+
+</body></html>

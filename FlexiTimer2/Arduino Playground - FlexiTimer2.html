@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<!-- saved from url=(0045)http://playground.arduino.cc/Main/FlexiTimer2 -->
+<html class=" js no-touch boxshadow opacity fontface svg inlinesvg svgclippaths no-ie8compat" lang="en"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script id="LR1" type="text/javascript" async="" src="./Arduino Playground - FlexiTimer2_files/client.js"></script><script src="./Arduino Playground - FlexiTimer2_files/cb=gapi.loaded_1" async=""></script><script src="./Arduino Playground - FlexiTimer2_files/cb=gapi.loaded_0" async=""></script><script type="text/javascript" src="./Arduino Playground - FlexiTimer2_files/plusone.js" gapi_processed="true"></script><script type="text/javascript" src="./Arduino Playground - FlexiTimer2_files/widgets.js"></script>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  	<meta charset="utf-8">
+
+	<title>Arduino Playground - FlexiTimer2 </title>
+	<link rel="shortcut icon" type="image/x-icon" href="http://playground.arduino.cc/favicon.png">
+
+	<link rel="stylesheet" href="./Arduino Playground - FlexiTimer2_files/fonts.css" type="text/css">
+	<link rel="stylesheet" href="http://arduino.cc/css/arduino-icons.css">
+	<link rel="stylesheet" href="http://arduino.cc/css/animation.css"><!--[if IE 7]>
+	<link rel="stylesheet" href="http://arduino.cc/css/arduino-icons-ie7.css"><![endif]-->
+	<!--[if gte IE 9]><!-->
+	<link rel="stylesheet" href="./Arduino Playground - FlexiTimer2_files/foundation2.css" type="text/css">
+	<!--[endif]---->
+	<!--[if IE 8]>
+		<link rel='stylesheet' href='http://arduino.cc/css/foundation_ie8.css' type='text/css' />	
+	<![endif]-->	
+	<link rel="stylesheet" href="./Arduino Playground - FlexiTimer2_files/arduino_code_highlight.css" type="text/css">
+	<link rel="stylesheet" type="text/css" media="screen" href="./Arduino Playground - FlexiTimer2_files/typeplate.css">
+	<link rel="stylesheet" href="./Arduino Playground - FlexiTimer2_files/arduinoWide_SSO.css" type="text/css">
+	<link rel="stylesheet" href="./Arduino Playground - FlexiTimer2_files/common.css" type="text/css">	  
+	<link href="https://plus.google.com/114839908922424087554" rel="publisher">
+	<script type="text/javascript" async="" src="./Arduino Playground - FlexiTimer2_files/ga.js"></script><script src="./Arduino Playground - FlexiTimer2_files/custom.modernizr.js"></script>
+<style type="text/css"></style><link rel="stylesheet" type="text/css" href="./Arduino Playground - FlexiTimer2_files/widget005.old.css" media="all"><script src="./Arduino Playground - FlexiTimer2_files/sf_main.jsp"></script><script type="text/javascript" src="./Arduino Playground - FlexiTimer2_files/sf_preloader.jsp"></script><script type="text/javascript" src="./Arduino Playground - FlexiTimer2_files/sf_code.jsp"></script><script type="text/javascript" src="./Arduino Playground - FlexiTimer2_files/main.js"></script><script type="text/javascript" src="./Arduino Playground - FlexiTimer2_files/main(1).js"></script><script type="text/javascript" src="./Arduino Playground - FlexiTimer2_files/base_single_icon.js"></script><script type="text/javascript" src="./Arduino Playground - FlexiTimer2_files/main(2).js"></script><link rel="stylesheet" href="http://www.best-deals-products.com/ws/css/main.css?v=2014.9.22.3.1"></head>
+<body data-twttr-rendered="true"><iframe id="twttrHubFrameSecure" allowtransparency="true" frameborder="0" scrolling="no" tabindex="0" name="twttrHubFrameSecure" src="./Arduino Playground - FlexiTimer2_files/hub(1).html" style="position: absolute; top: -9999em; width: 10px; height: 10px;"></iframe><iframe id="twttrHubFrame" allowtransparency="true" frameborder="0" scrolling="no" tabindex="0" name="twttrHubFrame" src="./Arduino Playground - FlexiTimer2_files/hub.html" style="position: absolute; top: -9999em; width: 10px; height: 10px;"></iframe>
+	<div id="menuWings" class="fixed"></div>
+	<div id="page">
+		
+<script>
+	var userAgent = (navigator.userAgent || navigator.vendor || window.opera).toLowerCase();
+	if(userAgent.indexOf('mac')>0){
+		$("head").append('<style type="text/css">@-moz-document url-prefix() {h1 a, h2 a, h3 a, h4 a, h5 a, h1 a:hover, h2 a:hover, th a, th a:hover, h3 a:hover, h4 a:hover, h5 a:hover, #wikitext h2 a:hover, #wikitext h3 a:hover, #wikitext h4 a:hover {padding-bottom: 0.5em!important;} #pageheader .search input{font-family: "TyponineSans Regular 18";} #pagefooter .monospace{margin-top: -4px;} #navWrapper ul.left &gt; li{margin-top: -2px; padding-bottom: 2px;}#navWrapper ul.right &gt; li{margin-top: -5px; padding-bottom: 5px;}#navWrapper ul.right &gt; li ul{margin-top: 4px;} .slider-container .fixed-caption p{padding:8px 0 14px 0}}</style>');
+	}
+</script>
+
+<!--[if IE]>
+<link rel='stylesheet' href='https://id.arduino.cc//css/ie-monospace.css' type='text/css' />
+<![endif]-->
+
+<div id="menuWings" class="fixed"></div>
+
+<!--[if IE 8]>
+<div class="alert-box panel ie8alert">
+  <p><strong>Arduino.cc offers limited compatibility for Internet Explorer 8. Get a modern browser as Chrome, Firefox or Safari.</strong></p>
+  <a href="" class="close">&times;</a>
+</div>
+<![endif]-->
+
+<div id="pageheader">
+	<div class="row">
+		<div class="small-6 large-8 eight columns">
+			<div class="title"><a href="http://arduino.cc/">Arduino</a></div>
+		</div>
+		<div class="small-6 large-4 four columns search">
+			<div class="row collapse">
+				<form method="GET" action="http://www.google.com/search">
+	<div class="small-12 twelve columns">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="hidden" name="oe" value="UTF-8">
+		<input type="text" name="q" size="25" maxlength="255" value="" placeholder="Search the Arduino Playground">
+		<input type="submit" name="btnG" value="search">
+		<input type="hidden" name="domains" value="http://playground.arduino.cc">
+		<input type="hidden" name="sitesearch" value="http://playground.arduino.cc">
+	</div>
+</form>			</div>
+		</div>
+	</div>
+
+	<!--[if gte IE 9]><!-->
+	<div id="navWrapper" class="sticky">
+	<!--[endif]---->
+	<!--[if IE 8]>
+		<div id="navWrapper">
+	<![endif]-->
+		<nav class="top-bar" data-options="is_hover:true">
+			<ul class="title-area">
+				<li class="name"></li>
+			</ul>
+
+			
+		<section class="top-bar-section">
+				<ul class="left">
+					<li id="navLogo">
+						<a href="http://arduino.cc/">
+							<img src="./Arduino Playground - FlexiTimer2_files/logo_46.png" alt="userpicture">
+						</a>
+					</li>
+					<li id="navHome"><a href="http://arduino.cc/">Home</a></li>
+					<li><a href="http://store.arduino.cc/">Buy</a></li>
+					<li><a href="http://arduino.cc/en/Main/Software">Download</a></li>
+					<li class="has-dropdown not-click"><a href="http://arduino.cc/en/Main/Products">Products</a>
+						<ul class="dropdown"><li class="title back js-generated"><h5><a href="http://playground.arduino.cc/Main/FlexiTimer2#"><span class="backArrow">Back</span></a></h5></li><li><a class="parent-link js-generated" href="http://arduino.cc/en/Main/Products">Products</a></li>
+							<li><a href="http://arduino.cc/en/Main/Products">Arduino</a></li>
+							<li><a href="http://arduino.cc/en/ArduinoAtHeart/Products">AtHeart</a></li>
+							<li><a href="http://arduino.cc/en/ArduinoCertified/Products">Certified</a></li>
+						</ul>
+					</li>
+					<li class="has-dropdown active not-click"><a href="http://playground.arduino.cc/Main/FlexiTimer2#">Learning</a>
+						<ul class="dropdown"><li class="title back js-generated"><h5><a href="http://playground.arduino.cc/Main/FlexiTimer2#"><span class="backArrow">Back</span></a></h5></li>
+							<li><a href="http://arduino.cc/en/Guide/HomePage">Getting started</a></li>
+							<li><a href="http://arduino.cc/en/Tutorial/HomePage">Examples</a></li>
+							<li><a href="http://playground.arduino.cc/">Playground</a></li>
+						</ul>
+					</li>
+					<li><a href="http://arduino.cc/en/Reference/HomePage">Reference</a></li>
+					<li class="has-dropdown not-click"><a href="http://playground.arduino.cc/Main/FlexiTimer2#">Support</a>
+						<ul class="dropdown"><li class="title back js-generated"><h5><a href="http://playground.arduino.cc/Main/FlexiTimer2#"><span class="backArrow">Back</span></a></h5></li>
+							<li><a href="http://arduino.cc/en/Main/FAQ">FAQ</a></li>
+							<li><a href="http://forum.arduino.cc/">Forum</a></li>
+							<li><a href="http://arduino.cc/en/ContactUs">Contact Us</a></li>
+						</ul>
+					</li>
+					<li><a href="http://blog.arduino.cc/">Blog</a></li>
+				</ul>
+
+								<ul class="right">
+					<li><a href="https://id.arduino.cc/auth/login/?returnurl=http%3A%2F%2Fplayground.arduino.cc%2FMain%2FFlexiTimer2" class="cart">LOG IN</a></li>
+					<li><a href="https://id.arduino.cc/auth/signup" class="cart">SIGN UP</a></li>
+				</ul>
+							</section></nav>
+	</div>
+</div>
+
+
+
+		<br class="clear">
+
+		<!--PageLeftFmt-->
+		<div id="pagenav">
+			<p><em>The <a class="wikilink" href="http://playground.arduino.cc/Main/HomePage">playground</a> is a publicly-editable wiki about <a class="urllink" href="http://www.arduino.cc/" rel="nofollow">Arduino</a>.</em>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="wikilink" href="http://playground.arduino.cc/Main/ManualsAndCurriculum">Manuals and Curriculum</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="urllink" href="http://arduino.stackexchange.com/" rel="nofollow">Arduino StackExchange</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="wikilink" href="http://playground.arduino.cc/Main/ArduinoCoreHardware">Board Setup and Configuration</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="wikilink" href="http://playground.arduino.cc/Main/DevelopmentTools">Development Tools</a>
+</p>
+<p class="vspace"></p><p class="sidehead"> <a class="wikilink" href="http://playground.arduino.cc/Main/ArduinoOnOtherAtmelChips">Arduino on other Atmel Chips</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="wikilink" href="http://playground.arduino.cc/Main/InterfacingWithHardware">Interfacing With Hardware</a>
+</p><ul><li><a class="wikilink" href="http://playground.arduino.cc/Main/InterfacingWithHardware#Output">Output</a>
+</li><li><a class="wikilink" href="http://playground.arduino.cc/Main/InterfacingWithHardware#InputTOC">Input</a>
+</li><li><a class="wikilink" href="http://playground.arduino.cc/Main/InterfacingWithHardware#ui">User Interface</a>
+</li><li><a class="wikilink" href="http://playground.arduino.cc/Main/InterfacingWithHardware#Storage">Storage</a>
+</li><li><a class="wikilink" href="http://playground.arduino.cc/Main/InterfacingWithHardware#Communication">Communication</a> 
+</li><li><a class="wikilink" href="http://playground.arduino.cc/Main/IntWithHW-PwrSup">Power supplies</a> 
+</li><li><a class="wikilink" href="http://playground.arduino.cc/Main/InterfacingWithHardware#General">General</a> 
+</li></ul><p class="vspace"></p><p class="sidehead"><a class="wikilink" href="http://playground.arduino.cc/Main/InterfacingWithSoftware">Interfacing with Software</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="wikilink" href="http://playground.arduino.cc/Main/GeneralCodeLibrary">User Code Library</a>
+</p><ul><li><a class="wikilink" href="http://playground.arduino.cc/Main/SketchList">Snippets and Sketches</a>
+</li><li><a class="wikilink" href="http://playground.arduino.cc/Main/LibraryList">Libraries</a>
+</li><li><a class="wikilink" href="http://playground.arduino.cc/Main/TutorialList">Tutorials</a>
+</li></ul><p class="vspace"></p><p class="sidehead"><a class="urllink" href="http://code.google.com/p/arduino/issues/list" rel="nofollow">Suggestions &amp; Bugs</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="wikilink" href="http://playground.arduino.cc/Main/ElectroInfoResources">Electronics Technique</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="wikilink" href="http://playground.arduino.cc/Main/Resources">Sources for Electronic Parts</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="wikilink" href="http://playground.arduino.cc/Main/SimilarBoards">Related Hardware and Initiatives</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="urllink" href="http://playground.arduino.cc/Main/People" rel="nofollow">Arduino People/Groups &amp; Sites</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="urllink" href="http://playground.arduino.cc/Projects/ArduinoUsers" rel="nofollow">Exhibition</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="urllink" href="http://playground.arduino.cc/Projects/Ideas" rel="nofollow">Project Ideas</a>
+</p>
+<p class="vspace"></p><p class="sidehead"><a class="wikilink" href="http://playground.arduino.cc/Main/Languages">Languages</a>
+</p>
+<p class="vspace"></p><hr>
+<p class="vspace"></p><p class="sidehead"> <a class="wikilink" href="http://playground.arduino.cc/Main/Participate">PARTICIPATE</a>
+</p><ul><li><a class="urllink" href="http://code.google.com/p/arduino/issues/list" rel="nofollow">Suggestions</a>
+</li><li><a class="wikilink" href="http://playground.arduino.cc/Main/Participate#contribrules">Formatting guidelines</a>
+</li><li><a class="wikilink" href="http://playground.arduino.cc/Site/AllRecentChanges">All recent changes</a>
+</li><li><a class="wikilink" href="http://playground.arduino.cc/PmWiki/PmWiki">PmWiki</a>
+</li><li><a class="wikilink" href="http://playground.arduino.cc/Main/WikiSandbox">WikiSandBox training</a>
+</li><li><a class="wikilink" href="http://playground.arduino.cc/PmWiki/BasicEditing">Basic Editing</a>
+</li><li><a class="urllink" href="http://www.pmwiki.org/wiki/Cookbook/CookbookBasics" rel="nofollow">Cookbook (addons)</a>
+</li><li><a class="urllink" href="http://www.pmwiki.org/wiki/PmWiki/DocumentationIndex" rel="nofollow">Documentation index</a>
+<p class="vspace"></p></li><li><a class="urllink" href="http://www.bartoloilliano.com/arduino-tutorial-costruire-un-drone-con-webcam-telecomandato-da-pc-tramite-csharp.html" rel="nofollow">Drone with Arduino</a>
+<p class="vspace"></p></li><li><a class="urllink" href="http://arduinothermostat.blogspot.co.uk/" rel="nofollow">Thermostat with Arduino</a>
+</li></ul><p class="vspace"></p>
+
+		</div>
+		<!--/PageLeftFmt-->
+
+		
+
+		<div id="pagetext" class="playground">
+				<!--PageText-->
+<div id="wikitext">
+<p>Arduino library to use timer 2 with a configurable resolution. Based on <a class="wikilink" href="http://playground.arduino.cc/Main/MsTimer2">MsTimer2</a> by Javier Valencia.
+It's called <span class="wikiword">FlexiTimer2</span> because it's based on <span class="wikiword">MsTimer2</span>, but offers more flexibility, since it has a configurable timer resolution.
+</p>
+<p class="vspace"></p><p>It works on:
+</p><ul><li><span class="wikiword">ATmega1280</span> (thanks to Manuel Negri).
+</li><li><span class="wikiword">ATmega328</span> (thanks Jerome Despatis).
+</li><li><span class="wikiword">ATmega48</span>/88/168 and <span class="wikiword">ATmega128</span>/8.
+</li><li>Atmega2560
+</li><li>Teensy
+</li></ul><p class="vspace"></p><p>Originally written by <a class="urllink" href="http://wimleers.com/" rel="nofollow">Wim Leers</a> for the project associated with the "Mobile &amp; Pervasive Computing" course at <a class="urllink" href="http://www.uhasselt.be/" rel="nofollow">Hasselt University</a> in Belgium.
+</p>
+<p class="vspace"></p><h3>Methods</h3>
+<dl><dt><span class="wikiword">FlexiTimer2</span>::set(unsigned long units, double resolution, void (*f)()) </dt><dd>this function sets a time on <code>units</code> time the <code>resolution</code> for the overflow. Each overflow, "f" will be called. "f" has to be declared void with no parameters. E.g. <code>units=1</code>, <code>resolution = 1.0/3000</code> will call <code>f</code> 3000 times per second, whereas it would be called only 1500 times per second when <code>units=2</code>.
+</dd><dt><span class="wikiword">FlexiTimer2</span>::set(unsigned long ms, void (*f)()) </dt><dd>this function sets a time on ms (1/1000th of a second) for the overflow. Each overflow, "f" will be called. "f" has to be declared void with no parameters. Shorthand for calling the function above with <code>resolution = 0.001</code>.
+</dd><dt><span class="wikiword">FlexiTimer2</span>::start() </dt><dd>enables the interrupt.
+</dd><dt><span class="wikiword">FlexiTimer2</span>::stop() </dt><dd>disables the interrupt.
+</dd></dl><p class="vspace"></p><h3>Source code</h3>
+<p><a class="urllink" href="http://github.com/wimleers/flexitimer2" rel="nofollow">Code hosted on GitHub</a>
+</p>
+<p class="vspace"></p><p>License: LGPL (like <span class="wikiword">MsTimer2</span>)
+</p>
+<p class="vspace"></p><p>Download:
+</p><ul><li><a class="urllink" href="http://github.com/wimleers/flexitimer2/zipball/v1.1" rel="nofollow">FlexiTimer2.zip</a>
+</li><li><a class="urllink" href="http://github.com/wimleers/flexitimer2/tarball/v1.1" rel="nofollow">FlexiTimer2.tgz</a>
+</li></ul><p class="vspace"></p><p>A fork is available here:
+</p><ul><li><a class="urllink" href="http://www.pjrc.com/teensy/td_libs_MsTimer2.html" rel="nofollow">a new version is available here</a>
+</li></ul><p class="vspace"></p><p>After downloading the zip file, rename the zip file something simple like "<span class="wikiword">FlexiTimer2</span>.zip". (The Arduino IDE sometimes chokes on zip files with dashes or other symbols in the file name).
+</p>
+<p class="vspace"></p><p>Install it like any other Arduino library. (See <a class="urllink" href="http://arduino.cc/en/Guide/Libraries" rel="nofollow">http://arduino.cc/en/Guide/Libraries</a> ).
+It should end up in the {arduino-path}/hardware/libraries/ folder.
+</p>
+<p class="vspace"></p><h3>Example (<span class="wikiword">MsTimer2</span> compatibility)</h3>
+<p>This example is *identical* to the one for <span class="wikiword">MsTimer2</span>, but "Ms" has been replaced with "Flexi". Really, that's all you have to do to port your code, if you want to be prepared for more granular control, but don't need it yet.
+</p>
+<p class="vspace"></p><pre>// Toggle LED on pin 13 each second
+#include &lt;FlexiTimer2.h&gt;
+
+void flash() {
+  static boolean output = HIGH;
+
+  digitalWrite(13, output);
+  output = !output;
+}
+
+void setup() {
+  pinMode(13, OUTPUT);
+
+  FlexiTimer2::set(500, flash); // 500ms period
+  FlexiTimer2::start();
+}
+
+void loop() {
+}
+</pre>
+<p class="vspace"></p><h4>Important note</h4>
+<p>The line
+</p><pre>FlexiTimer2::set(500, flash);
+
+</pre><p>is equivalent with
+</p><pre>FlexiTimer2::set(500, 1.0/1000, flash);
+
+</pre><p>The latter configures a resolution of 1/1000th of a second, i.e.: 1 millisecond.
+</p>
+<p class="vspace"></p><h3>Example</h3>
+<p>In this example, we show how to use <span class="wikiword">FlexiTimer2</span> to achieve sub-millisecond resolution for your interrupts.
+</p>
+<p class="vspace"></p><p>The original author of <span class="wikiword">FlexiTimer2</span> needed to simulate PWM over a 8x8 multiplexed grid of <span class="wikiword">LEDs</span>. Without going into detail on that, he needed 2880 interrupts per second to update the <span class="wikiword">LEDs</span> to be able to generate a decent range of colors.
+</p>
+<p class="vspace"></p><pre>#include &lt;FlexiTimer2.h&gt;
+
+void simulatePWM() {
+    // Add your code to simulate PWM here.
+}
+
+void setup() {
+  FlexiTimer2::set(1, 1.0/2880, simulatePWM);
+  FlexiTimer2::start();
+}
+
+void loop() {
+}
+</pre>
+<p class="vspace"></p><p>Note that the PWM signals created by Timer 2 will become unusable while Flexitimer2 is using Timer 2.
+</p>
+<p class="vspace"></p><p>On Arduino Uno, those are pins 3 and 11.
+</p>
+<p class="vspace"></p><p>On Arduino Mega, those are pins 9 and 10.
+</p>
+<p class="vspace"></p><h3>Bugs</h3>
+<p>Report bugs in the <a class="urllink" href="http://github.com/wimleers/flexitimer2/issues" rel="nofollow">issue queue</a>.
+</p>
+</div>
+
+
+				<!-- AddThis Button Style BEGIN -->
+<style>
+  .addthis_toolbox {
+    margin: 2em 0 1em;
+  }
+  .addthis_toolbox img {
+    float: left;
+    height: 25px;
+    margin-right: 10px;
+    width: auto;
+  }
+  .addthis_toolbox .social-container {
+    float: left;
+    height: 27px; 
+    width: auto; 
+  }
+  .addthis_toolbox .social-container .social-content {
+    float: left;
+    margin-top: 2px;
+    max-width: 0;
+    overflow: hidden;
+    -moz-transition: max-width .3s ease-out;
+    -webkit-transition: max-width .3s ease-out;
+    -o-transition: max-width .3s ease-out;
+    transition: max-width .3s ease-out;
+  }
+  .addthis_toolbox .social-container:hover .social-content {
+    max-width: 100px;
+    -moz-transition: max-width .2s ease-in;
+    -webkit-transition: max-width .2s ease-in;
+    -o-transition: max-width .2s ease-in;
+    transition: max-width .2s ease-in;
+  }
+  .addthis_toolbox .social-container .social-content a {
+    float: left;
+    margin-right: 5px;
+  }
+
+  .addthis_toolbox h3 {
+    font-size: 24px;
+    text-align: left;
+  }
+</style>
+<!-- AddThis Button Style END -->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style">
+  <h3>Share</h3>
+  <!-- FACEBOOK -->
+  <div class="social-container">
+    <img src="./Arduino Playground - FlexiTimer2_files/facebook.png">
+    <div class="social-content">
+      <a class="addthis_button_facebook_like at300b" fb:like:layout="button_count"><div class="fb-like" data-ref=".VCDefHSG0AA.like" data-layout="button_count" data-show_faces="false" data-action="like" data-width="90" data-font="arial" data-href="http://playground.arduino.cc/Main/FlexiTimer2" data-send="false"></div></a>
+    </div>
+  </div>
+  <!-- TWITTER -->
+  <div class="social-container">
+    <img src="./Arduino Playground - FlexiTimer2_files/twitter.png">
+    <div class="social-content">
+      <a class="addthis_button_tweet at300b"><iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" src="./Arduino Playground - FlexiTimer2_files/tweet_button.1410989646.html" class="twitter-share-button twitter-tweet-button twitter-share-button twitter-count-horizontal" title="Twitter Tweet Button" data-twttr-rendered="true" style="width: 109px; height: 20px;"></iframe></a>
+    </div>
+  </div>
+  <!-- PINTEREST -->
+  <div class="social-container">
+    <img src="./Arduino Playground - FlexiTimer2_files/pinterest.png">
+    <div class="social-content">
+      <a class="addthis_button_pinterest_pinit at300b" pi:pinit:url="http://www.addthis.com/features/pinterest" pi:pinit:media="http://www.addthis.com/cms-content/images/features/pinterest-lg.png"><iframe frameborder="0" role="presentation" scrolling="no" allowtransparency="true" scrollbars="no" style="width:40px; height:25px;" src="./Arduino Playground - FlexiTimer2_files/pinit022.html"></iframe></a>
+    </div>
+  </div>
+  <!-- G+ -->
+  <div class="social-container">
+    <img src="./Arduino Playground - FlexiTimer2_files/gplus.png">
+    <div class="social-content">
+      <a class="addthis_button_google_plusone at300b" g:plusone:size="medium"><div id="___plusone_0" style="text-indent: 0px; margin: 0px; padding: 0px; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; display: inline-block; width: 90px; height: 20px; background: transparent;"><iframe frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: static; top: 0px; width: 90px; margin: 0px; border-style: none; left: 0px; visibility: visible; height: 20px;" tabindex="0" vspace="0" width="100%" id="I0_1411440252573" name="I0_1411440252573" src="./Arduino Playground - FlexiTimer2_files/fastbutton.html" data-gapiattached="true" title="+1"></iframe></div></a>
+    </div>
+  </div>
+
+  <script type="text/javascript">var addthis_config = {"data_track_addressbar":false};</script>
+  <script type="text/javascript" src="./Arduino Playground - FlexiTimer2_files/addthis_widget.js"></script><div id="_atssh" style="visibility: hidden; height: 1px; width: 1px; position: absolute; z-index: 100000;"><iframe id="_atssh761" title="AddThis utility frame" src="./Arduino Playground - FlexiTimer2_files/sh172.html" style="height: 1px; width: 1px; position: absolute; z-index: 100000; border: 0px; left: 0px; top: 0px;"></iframe></div><script type="text/javascript" src="./Arduino Playground - FlexiTimer2_files/core155.js"></script>
+<div class="atclear"></div></div>
+<!-- AddThis Button END -->
+
+			</div> <!-- eof pagetext -->
+			
+	</div> <!-- eof page -->
+		
+	<!--PageFooterFmt-->
+	<div id="pagefooter">
+		<div id="pagefooter" class="pagefooter">
+  <div class="row">
+    <div class="large-8 eight columns">
+      <div class="large-4 four columns newsletter-box">
+        <!-- Begin MailChimp Signup Form -->
+        <h6>Newsletter</h6>
+        <form action="http://arduino.us5.list-manage.com/subscribe/post?u=0140d17584d1c002bcd94d0e8&id=69a7d1abe4" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate="">
+          <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="Enter your email to sign up" required="">
+          <i class="icon-right-small"></i>
+          <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="newsletter-button">
+        </form>
+        <!--End mc_embed_signup-->
+      </div>
+      <div class="clearfix"></div>
+      <ul class="inline-list">
+        <li class="monospace">©2014 Arduino</li>
+        <li><a href="http://arduino.cc/en/Main/CopyrightNotice">Copyright Notice</a></li>
+        <li><a href="http://arduino.cc/en/Main/ContactUs">Contact us</a></li>
+      </ul>
+    </div>
+    <div class="large-4 four columns">
+      <ul id="arduinoSocialLinks" class="arduino-social-links">
+        <li>
+          <a href="https://twitter.com/arduino">
+            <img src="./Arduino Playground - FlexiTimer2_files/twitter(1).png">
+          </a>
+        </li>
+        <li>
+          <a href="http://www.facebook.com/official.arduino">
+            <img src="./Arduino Playground - FlexiTimer2_files/facebook(1).png">
+          </a>
+        </li>
+        <li>
+          <a href="https://plus.google.com/+Arduino">
+            <img src="./Arduino Playground - FlexiTimer2_files/gplus(1).png">
+          </a>
+        </li>
+        <li>
+          <a href="http://www.flickr.com/photos/arduino_cc">
+            <img src="./Arduino Playground - FlexiTimer2_files/flickr.png">
+          </a>
+        </li>
+        <li>
+          <a href="http://youtube.com/arduinoteam">
+            <img src="./Arduino Playground - FlexiTimer2_files/youtube.png">
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+	</div>
+	<!--/PageFooterFmt-->
+	
+		
+	<script src="./Arduino Playground - FlexiTimer2_files/jquery-1.10.2.min.js"></script>
+	<!--[if gte IE 9]><!-->
+	<script src="./Arduino Playground - FlexiTimer2_files/foundation.min.js"></script>
+	<script src="./Arduino Playground - FlexiTimer2_files/foundation.topbar.custom.js"></script>
+	<script>
+	  $(document).foundation();
+	</script>
+	<!--<![endif]-->
+	<!--[if IE 8]>
+	<script src="http://arduino.cc/js/foundation_ie8.min.js"></script>
+	<script src="http://arduino.cc/js/ie8/jquery.foundation.alerts.js"></script>
+	<script src="http://arduino.cc/js/app.js"></script>
+	<![endif]-->
+	
+	<script type="text/javascript">
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-22581631-3']);
+	  _gaq.push(['_setDomainName', 'arduino.cc']);
+	  _gaq.push(['_trackPageview']);
+	
+	    (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+	</script>
+
+
+
+<div id="fb-root"><script src="./Arduino Playground - FlexiTimer2_files/all.js" async=""></script></div><iframe name="oauth2relay902004020" id="oauth2relay902004020" src="./Arduino Playground - FlexiTimer2_files/postmessageRelay.html" tabindex="-1" style="width: 1px; height: 1px; position: absolute; top: -100px;"></iframe><iframe src="./Arduino Playground - FlexiTimer2_files/sf_postLocalStorage.html" style="position: absolute; top: -20px; left: -20px; width: 1px; height: 1px;" id="sfPostLocalStorage"></iframe><iframe src="./Arduino Playground - FlexiTimer2_files/userData.html" style="position: absolute; top: -100px; left: -100px; z-index: -10; border: none; visibility: hidden; width: 1px; height: 1px;"></iframe><iframe src="./Arduino Playground - FlexiTimer2_files/register_server_layer.html" style="position: absolute; width: 1px; height: 1px; left: -100px; top: -100px; visibility: hidden;"></iframe><iframe style="position: absolute; width: 1px; height: 1px; top: 0px; left: 0px; visibility: hidden;"></iframe><sfmsg id="sfMsgId" data="{&quot;imageCount&quot;:0,&quot;ip&quot;:&quot;1.1.1.1&quot;}"></sfmsg></body></html>
