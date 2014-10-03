@@ -15,7 +15,6 @@
 typedef unsigned long Time;
 
 class MatrixPins {
-  static const int PWM_STEPS = 60;
   public:
   	MatrixPins(const OutputPins& cols, const OutputPins& rows, Time timPerColumn);
 	MatrixPins(const MatrixPins& source);
@@ -27,8 +26,6 @@ class MatrixPins {
   private:
 	Time refreshRate;
 	Time* pwmCutoffs;
-	Time* colStarts;
-	Time* colStops;
     Time timePerColumn;
 	OutputPins columns;
 	OutputPins rows;

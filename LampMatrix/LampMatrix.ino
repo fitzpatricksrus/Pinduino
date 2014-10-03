@@ -10,21 +10,19 @@
 static const Time TICKS_PER_COLUMN = 4000;
 
 static int ROW_PIN_NUMBERS[] = { 3, 5, 6, 9, 10, 11 };
-//static int ROW_PIN_NUMBERS[] = { 3, 4 };
 static OutputPins ROW_PINS(6, ROW_PIN_NUMBERS);
 static int COL_PIN_NUMBERS[] = { 2, 8, 4, 7, 12 };
-//static int COL_PIN_NUMBERS[] = { 5, 6  };
 static OutputPins COL_PINS(5, COL_PIN_NUMBERS);
 static MatrixPins LAMP_MATRIX(COL_PINS, ROW_PINS, TICKS_PER_COLUMN);
 
 static ConcreteMatrixPattern<5,6>::ValueArray MATRIX_VALUES1 = {
-	    { 59,  9,  0,  0,  9, 59 },
+	    { 59,  9, 00,  0,  9, 59 },
 	    {  9, 59,  9,  9, 59,  9 },
 	    {  0,  9, 59, 59,  9,  0 },
 	    {  9, 59,  9,  9, 59,  9 },
 	    { 59,  9,  0,  0,  9, 59 },
 };
-static ConcreteMatrixPattern<5,6> PATTERN1(MATRIX_VALUES1);
+static ConcreteMatrixPattern<5,6> PATTERN1(MATRIX_VALUES1, 60);
 
 static ConcreteMatrixPattern<5,6>::ValueArray MATRIX_VALUES2 = {
 	    { 10, 50, 58, 58, 50, 10 },
@@ -33,7 +31,7 @@ static ConcreteMatrixPattern<5,6>::ValueArray MATRIX_VALUES2 = {
 	    { 50, 10, 50, 50, 10, 50 },
 	    { 10, 50, 58, 58, 50, 10 },
 };
-static ConcreteMatrixPattern<5,6> PATTERN2(MATRIX_VALUES2);
+static ConcreteMatrixPattern<5,6> PATTERN2(MATRIX_VALUES2, 60);
 
 long count = 0;
 Time start;

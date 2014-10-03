@@ -11,6 +11,7 @@
 class MatrixPattern {
   public:
     virtual ~MatrixPattern();
+    virtual int getPWMSteps() const;
     virtual int getRowCount() const = 0;
     virtual int getColumnCount() const = 0;
     virtual int getValue(int row, int column) const = 0;

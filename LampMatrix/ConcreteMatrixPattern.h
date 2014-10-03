@@ -15,8 +15,9 @@ class ConcreteMatrixPattern : public MatrixPattern {
 public:
 	typedef int ValueArray[COLS][ROWS];
 
-	ConcreteMatrixPattern(ValueArray& values);
+	ConcreteMatrixPattern(ValueArray& values, int pwmSteps);
     virtual ~ConcreteMatrixPattern();
+    virtual int getPWMSteps() const;
     virtual int getRowCount() const;
     virtual int getColumnCount() const;
     virtual int getValue(int row, int column) const;
@@ -24,17 +25,23 @@ public:
     virtual int* operator[](int columnIndex);
 
 private:
+    int pwmSteps;
     ValueArray& values;
 };
 
 template <int COLS, int ROWS>
-ConcreteMatrixPattern<COLS,ROWS>::ConcreteMatrixPattern(ValueArray& valuesIn)
-: values(valuesIn)
+ConcreteMatrixPattern<COLS,ROWS>::ConcreteMatrixPattern(ValueArray& valuesIn, int pwnStepsIn)
+: pwmSteps(pwnStepsIn), values(valuesIn)
 {
 }
 
 template <int COLS, int ROWS>
 ConcreteMatrixPattern<COLS, ROWS>::~ConcreteMatrixPattern() {
+}
+
+template <int COLS, int ROWS>
+int ConcreteMatrixPattern<COLS, ROWS>::getPWMSteps() const {
+	return pwmSteps;
 }
 
 template <int COLS, int ROWS>
