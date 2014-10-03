@@ -15,13 +15,13 @@
 typedef unsigned long Time;
 
 class MatrixPins {
-  static const int PWM_STEPS = 100;
+  static const int PWM_STEPS = 60;
   public:
   	MatrixPins(const OutputPins& cols, const OutputPins& rows, Time timPerColumn);
 	MatrixPins(const MatrixPins& source);
 	~MatrixPins();
 	MatrixPins& operator=(const MatrixPins& other);
-	void initialize();
+	void initialize(int pulseWaveSteps);
 	void refresh(Time nowMs);
 	void setPattern(MatrixPattern* pattern);
   private:

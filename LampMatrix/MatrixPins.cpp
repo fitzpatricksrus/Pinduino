@@ -11,7 +11,7 @@
 MatrixPins::MatrixPins(const OutputPins& colsIn, const OutputPins& rowsIn, Time timePerColumnIn)
 : refreshRate(timePerColumnIn*colsIn.getPinCount()), timePerColumn(timePerColumnIn), columns(colsIn), rows(rowsIn), currentPattern(0)
 {
-    pwmCutoffs = new Time[PWM_STEPS];
+/*    pwmCutoffs = new Time[PWM_STEPS];
 	for (int i = 0; i < PWM_STEPS; i++) {
 		pwmCutoffs[i] = map(i, 0, PWM_STEPS-1, 0, timePerColumn);
 	}
@@ -22,17 +22,21 @@ MatrixPins::MatrixPins(const OutputPins& colsIn, const OutputPins& rowsIn, Time 
 	for (int i = 1; i < columns.getPinCount(); i++) {
 		colStarts[i] = colStops[i-1];
 		colStops[i] = colStarts[i] + timePerColumn;
-	}
+	} */
 }
 
 MatrixPins::~MatrixPins() {
-	delete [] colStarts;
-	delete [] colStops;
+//	delete [] colStarts;
+//	delete [] colStops;
 }
 
-void MatrixPins::initialize() {
+void MatrixPins::initialize(int pulseWaveSteps) {
 	columns.initializeDigitalPins(LOW);
 	rows.initializeDigitalPins(LOW);
+    pwmCutoffs = new Time[pulseWaveSteps];
+	for (int i = 0; i < pulseWaveSteps; i++) {
+		pwmCutoffs[i] = map(i, 0, pulseWaveSteps-1, 0, timePerColumn);
+	}
 }
 
 void MatrixPins::refresh(Time now) {

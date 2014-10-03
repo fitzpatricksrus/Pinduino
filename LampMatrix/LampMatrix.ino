@@ -7,27 +7,33 @@
 #include "Arduino.h"
 #include "Logging.h"
 
-static const Time TICKS_PER_COLUMN = 2000;
+static const Time TICKS_PER_COLUMN = 4000;
 
-// static int ROW_PIN_NUMBERS[] = { 3, 5, 6, 9, 10, 11 };
-static int ROW_PIN_NUMBERS[] = { 3, 4 };
-static OutputPins ROW_PINS(2, ROW_PIN_NUMBERS);
-// static int COL_PIN_NUMBERS[] = { 2, 8, 4, 7, 12 };
-static int COL_PIN_NUMBERS[] = { 5, 6  };
-static OutputPins COL_PINS(2, COL_PIN_NUMBERS);
+static int ROW_PIN_NUMBERS[] = { 3, 5, 6, 9, 10, 11 };
+//static int ROW_PIN_NUMBERS[] = { 3, 4 };
+static OutputPins ROW_PINS(6, ROW_PIN_NUMBERS);
+static int COL_PIN_NUMBERS[] = { 2, 8, 4, 7, 12 };
+//static int COL_PIN_NUMBERS[] = { 5, 6  };
+static OutputPins COL_PINS(5, COL_PIN_NUMBERS);
 static MatrixPins LAMP_MATRIX(COL_PINS, ROW_PINS, TICKS_PER_COLUMN);
 
-static ConcreteMatrixPattern<2,2>::ValueArray MATRIX_VALUES1 = {
-    { 5, 99 },
-    { 5, 99 },
+static ConcreteMatrixPattern<5,6>::ValueArray MATRIX_VALUES1 = {
+	    { 59,  9,  0,  0,  9, 59 },
+	    {  9, 59,  9,  9, 59,  9 },
+	    {  0,  9, 59, 59,  9,  0 },
+	    {  9, 59,  9,  9, 59,  9 },
+	    { 59,  9,  0,  0,  9, 59 },
 };
-static ConcreteMatrixPattern<2,2> PATTERN1(MATRIX_VALUES1);
+static ConcreteMatrixPattern<5,6> PATTERN1(MATRIX_VALUES1);
 
-static ConcreteMatrixPattern<2,2>::ValueArray MATRIX_VALUES2 = {
-    { 99, 5 },
-    { 99, 5 }
+static ConcreteMatrixPattern<5,6>::ValueArray MATRIX_VALUES2 = {
+	    { 10, 50, 58, 58, 50, 10 },
+	    { 50, 10, 50, 50, 10, 50 },
+	    { 58, 50, 10, 10, 50, 58 },
+	    { 50, 10, 50, 50, 10, 50 },
+	    { 10, 50, 58, 58, 50, 10 },
 };
-static ConcreteMatrixPattern<2,2> PATTERN2(MATRIX_VALUES2);
+static ConcreteMatrixPattern<5,6> PATTERN2(MATRIX_VALUES2);
 
 long count = 0;
 Time start;
@@ -36,7 +42,7 @@ long matrix = 0;
 
 void setup() {
 //    Logging::DEFAULT_LOG.init(Logging::LOG_LEVEL_ERROR, 115200);
-    LAMP_MATRIX.initialize();
+    LAMP_MATRIX.initialize(60);
     LAMP_MATRIX.setPattern(&PATTERN1);
     Serial.begin(115200);
 //	ROW_PINS.initializeDigitalPins(LOW);
