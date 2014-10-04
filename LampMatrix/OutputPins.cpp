@@ -60,49 +60,51 @@ void OutputPins::initializeDigitalPins(int value) {
     }
 }
 
-int OutputPins::getPin(int pinNdx) const {
-    return pinValue[pinNdx];
-}
-
-int OutputPins::operator[](int pinNdx) const {
-    return pinValue[pinNdx];
-}
-
 void OutputPins::setAnalogPin(int pinNdx, int value) {
     if (value == pinValue[pinNdx]) return;
-//    Serial.println(String("Pin Changed: ")+pinNumber[pinNdx]+" = "+value+" from "+getPin(pinNdx));
 	analogWrite(pinNumber[pinNdx], value);
     pinValue[pinNdx] = value;
 }
 
-void OutputPins::setDigitalPin(int pinNdx, int value) {
-    if (value == pinValue[pinNdx]) return;
-//    Serial.println(String("Pin Changed: ")+pinNumber[pinNdx]+" = "+value+" from "+getPin(pinNdx));
-    digitalWrite(pinNumber[pinNdx], value);
-    pinValue[pinNdx] = value;
+void OutputPins::setAnalogPins(int* values) {
+	for (int i = 0; i < pinCount; i++) {
+		setAnalogPin(i, values[i]);
+	}
 }
 
-void OutputPins::setAnalog(int value) {
+void OutputPins::setAnalogPins(int value) {
 	for (int i = 0; i < pinCount; i++) {
 		setAnalogPin(i, value);
 	}
 }
-void OutputPins::setDigital(int value) {
+
+void OutputPins::setDigitalPin(int pinNdx, int value) {
+    if (value == pinValue[pinNdx]) return;
+    digitalWrite(pinNumber[pinNdx], value);
+    pinValue[pinNdx] = value;
+}
+
+void OutputPins::setDigitalPins(int* values) {
 	for (int i = 0; i < pinCount; i++) {
-		setDigitalPin(i, value);
+		setDigitalPin(i, values[i]);
 	}
 }
 
-int OutputPins::getPinCount() const {
-    return pinCount;
+void OutputPins::setDigitalPins(int value) {
+	for (int i = 0; i < pinCount; i++) {
+		setDigitalPin(i, value);
+	}
 }
 
 void OutputPins::debug() {
 	debug("", "");
 }
 void OutputPins::debug(const char* prefix, const char* postfix) {
-	return;
 	String s(prefix);
-	s = s + "[" + pinValue[0] + ", " + pinValue[1] + "]" + postfix;
+	s = s + "[";
+	for (int i = 0; i < pinCount; i++) {
+		s = s + pinValue[i] + ", ";
+	}
+	s = s + "]" + postfix;
 	Serial.print(s);
 }

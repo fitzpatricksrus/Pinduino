@@ -10,6 +10,3 @@
 MatrixPattern::~MatrixPattern() {
 }
 
-int MatrixPattern::getPWMSteps() const {
-    return 2;
-}

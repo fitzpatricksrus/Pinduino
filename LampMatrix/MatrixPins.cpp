@@ -9,15 +9,15 @@
 #include "Arduino.h"
 
 MatrixPins::MatrixPins(const OutputPins& colsIn, const OutputPins& rowsIn, Time timePerColumnIn)
-: refreshRate(timePerColumnIn*colsIn.getPinCount()), timePerColumn(timePerColumnIn),
-  columns(colsIn), rows(rowsIn), currentPattern(0), pwmCutoffs(0)
+: refreshRate(timePerColumnIn*colsIn.getPinCount()), pwmCutoffs(0), timePerColumn(timePerColumnIn),
+  columns(colsIn), rows(rowsIn), currentPattern(0)
 {
 }
 
 MatrixPins::~MatrixPins() {
 }
 
-void MatrixPins::initialize(int pulseWaveSteps) {
+void MatrixPins::initialize() {
 	columns.initializeDigitalPins(LOW);
 	rows.initializeDigitalPins(LOW);
 }
@@ -27,10 +27,11 @@ void MatrixPins::refresh(Time now) {
     int columnNdx = timeIntoThisCycle / timePerColumn;				// 0 - (columns - 1)
     Time timeIntoThisColumn = timeIntoThisCycle % timePerColumn;	// 0 - (timePerColumn -1)
     
-    for (int col = 0; col < columns.getPinCount(); col++) {
-        columns.setDigitalPin(col, (col == columnNdx) ? HIGH : LOW);
+    for (int col = columns.getPinCount() - 1; col >= 0; col--) {
+       columns.setDigitalPin(col, (col == columnNdx) ? HIGH : LOW);
     }
-    for (int i = 0; i < rows.getPinCount(); i++) {
+
+    for (int i = rows.getPinCount() - 1; i >= 0 ; i--) {
         int rowValue = (*currentPattern)[columnNdx][i];
         if (timeIntoThisColumn < pwmCutoffs[rowValue]) {
             rows.setDigitalPin(i, HIGH);
@@ -41,11 +42,24 @@ void MatrixPins::refresh(Time now) {
 }
 
 void MatrixPins::setPattern(MatrixPattern* pattern) {
-	if (pwmCutoffs != 0) delete[] pwmCutoffs;
+	if (currentPattern == pattern) return;
+	if (currentPattern == 0 || currentPattern->getPWMSteps() != pattern->getPWMSteps()) {
+		recalcPWM(pattern->getPWMSteps());
+	}
 	currentPattern = pattern;
-	int pulseWaveSteps = pattern->getPWMSteps();
-    pwmCutoffs = new Time[pulseWaveSteps];
+}
+
+void MatrixPins::setTicksPerColumn(Time ticksPerColumn) {
+	if (timePerColumn == ticksPerColumn) return;
+	timePerColumn = ticksPerColumn;
+	recalcPWM(currentPattern->getPWMSteps());
+}
+
+void MatrixPins::recalcPWM(int pulseWaveSteps) {
+	if (pwmCutoffs != 0) delete[] pwmCutoffs;
+	pwmCutoffs = new Time[pulseWaveSteps];
 	for (int i = 0; i < pulseWaveSteps; i++) {
 		pwmCutoffs[i] = map(i, 0, pulseWaveSteps-1, 0, timePerColumn);
 	}
 }
+

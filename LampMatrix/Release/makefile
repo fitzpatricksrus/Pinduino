@@ -81,7 +81,7 @@ LampMatrix: $(FLASH_IMAGE)
 
 LampMatrix.elf: $(LINK_OBJ) $(AR)
 	@echo 'Starting combiner'
-	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-gcc" -Os -Wl,--gc-sections -mmcu=atmega328p -o "/Users/Dad/git/Pinduino/LampMatrix/Release/LampMatrix.elf"   $(LINK_OBJ) $(AR)  "/Users/Dad/git/Pinduino/LampMatrix/Release/arduino.ar" "-L/Users/Dad/git/Pinduino/LampMatrix/Release" -lm
+	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-gcc" -Os -Wl,--gc-sections -mmcu=atmega2560 -o "/Users/Dad/git/Pinduino/LampMatrix/Release/LampMatrix.elf"   $(LINK_OBJ) $(AR)  "/Users/Dad/git/Pinduino/LampMatrix/Release/arduino.ar" "-L/Users/Dad/git/Pinduino/LampMatrix/Release" -lm
 	@echo 'Finished building: $@'
 	@echo ' '
 
