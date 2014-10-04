@@ -50,7 +50,7 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 AR += \
-/Users/Dad/GoogleDrive/arduino/WorkspaceGit/Scratch/Release/arduino.ar \
+/Users/Dad/git/Pinduino/Scratch/Release/arduino.ar \
 
 ELF += \
 Scratch.elf \
@@ -69,31 +69,31 @@ all: Scratch
 Scratch: $(FLASH_IMAGE)
 	@echo 'Building target: $@'
 	@echo 'Printing size:'
-	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-size" -A "/Users/Dad/GoogleDrive/arduino/WorkspaceGit/Scratch/Release/Scratch.elf"
+	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-size" -A "/Users/Dad/git/Pinduino/Scratch/Release/Scratch.elf"
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-/Users/Dad/GoogleDrive/arduino/WorkspaceGit/Scratch/Release/arduino.ar: $(AR_OBJ)
+/Users/Dad/git/Pinduino/Scratch/Release/arduino.ar: $(AR_OBJ)
 	@echo 'Starting archiver'
-	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-ar" rcs "/Users/Dad/GoogleDrive/arduino/WorkspaceGit/Scratch/Release/arduino.ar"   $(AR_OBJ)
+	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-ar" rcs "/Users/Dad/git/Pinduino/Scratch/Release/arduino.ar"   $(AR_OBJ)
 	@echo 'Finished building: $@'
 	@echo ' '
 
 Scratch.elf: $(LINK_OBJ) $(AR)
 	@echo 'Starting combiner'
-	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-gcc" -Os -Wl,--gc-sections -mmcu=atmega328p -o "/Users/Dad/GoogleDrive/arduino/WorkspaceGit/Scratch/Release/Scratch.elf"   $(LINK_OBJ) $(AR)  "/Users/Dad/GoogleDrive/arduino/WorkspaceGit/Scratch/Release/arduino.ar" "-L/Users/Dad/GoogleDrive/arduino/WorkspaceGit/Scratch/Release" -lm
+	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-gcc" -Os -Wl,--gc-sections -mmcu=atmega328p -o "/Users/Dad/git/Pinduino/Scratch/Release/Scratch.elf"   $(LINK_OBJ) $(AR)  "/Users/Dad/git/Pinduino/Scratch/Release/arduino.ar" "-L/Users/Dad/git/Pinduino/Scratch/Release" -lm
 	@echo 'Finished building: $@'
 	@echo ' '
 
 Scratch.eep: $(ELF)
 	@echo 'Create eeprom image'
-	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-objcopy" -O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0 "/Users/Dad/GoogleDrive/arduino/WorkspaceGit/Scratch/Release/Scratch.elf" "/Users/Dad/GoogleDrive/arduino/WorkspaceGit/Scratch/Release/Scratch.eep"
+	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-objcopy" -O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0 "/Users/Dad/git/Pinduino/Scratch/Release/Scratch.elf" "/Users/Dad/git/Pinduino/Scratch/Release/Scratch.eep"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 Scratch.hex: $(EEP)
 	@echo 'Create Flash image (ihex format)'
-	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-objcopy" -O ihex -R .eeprom "/Users/Dad/GoogleDrive/arduino/WorkspaceGit/Scratch/Release/Scratch.elf" "/Users/Dad/GoogleDrive/arduino/WorkspaceGit/Scratch/Release/Scratch.hex"
+	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-objcopy" -O ihex -R .eeprom "/Users/Dad/git/Pinduino/Scratch/Release/Scratch.elf" "/Users/Dad/git/Pinduino/Scratch/Release/Scratch.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
