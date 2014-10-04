@@ -5,6 +5,6 @@
  *      Author: Dad
  */
 
-#include "ConcreteMatrixPattern.h"
+#include "SimpleMatrixPattern.h"
 
 

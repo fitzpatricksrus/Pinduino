@@ -8,12 +8,12 @@
 #ifndef MATRIX5BY7_H_
 #define MATRIX5BY7_H_
 
-#include "ConcreteMatrixPattern.h"
+#include "MatrixPattern.h"
 
 class Matrix5by7 {
 public:
-	static ConcreteMatrixPattern<5, 6>& getPattern1();
-	static ConcreteMatrixPattern<5, 6>& getPattern2();
+	static MatrixPattern* getPattern1();
+	static MatrixPattern* getPattern2();
 };
 
 #endif /* MATRIX5BY7_H_ */
