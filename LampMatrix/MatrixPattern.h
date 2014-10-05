@@ -10,13 +10,15 @@
 
 class MatrixPattern {
   public:
+	typedef unsigned char CellValue;
+
     virtual ~MatrixPattern();
     virtual int getPWMSteps() const = 0;
     virtual int getRowCount() const = 0;
     virtual int getColumnCount() const = 0;
-    virtual int getValue(int row, int column) const = 0;
-    virtual int const* operator[](int columnIndex) const = 0;
-    virtual int* operator[](int columnIndex) = 0;
+    virtual CellValue getValue(int row, int column) const = 0;
+    virtual CellValue const* operator[](int columnIndex) const = 0;
+    virtual CellValue* operator[](int columnIndex) = 0;
 };
 
 #endif /* MATRIXPATTERN_H_ */

@@ -8,7 +8,7 @@
 
 #include "Arduino.h"
 
-OutputPins::OutputPins(int pinCountIn, int pinsIn[])
+OutputPins::OutputPins(uint8_t pinCountIn, uint8_t pinsIn[])
 : pinNumber(&pinsIn[0]), pinCount(pinCountIn)
 {
 	pinValue = new int[pinCountIn];
@@ -60,7 +60,7 @@ void OutputPins::initializeDigitalPins(int value) {
     }
 }
 
-void OutputPins::setAnalogPin(int pinNdx, int value) {
+void OutputPins::setAnalogPin(uint8_t pinNdx, int value) {
     if (value == pinValue[pinNdx]) return;
 	analogWrite(pinNumber[pinNdx], value);
     pinValue[pinNdx] = value;
@@ -78,7 +78,7 @@ void OutputPins::setAnalogPins(int value) {
 	}
 }
 
-void OutputPins::setDigitalPin(int pinNdx, int value) {
+void OutputPins::setDigitalPin(uint8_t pinNdx, int value) {
     if (value == pinValue[pinNdx]) return;
     digitalWrite(pinNumber[pinNdx], value);
     pinValue[pinNdx] = value;

@@ -13,18 +13,18 @@
 template<int COLS, int ROWS>
 class SimpleMatrixPattern: public MatrixPattern {
 public:
-	typedef int ValueArray[COLS][ROWS];
+	typedef CellValue ValueArray[COLS][ROWS];
 
 	SimpleMatrixPattern(ValueArray& values, int pwmSteps);
 	virtual ~SimpleMatrixPattern();
 	virtual int getPWMSteps() const;
 	virtual int getRowCount() const;
 	virtual int getColumnCount() const;
-	virtual int getValue(int row, int column) const;
-	virtual int const* operator[](int columnIndex) const;
-	virtual int* operator[](int columnIndex);
+	virtual CellValue getValue(int row, int column) const;
+	virtual CellValue const* operator[](int columnIndex) const;
+	virtual CellValue* operator[](int columnIndex);
 
-private:
+protected:
 	int pwmSteps;
 	ValueArray& values;
 };
@@ -55,18 +55,18 @@ int SimpleMatrixPattern<COLS, ROWS>::getColumnCount() const {
 }
 
 template<int COLS, int ROWS>
-int SimpleMatrixPattern<COLS, ROWS>::getValue(int row, int column) const {
+MatrixPattern::CellValue SimpleMatrixPattern<COLS, ROWS>::getValue(int row, int column) const {
 	return values[column][row];
 }
 
 template<int COLS, int ROWS>
-int const* SimpleMatrixPattern<COLS, ROWS>::operator[](
+MatrixPattern::CellValue const* SimpleMatrixPattern<COLS, ROWS>::operator[](
 		int columnIndex) const {
 	return values[columnIndex];
 }
 
 template<int COLS, int ROWS>
-int* SimpleMatrixPattern<COLS, ROWS>::operator[](int columnIndex) {
+MatrixPattern::CellValue* SimpleMatrixPattern<COLS, ROWS>::operator[](int columnIndex) {
 	return values[columnIndex];
 }
 

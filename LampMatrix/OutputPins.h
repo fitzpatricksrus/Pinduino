@@ -12,21 +12,21 @@
 
 class OutputPins {
 public:
-    OutputPins(int pinCount, int pins[]);
+    OutputPins(uint8_t pinCount, uint8_t pins[]);
     OutputPins(const OutputPins& source);
 	~OutputPins();
 	OutputPins& operator=(const OutputPins& other);
     void initializePins(int value);
     void initializeDigitalPins(int value);
-    int getPin(int pinNdx) const;
-    int operator[](int pinNdx) const;
-    void setAnalogPin(int pinNdx, int value);
+    int getPin(uint8_t pinNdx) const;
+    int operator[](uint8_t pinNdx) const;
+    void setAnalogPin(uint8_t pinNdx, int value);
     void setAnalogPins(int* values);
     void setAnalogPins(int value);
-    void setDigitalPin(int pinNdx, int value);
+    void setDigitalPin(uint8_t pinNdx, int value);
     void setDigitalPins(int* values);
     void setDigitalPins(int value);
-    int getPinCount() const;
+    uint8_t getPinCount() const;
 
     void latch();
 
@@ -34,20 +34,20 @@ public:
     void debug(const char* pre, const char* post);
 
 private:
-    int* pinNumber;
+    uint8_t* pinNumber;
     int* pinValue;
-    int pinCount;
+    uint8_t pinCount;
 };
 
-inline int OutputPins::getPinCount() const {
+inline uint8_t OutputPins::getPinCount() const {
     return pinCount;
 }
 
-inline int OutputPins::getPin(int pinNdx) const {
+inline int OutputPins::getPin(uint8_t pinNdx) const {
     return pinValue[pinNdx];
 }
 
-inline int OutputPins::operator[](int pinNdx) const {
+inline int OutputPins::operator[](uint8_t pinNdx) const {
     return pinValue[pinNdx];
 }
 

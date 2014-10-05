@@ -7,11 +7,11 @@
 #include "Logging.h"
 #include "Matrix8x8.h"
 
-static const Time TICKS_PER_COLUMN = 500;
+static const Time TICKS_PER_COLUMN = 2000;
 
-static int ROW_PIN_NUMBERS[] = { 46,48,47,49,50,51,52,53,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45 };
+static uint8_t ROW_PIN_NUMBERS[] = { 46,48,47,49,50,51,52,53,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45 };
 static OutputPins ROW_PINS(24, ROW_PIN_NUMBERS);
-static int COL_PIN_NUMBERS[] = { 2,3,4,5,6,7,8,9 };
+static uint8_t COL_PIN_NUMBERS[] = { 2,3,4,5,6,7,8,9 };
 static OutputPins COL_PINS(8, COL_PIN_NUMBERS);
 static MatrixPins LAMP_MATRIX(COL_PINS, ROW_PINS, TICKS_PER_COLUMN);
 
@@ -34,7 +34,7 @@ void loop() {
     if (duration > 1000) {
     	matrix++;
     	String msg("rate: ");
-    	int pattern = matrix % 3;
+    	int pattern = matrix % 4;
     	msg = msg + count + " matrix: " + pattern;
 		LAMP_MATRIX.setPattern(Matrix8by8::getPattern(pattern));
     	Serial.println(msg);
