@@ -28,6 +28,8 @@ public:
     void setDigitalPins(int value);
     int getPinCount() const;
 
+    void latch();
+
     void debug();
     void debug(const char* pre, const char* post);
 

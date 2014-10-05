@@ -30,6 +30,7 @@ void MatrixPins::refresh(Time now) {
     for (int col = columns.getPinCount() - 1; col >= 0; col--) {
        columns.setDigitalPin(col, (col == columnNdx) ? HIGH : LOW);
     }
+    columns.latch();
 
     for (int i = rows.getPinCount() - 1; i >= 0 ; i--) {
         int rowValue = (*currentPattern)[columnNdx][i];
@@ -39,6 +40,7 @@ void MatrixPins::refresh(Time now) {
             rows.setDigitalPin(i, LOW);
         }
     }
+    rows.latch();
 }
 
 void MatrixPins::setPattern(MatrixPattern* pattern) {

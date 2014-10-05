@@ -96,6 +96,10 @@ void OutputPins::setDigitalPins(int value) {
 	}
 }
 
+void OutputPins::latch() {
+	//doesn't do anything right now, but may later.
+}
+
 void OutputPins::debug() {
 	debug("", "");
 }
