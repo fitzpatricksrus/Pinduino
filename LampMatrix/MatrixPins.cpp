@@ -8,8 +8,8 @@
 #include "MatrixPins.h"
 #include "Arduino.h"
 
-MatrixPins::MatrixPins(const OutputPins& colsIn, const OutputPins& rowsIn, Time timePerColumnIn)
-: refreshRate(timePerColumnIn*colsIn.getPinCount()), pwmCutoffs(0), timePerColumn(timePerColumnIn),
+MatrixPins::MatrixPins(OutputPins* colsIn, OutputPins* rowsIn, Time timePerColumnIn)
+: refreshRate(timePerColumnIn*colsIn->getPinCount()), pwmCutoffs(0), timePerColumn(timePerColumnIn),
   columns(colsIn), rows(rowsIn), currentPattern(0)
 {
 }
@@ -18,8 +18,8 @@ MatrixPins::~MatrixPins() {
 }
 
 void MatrixPins::initialize() {
-	columns.initializeDigitalPins(LOW);
-	rows.initializeDigitalPins(LOW);
+	columns->initializeDigitalPins(LOW);
+	rows->initializeDigitalPins(LOW);
 }
 
 void MatrixPins::refresh(Time now) {
@@ -27,20 +27,20 @@ void MatrixPins::refresh(Time now) {
     uint8_t columnNdx = timeIntoThisCycle / timePerColumn;			// 0 - (columns - 1)
     Time timeIntoThisColumn = timeIntoThisCycle % timePerColumn;	// 0 - (timePerColumn -1)
     
-    for (int col = columns.getPinCount() - 1; col >= 0; col--) {
-       columns.setDigitalPin(col, (col == columnNdx) ? HIGH : LOW);
+    for (int col = columns->getPinCount() - 1; col >= 0; col--) {
+       columns->setDigitalPin(col, (col == columnNdx) ? HIGH : LOW);
     }
-    columns.latch();
+    columns->latch();
 
-    for (int i = rows.getPinCount() - 1; i >= 0 ; i--) {
+    for (int i = rows->getPinCount() - 1; i >= 0 ; i--) {
     	uint8_t rowValue = (*currentPattern)[columnNdx][i];
         if (timeIntoThisColumn < pwmCutoffs[rowValue]) {
-            rows.setDigitalPin(i, HIGH);
+            rows->setDigitalPin(i, HIGH);
         } else {
-            rows.setDigitalPin(i, LOW);
+            rows->setDigitalPin(i, LOW);
         }
     }
-    rows.latch();
+    rows->latch();
 }
 
 void MatrixPins::setPattern(MatrixPattern* pattern) {

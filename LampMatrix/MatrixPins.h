@@ -9,14 +9,14 @@
 #define MATRIXPINS_H_
 
 #include "MatrixPattern.h"
-#include "OutputPins.h"
+#include "DirectOutputPins.h"
 #include "Arduino.h"
 
 typedef unsigned long Time;
 
 class MatrixPins {
   public:
-  	MatrixPins(const OutputPins& cols, const OutputPins& rows, Time ticksPerColumn);
+  	MatrixPins(OutputPins* cols, OutputPins* rows, Time ticksPerColumn);
 	MatrixPins(const MatrixPins& source);
 	~MatrixPins();
 	MatrixPins& operator=(const MatrixPins& other);
@@ -30,8 +30,8 @@ class MatrixPins {
 	Time refreshRate;
 	Time* pwmCutoffs;
     Time timePerColumn;
-	OutputPins columns;
-	OutputPins rows;
+	OutputPins* columns;
+	OutputPins* rows;
 	MatrixPattern* currentPattern;
 };
 
