@@ -15,6 +15,7 @@ CPP_SRCS += \
 ../MatrixPattern.cpp \
 ../MatrixPins.cpp \
 ../OutputPins.cpp \
+../SPIOutputPins.cpp \
 ../SimpleMatrixPattern.cpp 
 
 INO_SRCS += \
@@ -35,6 +36,7 @@ CPP_DEPS += \
 ./MatrixPattern.cpp.d \
 ./MatrixPins.cpp.d \
 ./OutputPins.cpp.d \
+./SPIOutputPins.cpp.d \
 ./SimpleMatrixPattern.cpp.d 
 
 LINK_OBJ += \
@@ -49,6 +51,7 @@ LINK_OBJ += \
 ./MatrixPattern.cpp.o \
 ./MatrixPins.cpp.o \
 ./OutputPins.cpp.o \
+./SPIOutputPins.cpp.o \
 ./SimpleMatrixPattern.cpp.o 
 
 
@@ -131,6 +134,13 @@ MatrixPins.cpp.o: ../MatrixPins.cpp
 	@echo ' '
 
 OutputPins.cpp.o: ../OutputPins.cpp
+	@echo 'Building file: $<'
+	@echo 'Starting C++ compile'
+	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-g++" -c -g -O3 -fno-exceptions -ffunction-sections -fdata-sections -MMD -finline-functions -fgcse -fexpensive-optimizations -fstrict-aliasing -funroll-loops -frerun-loop-opt -frerun-cse-after-loop -mmcu=atmega2560 -DF_CPU=16000000L -DARDUINO=155 -DARDUINO_AVR_MEGA2560 -DARDUINO_ARCH_AVR    -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/cores/arduino" -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/variants/mega" -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -D__IN_ECLIPSE__=1 -x c++ "$<"  -o  "$@"   -Wall
+	@echo 'Finished building: $<'
+	@echo ' '
+
+SPIOutputPins.cpp.o: ../SPIOutputPins.cpp
 	@echo 'Building file: $<'
 	@echo 'Starting C++ compile'
 	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-g++" -c -g -O3 -fno-exceptions -ffunction-sections -fdata-sections -MMD -finline-functions -fgcse -fexpensive-optimizations -fstrict-aliasing -funroll-loops -frerun-loop-opt -frerun-cse-after-loop -mmcu=atmega2560 -DF_CPU=16000000L -DARDUINO=155 -DARDUINO_AVR_MEGA2560 -DARDUINO_ARCH_AVR    -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/cores/arduino" -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/variants/mega" -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -D__IN_ECLIPSE__=1 -x c++ "$<"  -o  "$@"   -Wall
