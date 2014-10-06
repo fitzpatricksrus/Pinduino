@@ -7,7 +7,6 @@
 
 #include "MatrixPins.h"
 #include "Arduino.h"
-#include "Byte.h"
 
 MatrixPins::MatrixPins(const OutputPins& colsIn, const OutputPins& rowsIn, Time timePerColumnIn)
 : refreshRate(timePerColumnIn*colsIn.getPinCount()), pwmCutoffs(0), timePerColumn(timePerColumnIn),
@@ -25,7 +24,7 @@ void MatrixPins::initialize() {
 
 void MatrixPins::refresh(Time now) {
     Time timeIntoThisCycle = now  % refreshRate;					// 0 - (refreshRate-1)
-    byte_t columnNdx = timeIntoThisCycle / timePerColumn;			// 0 - (columns - 1)
+    uint8_t columnNdx = timeIntoThisCycle / timePerColumn;			// 0 - (columns - 1)
     Time timeIntoThisColumn = timeIntoThisCycle % timePerColumn;	// 0 - (timePerColumn -1)
     
     for (int col = columns.getPinCount() - 1; col >= 0; col--) {
@@ -34,7 +33,7 @@ void MatrixPins::refresh(Time now) {
     columns.latch();
 
     for (int i = rows.getPinCount() - 1; i >= 0 ; i--) {
-    	byte_t rowValue = (*currentPattern)[columnNdx][i];
+    	uint8_t rowValue = (*currentPattern)[columnNdx][i];
         if (timeIntoThisColumn < pwmCutoffs[rowValue]) {
             rows.setDigitalPin(i, HIGH);
         } else {
