@@ -11,3 +11,13 @@
 void OutputPins::debug() {
 	debug("", "");
 }
+
+void OutputPins::debug(const char* prefix, const char* postfix) {
+	String s(prefix);
+	s = s + "[";
+	for (int i = 0; i < getPinCount(); i++) {
+		s = s + getPin(i) + ", ";
+	}
+	s = s + "]" + postfix;
+	Serial.print(s);
+}

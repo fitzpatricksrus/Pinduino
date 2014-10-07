@@ -18,8 +18,8 @@ MatrixPins::~MatrixPins() {
 }
 
 void MatrixPins::initialize() {
-	columns->initializeDigitalPins(LOW);
-	rows->initializeDigitalPins(LOW);
+	columns->initializePins(LOW);
+	rows->initializePins(LOW);
 }
 
 void MatrixPins::refresh(Time now) {
@@ -28,17 +28,13 @@ void MatrixPins::refresh(Time now) {
     Time timeIntoThisColumn = timeIntoThisCycle % timePerColumn;	// 0 - (timePerColumn -1)
     
     for (int col = columns->getPinCount() - 1; col >= 0; col--) {
-       columns->setDigitalPin(col, (col == columnNdx) ? HIGH : LOW);
+       columns->setPin(col, col == columnNdx);
     }
     columns->latch();
 
     for (int i = rows->getPinCount() - 1; i >= 0 ; i--) {
     	uint8_t rowValue = (*currentPattern)[columnNdx][i];
-        if (timeIntoThisColumn < pwmCutoffs[rowValue]) {
-            rows->setDigitalPin(i, HIGH);
-        } else {
-            rows->setDigitalPin(i, LOW);
-        }
+    	rows->setPin(i, timeIntoThisColumn < pwmCutoffs[rowValue]);
     }
     rows->latch();
 }

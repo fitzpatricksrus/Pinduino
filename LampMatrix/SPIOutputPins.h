@@ -18,19 +18,17 @@ public:
 	virtual SPIOutputPins& operator=(const SPIOutputPins& other);
 
 	virtual void initializePins(int value);
-    virtual void initializeDigitalPins(int value);
+    virtual void initializePins(bool value);
     virtual int getPin(uint8_t pinNdx) const;
     virtual int operator[](uint8_t pinNdx) const;
-    virtual void setAnalogPin(uint8_t pinNdx, int value);
-    virtual void setAnalogPins(int* values);
-    virtual void setAnalogPins(int value);
-    virtual void setDigitalPin(uint8_t pinNdx, int value);
-    virtual void setDigitalPins(int* values);
-    virtual void setDigitalPins(int value);
+    virtual void setPin(uint8_t pinNdx, int value);
+    virtual void setPins(int* values);
+    virtual void setPins(int value);
+    virtual void setPin(uint8_t pinNdx, bool value);
+    virtual void setPins(bool* values);
+    virtual void setPins(bool value);
     virtual uint8_t getPinCount() const;
-
     virtual void latch();
-    virtual void debug(const char* pre, const char* post);
 
 private:
     uint8_t valueCount;

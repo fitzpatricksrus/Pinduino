@@ -7,7 +7,7 @@
 #include "Logging.h"
 #include "Matrix8x8.h"
 
-static const Time TICKS_PER_COLUMN = 2000;
+static const Time TICKS_PER_COLUMN = 8;
 
 static uint8_t ROW_PIN_NUMBERS[] = { 46,48,47,49,50,51,52,53,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45 };
 static DirectOutputPins ROW_PINS(24, ROW_PIN_NUMBERS);
@@ -23,7 +23,7 @@ void setup() {
 //    Logging::DEFAULT_LOG.init(Logging::LOG_LEVEL_ERROR, 115200);
     LAMP_MATRIX.initialize();
     LAMP_MATRIX.setPattern(Matrix8by8::getPattern(0));
-    Serial.begin(115200);
+    Serial.begin(9600);
     start = millis();
 }
 
@@ -34,7 +34,7 @@ void loop() {
     if (duration > 1000) {
     	matrix++;
     	String msg("rate: ");
-    	int pattern = matrix % 4;
+    	int pattern = matrix % 5;
     	msg = msg + count + " matrix: " + pattern;
 		LAMP_MATRIX.setPattern(Matrix8by8::getPattern(pattern));
     	Serial.println(msg);
