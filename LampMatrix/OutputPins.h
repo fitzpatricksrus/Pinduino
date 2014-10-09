@@ -12,6 +12,7 @@
 
 class OutputPins {
 public:
+	virtual ~OutputPins() {}
     virtual void initializePins(int value) = 0;
     virtual void initializePins(bool value) = 0;
     virtual int getPin(uint8_t pinNdx) const = 0;
