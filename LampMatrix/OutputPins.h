@@ -13,18 +13,12 @@
 class OutputPins {
 public:
 	virtual ~OutputPins() {}
-    virtual void initializePins(int value) = 0;
-    virtual void initializePins(bool value) = 0;
-    virtual int getPin(uint8_t pinNdx) const = 0;
-    virtual int operator[](uint8_t pinNdx) const = 0;
-    virtual void setPin(uint8_t pinNdx, int value) = 0;
-    virtual void setPins(int* values) = 0;
-    virtual void setPins(int value) = 0;
-    virtual void setPin(uint8_t pinNdx, bool value) = 0;
-    virtual void setPins(bool* values) = 0;
-    virtual void setPins(bool value) = 0;
-    virtual uint8_t getPinCount() const = 0;
-
+    virtual bool getPin(byte pinNdx) const = 0;
+    virtual bool operator[](byte pinNdx) const;
+    virtual void setPin(byte pinNdx, bool value) = 0;
+    virtual void setPins(bool* values);
+    virtual void setAllPins(bool value);
+    virtual byte getPinCount() const = 0;
     virtual void latch() = 0;
 
     void debug();

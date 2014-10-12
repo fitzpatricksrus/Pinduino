@@ -4,7 +4,6 @@
 #include "DirectOutputPins.h"
 #include "MatrixPins.h"
 #include "Arduino.h"
-#include "Logging.h"
 #include "Matrix8x8.h"
 
 static const Time TICKS_PER_COLUMN = 8;

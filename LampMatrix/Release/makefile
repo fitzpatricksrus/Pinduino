@@ -9,6 +9,7 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir.mk
+-include unused/subdir.mk
 -include arduino/core/avr-libc/subdir.mk
 -include arduino/core/subdir.mk
 -include objects.mk

@@ -5,16 +5,16 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../.ino.cpp \
-../Bag.cpp \
+../AnalogOutputPins.cpp \
+../BAMOutputPins.cpp \
 ../DirectOutputPins.cpp \
-../FlexiTimer2.cpp \
-../Logging.cpp \
 ../Matrix5by7.cpp \
 ../Matrix8x8.cpp \
 ../MatrixOoze.cpp \
 ../MatrixPattern.cpp \
 ../MatrixPins.cpp \
 ../OutputPins.cpp \
+../SPI.cpp \
 ../SPIOutputPins.cpp \
 ../SimpleMatrixPattern.cpp 
 
@@ -26,31 +26,31 @@ INO_DEPS += \
 
 CPP_DEPS += \
 ./.ino.cpp.d \
-./Bag.cpp.d \
+./AnalogOutputPins.cpp.d \
+./BAMOutputPins.cpp.d \
 ./DirectOutputPins.cpp.d \
-./FlexiTimer2.cpp.d \
-./Logging.cpp.d \
 ./Matrix5by7.cpp.d \
 ./Matrix8x8.cpp.d \
 ./MatrixOoze.cpp.d \
 ./MatrixPattern.cpp.d \
 ./MatrixPins.cpp.d \
 ./OutputPins.cpp.d \
+./SPI.cpp.d \
 ./SPIOutputPins.cpp.d \
 ./SimpleMatrixPattern.cpp.d 
 
 LINK_OBJ += \
 ./.ino.cpp.o \
-./Bag.cpp.o \
+./AnalogOutputPins.cpp.o \
+./BAMOutputPins.cpp.o \
 ./DirectOutputPins.cpp.o \
-./FlexiTimer2.cpp.o \
-./Logging.cpp.o \
 ./Matrix5by7.cpp.o \
 ./Matrix8x8.cpp.o \
 ./MatrixOoze.cpp.o \
 ./MatrixPattern.cpp.o \
 ./MatrixPins.cpp.o \
 ./OutputPins.cpp.o \
+./SPI.cpp.o \
 ./SPIOutputPins.cpp.o \
 ./SimpleMatrixPattern.cpp.o 
 
@@ -63,7 +63,14 @@ LINK_OBJ += \
 	@echo 'Finished building: $<'
 	@echo ' '
 
-Bag.cpp.o: ../Bag.cpp
+AnalogOutputPins.cpp.o: ../AnalogOutputPins.cpp
+	@echo 'Building file: $<'
+	@echo 'Starting C++ compile'
+	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-g++" -c -g -Os -fno-exceptions -ffunction-sections -fdata-sections -MMD -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=155 -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR    -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/cores/arduino" -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/variants/standard" -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -D__IN_ECLIPSE__=1 -x c++ "$<"  -o  "$@"   -Wall
+	@echo 'Finished building: $<'
+	@echo ' '
+
+BAMOutputPins.cpp.o: ../BAMOutputPins.cpp
 	@echo 'Building file: $<'
 	@echo 'Starting C++ compile'
 	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-g++" -c -g -Os -fno-exceptions -ffunction-sections -fdata-sections -MMD -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=155 -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR    -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/cores/arduino" -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/variants/standard" -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -D__IN_ECLIPSE__=1 -x c++ "$<"  -o  "$@"   -Wall
@@ -77,21 +84,7 @@ DirectOutputPins.cpp.o: ../DirectOutputPins.cpp
 	@echo 'Finished building: $<'
 	@echo ' '
 
-FlexiTimer2.cpp.o: ../FlexiTimer2.cpp
-	@echo 'Building file: $<'
-	@echo 'Starting C++ compile'
-	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-g++" -c -g -Os -fno-exceptions -ffunction-sections -fdata-sections -MMD -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=155 -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR    -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/cores/arduino" -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/variants/standard" -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -D__IN_ECLIPSE__=1 -x c++ "$<"  -o  "$@"   -Wall
-	@echo 'Finished building: $<'
-	@echo ' '
-
 LampMatrix.o: ../LampMatrix.ino
-	@echo 'Building file: $<'
-	@echo 'Starting C++ compile'
-	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-g++" -c -g -Os -fno-exceptions -ffunction-sections -fdata-sections -MMD -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=155 -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR    -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/cores/arduino" -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/variants/standard" -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -D__IN_ECLIPSE__=1 -x c++ "$<"  -o  "$@"   -Wall
-	@echo 'Finished building: $<'
-	@echo ' '
-
-Logging.cpp.o: ../Logging.cpp
 	@echo 'Building file: $<'
 	@echo 'Starting C++ compile'
 	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-g++" -c -g -Os -fno-exceptions -ffunction-sections -fdata-sections -MMD -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=155 -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR    -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/cores/arduino" -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/variants/standard" -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -D__IN_ECLIPSE__=1 -x c++ "$<"  -o  "$@"   -Wall
@@ -134,6 +127,13 @@ MatrixPins.cpp.o: ../MatrixPins.cpp
 	@echo ' '
 
 OutputPins.cpp.o: ../OutputPins.cpp
+	@echo 'Building file: $<'
+	@echo 'Starting C++ compile'
+	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-g++" -c -g -Os -fno-exceptions -ffunction-sections -fdata-sections -MMD -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=155 -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR    -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/cores/arduino" -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/variants/standard" -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -D__IN_ECLIPSE__=1 -x c++ "$<"  -o  "$@"   -Wall
+	@echo 'Finished building: $<'
+	@echo ' '
+
+SPI.cpp.o: ../SPI.cpp
 	@echo 'Building file: $<'
 	@echo 'Starting C++ compile'
 	"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/tools/avr/bin/avr-g++" -c -g -Os -fno-exceptions -ffunction-sections -fdata-sections -MMD -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=155 -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR    -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/cores/arduino" -I"/Users/Dad/GoogleDrive/arduino/Arduino 1.5.5.app/Contents/Resources/Java/hardware/arduino (1)/avr/variants/standard" -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -D__IN_ECLIPSE__=1 -x c++ "$<"  -o  "$@"   -Wall

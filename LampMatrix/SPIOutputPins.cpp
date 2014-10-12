@@ -6,6 +6,9 @@
  */
 
 #include "SPIOutputPins.h"
+
+#include "SPI.h"
+
 /*
     uint8_t valueCount;
     uint8_t* values;
@@ -14,23 +17,28 @@
     uint8_t MOSIPin;
 */
 
-SPIOutputPins::SPIOutputPins(uint8_t valueCountIn, int slaveSelectPinIn, int clockPinIn, int dataPinIn)
-: valueCount(valueCountIn), SSPin(slaveSelectPinIn), SCKPin(clockPinIn), MOSIPin(dataPinIn)
+SPIOutputPins::SPIOutputPins(byte valueCountIn, byte slaveSelectPinIn, byte clockPinIn, byte dataPinIn)
+: valueCount(valueCountIn), encodedByteCount(0), SSPin(slaveSelectPinIn), SCKPin(clockPinIn), MOSIPin(dataPinIn)
 {
-	values = new uint8_t[valueCount];
+	encodedByteCount = (valueCount+7) / 8;
+	encodedBytes = new byte[encodedByteCount];
+	for (int i = encodedByteCount - 1; i >= 0; i--) {
+		encodedBytes[i] = 0;
+	}
 }
 
 SPIOutputPins::SPIOutputPins(const SPIOutputPins& source)
-	: valueCount(source.valueCount), SSPin(source.SSPin), SCKPin(source.SCKPin), MOSIPin(source.MOSIPin)
+	: valueCount(source.valueCount), encodedByteCount(source.encodedByteCount),
+	  SSPin(source.SSPin), SCKPin(source.SCKPin), MOSIPin(source.MOSIPin)
 {
-	values = new uint8_t[valueCount];
-	for (int i = valueCount -1; i >= 0; i--) {
-		values[i] = source.values[i];
+	encodedBytes = new byte[encodedByteCount];
+	for (int i = encodedByteCount - 1; i >= 0; i--) {
+		encodedBytes[i] = 0;
 	}
 }
 
 SPIOutputPins::~SPIOutputPins() {
-	delete[] values;
+	delete[] encodedBytes;
 }
 
 SPIOutputPins& SPIOutputPins::operator=(const SPIOutputPins& other) {
@@ -39,71 +47,44 @@ SPIOutputPins& SPIOutputPins::operator=(const SPIOutputPins& other) {
 	SSPin = other.SSPin;
 	SCKPin = other.SCKPin;
 	MOSIPin = other.MOSIPin;
-	delete[] values;
-	values = new uint8_t[valueCount];
-	for (int i = valueCount -1; i >= 0; i--) {
-		values[i] = other.values[i];
+	delete[] encodedBytes;
+	encodedByteCount = other.encodedByteCount;
+	encodedBytes = new byte[encodedByteCount];
+	for (int i = encodedByteCount - 1; i >= 0; i--) {
+		encodedBytes[i] = other.encodedBytes[i];
 	}
 	return *this;
 }
 
-void SPIOutputPins::initializePins(int value) {
-	for (int i = valueCount -1; i >= 0; i--) {
-		values[i] = value;
-	}
+static const byte masks[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
+static const byte notmasks[] = { 0xFE, 0xFE, 0xFB, 0xF7, 0xEF, 0xDF, 0xBF, 0x7F };
+
+#define fastBitRead(value, bit) (value & masks[bit])
+#define fastBitSet(value, bit) (value |= masks[bit])
+#define fastBitClear(value, bit) (value &= notmasks[bit])
+#define fastBitWrite(value, bit, bitvalue) (bitvalue ? fastBitSet(value, bit) : fastBitClear(value, bit))
+
+bool SPIOutputPins::getPin(byte pinNdx) const {
+	byte bit = pinNdx % 8;
+	byte bite = pinNdx / 8;
+	return fastBitRead(encodedBytes[bite], bit) != 0;
 }
 
-void SPIOutputPins::initializePins(bool value) {
-	initializePins((value) ? 255 : 0);
+void SPIOutputPins::setPin(byte pinNdx, bool value) {
+	byte bit = pinNdx % 8;
+	byte bite = pinNdx / 8;
+	fastBitWrite(encodedBytes[bite], bit, value);
 }
 
-int SPIOutputPins::getPin(uint8_t pinNdx) const {
-	return values[pinNdx];
-}
-
-int SPIOutputPins::operator[](uint8_t pinNdx) const {
-	return values[pinNdx];
-}
-
-void SPIOutputPins::setPin(uint8_t pinNdx, int value) {
-	values[pinNdx] = value;
-}
-
-void SPIOutputPins::setPins(int* valuesIn) {
-	for (int i = valueCount -1; i >= 0; i--) {
-		values[i] = valuesIn[i];
-	}
-}
-
-void SPIOutputPins::setPins(int value) {
-	for (int i = valueCount -1; i >= 0; i--) {
-		values[i] = value;
-	}
-}
-
-void SPIOutputPins::setPin(uint8_t pinNdx, bool value) {
-	for (int i = valueCount -1; i >= 0; i--) {
-		values[i] = value;
-	}
-}
-
-void SPIOutputPins::setPins(bool* valuesIn) {
-	for (int i = valueCount -1; i >= 0; i--) {
-		setPin(i, valuesIn[i]);
-	}
-}
-
-void SPIOutputPins::SPIOutputPins::setPins(bool value) {
-	for (int i = valueCount -1; i >= 0; i--) {
-		setPin(i, value);
-	}
-}
-
-uint8_t SPIOutputPins::getPinCount() const {
+byte SPIOutputPins::getPinCount() const {
 	return valueCount;
 }
 
 void SPIOutputPins::latch() {
-
+	digitalWrite(SSPin, LOW);
+	for (int i = encodedByteCount - 1; i >= 0; i--) {
+		SPI.transfer(encodedBytes[i]);
+	}
+	digitalWrite(SSPin, HIGH);
 }
 

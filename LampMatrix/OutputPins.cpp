@@ -8,6 +8,22 @@
 
 #include "Arduino.h"
 
+bool OutputPins::operator[](byte pinNdx) const {
+	return getPin(pinNdx);
+}
+
+void OutputPins::setPins(bool* values) {
+	for (int i = getPinCount() - 1; i >= 0; i--) {
+		setPin(i, values[i]);
+	}
+}
+
+void OutputPins::setAllPins(bool value) {
+	for (int i = getPinCount() - 1; i >= 0; i--) {
+		setPin(i, value);
+	}
+}
+
 void OutputPins::debug() {
 	debug("", "");
 }

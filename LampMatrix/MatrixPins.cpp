@@ -18,8 +18,8 @@ MatrixPins::~MatrixPins() {
 }
 
 void MatrixPins::initialize() {
-	columns->initializePins(LOW);
-	rows->initializePins(LOW);
+	columns->setAllPins(LOW);
+	rows->setAllPins(LOW);
 }
 
 void MatrixPins::refresh(Time now) {
