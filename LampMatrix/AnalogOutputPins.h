@@ -8,6 +8,8 @@
 #ifndef ANALOGOUTPUTPINS_H_
 #define ANALOGOUTPUTPINS_H_
 
+#include <Arduino.h>
+
 class AnalogOutputPins {
 public:
 	AnalogOutputPins();

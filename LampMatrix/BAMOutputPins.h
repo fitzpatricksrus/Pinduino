@@ -13,20 +13,17 @@
 
 class BAMOutputPins: public AnalogOutputPins {
 public:
-	enum MaxAnalogValue {
-		MAX1, MAX3, MAX7, MAX15, MAX31, MAX63, MAX127, MAX255 };
-
-	BAMOutputPins(unsigned int dutyCycleMicros, MaxAnalogValue maxValue, OutputPins* pins);
+	BAMOutputPins(unsigned int dutyCycleMicros, OutputPins* pins);
 	virtual ~BAMOutputPins();
 	virtual byte getPinCount() const;
 	virtual byte getPin(byte) const;
 	virtual void setPin(byte pinNdx, byte pinValue);
-	virtual void latch(unsigned long now);
+	virtual void latch();
 private:
 	OutputPins* pins;
 	byte* values;
-	MaxAnalogValue maxValue;
-	unsigned int dutyCycleMicros;
+	unsigned int dutyCycleMicros[8];
+	byte bitInCycle;
 };
 
 #endif /* BAMOUTPUTPINS_H_ */
