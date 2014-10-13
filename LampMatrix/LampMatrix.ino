@@ -20,6 +20,7 @@ void loop() {
 	thisTest->loop();
 }
 
+/*
 #ifdef RUN_MatrixPinsTest
 #include "DirectOutputPins.h"
 #include "MatrixPins.h"
@@ -62,3 +63,4 @@ void loopx() {
     }
 }
 #endif
+*/
