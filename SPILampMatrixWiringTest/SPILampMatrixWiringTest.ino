@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "SPI.h"
 
-//static const int columnPins[] = { 1, 3, 4, 5, 6, 7, 8, 9 };
 static const int ColSelect = 9;
 static const int RowSelect = 10;
 static const int SCKPin = 13;
@@ -11,10 +10,6 @@ static const int MOSIPin = 11;
 //The setup function is called once at startup of the sketch
 void setup()
 {
-/*	for (int i = 0; i < 8; i++) {
-		pinMode(columnPins[i], OUTPUT);
-		digitalWrite(columnPins[i], LOW);
-	}*/
 	pinMode(RowSelect, OUTPUT);
 	pinMode(ColSelect, OUTPUT);
 	pinMode(SCKPin, OUTPUT);
@@ -27,6 +22,7 @@ void setup()
 void loop() {
 	loop1();
 }
+
 // The loop function is called in an endless loop
 void loop1()
 {
