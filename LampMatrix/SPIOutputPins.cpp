@@ -7,6 +7,7 @@
 
 #include "SPIOutputPins.h"
 
+#include <Arduino.h>
 #include "SPI.h"
 
 /*
@@ -86,6 +87,7 @@ static byte fastBitWrite(byte value, byte bit, byte bitvalue) {
 
 void SPIOutputPins::initPins() const {
 	SPI.begin();
+	pinMode(SSPin, OUTPUT);
 }
 
 bool SPIOutputPins::getPin(byte pinNdx) const {
@@ -108,18 +110,11 @@ byte SPIOutputPins::getPinCount() const {
 }
 
 void SPIOutputPins::latch() {
-	Serial.println(">latch");
 	digitalWrite(SSPin, LOW);
-	delay(1);
 	for (int i = encodedByteCount - 1; i >= 0; i--) {
-		Serial.print("  encodedBytes: ");
-		Serial.println(encodedBytes[i]);
 		SPI.transfer(encodedBytes[i]);
-		delay(1);
 	}
 	digitalWrite(SSPin, HIGH);
-	delay(1);
-	Serial.println("<latch");
 }
 
 SPIOutputPins& SPIOutputPins::slaveSelectPin(byte pinNumber) {
