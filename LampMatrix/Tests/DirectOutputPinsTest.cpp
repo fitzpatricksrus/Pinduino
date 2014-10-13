@@ -24,17 +24,45 @@ void DirectOutputPinsTest::setup() {
 	dop.initPins();
 }
 
-void DirectOutputPinsTest::loop() {
+
+void allOn() {
 	for (int i = 0; i < dop.getPinCount(); i++) {
 		dop.setPin(i, true);
 	}
-	dop.latch();
-	delay(500);
+}
+
+void allOff() {
 	for (int i = 0; i < dop.getPinCount(); i++) {
 		dop.setPin(i, false);
 	}
+}
+
+void DirectOutputPinsTest::loop() {
+	allOn();
 	dop.latch();
 	delay(500);
+
+	allOff();
+	dop.latch();
+	delay(500);
+
+	for (int i = 0; i < dop.getPinCount(); i++) {
+		dop.setPin(max(i - 1, 0), false);
+		dop.setPin(i, true);
+		dop.latch();
+		delay(100);
+	}
+	for (int i = dop.getPinCount() - 2; i >= 0; i--) {
+		dop.setPin(i + 1, false);
+		dop.setPin(i, true);
+		dop.latch();
+		delay(100);
+	}
+	dop.setPin(0, false);
+	dop.latch();
+	delay(100);
+
+	dop.setAutoLatch(true);
 	for (int i = 0; i < dop.getPinCount(); i++) {
 		dop.setPin(max(i - 1, 0), false);
 		dop.setPin(i, true);
@@ -46,5 +74,6 @@ void DirectOutputPinsTest::loop() {
 		delay(100);
 	}
 	dop.setPin(0, false);
+	dop.setAutoLatch(false);
 	delay(100);
 }

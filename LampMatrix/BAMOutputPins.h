@@ -19,6 +19,7 @@ public:
 	virtual byte getPin(byte) const;
 	virtual void setPin(byte pinNdx, byte pinValue);
 	virtual void latch();
+	virtual unsigned int latchAndGetCycleDuration();
 private:
 	OutputPins* pins;
 	byte* values;

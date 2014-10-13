@@ -20,7 +20,6 @@ public:
 	virtual void setPins(const byte* pinValues);
 	virtual void setPin(byte pinNdx, byte pinValue) = 0;
 	virtual void latch() = 0;
-
 };
 
 #endif /* ANALOGOUTPUTPINS_H_ */

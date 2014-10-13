@@ -18,6 +18,7 @@ public:
 	DirectOutputPins(const DirectOutputPins& source);
 	virtual ~DirectOutputPins();
 	virtual DirectOutputPins& operator=(const DirectOutputPins& other);
+	virtual void initPins() const;
 	virtual bool getPin(byte pinNdx) const;
 	virtual void setPin(byte pinNdx, bool value);
 	virtual byte getPinCount() const;

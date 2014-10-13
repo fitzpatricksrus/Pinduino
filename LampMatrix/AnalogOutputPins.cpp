@@ -8,12 +8,9 @@
 #include "AnalogOutputPins.h"
 
 AnalogOutputPins::AnalogOutputPins() {
-	// TODO Auto-generated constructor stub
-
 }
 
 AnalogOutputPins::~AnalogOutputPins() {
-	// TODO Auto-generated destructor stub
 }
 
 byte AnalogOutputPins::operator[](byte pinNdx) const {

@@ -36,8 +36,17 @@ DirectOutputPins& DirectOutputPins::operator=(const DirectOutputPins& other) {
 	return *this;
 }
 
+void DirectOutputPins::initPins() const {
+	for (int i = pinCount - 1; i >= 0; i--) {
+		pinMode(pinNumber[i], OUTPUT);
+	}
+}
+
 void DirectOutputPins::setPin(byte pinNdx, bool value) {
     pinValue[pinNdx] = value;
+    if (getAutoLatch()) {
+		digitalWrite(pinNumber[pinNdx], value ? HIGH : LOW);
+    }
 }
 
 void DirectOutputPins::latch() {

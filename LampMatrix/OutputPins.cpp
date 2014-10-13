@@ -6,7 +6,6 @@
  */
 #include "OutputPins.h"
 
-#include "Arduino.h"
 
 bool OutputPins::operator[](byte pinNdx) const {
 	return getPin(pinNdx);
@@ -22,6 +21,14 @@ void OutputPins::setAllPins(bool value) {
 	for (int i = getPinCount() - 1; i >= 0; i--) {
 		setPin(i, value);
 	}
+}
+
+bool OutputPins::getAutoLatch() const {
+	return autoLatch;
+}
+
+void OutputPins::setAutoLatch(bool latchOnEveryChange) {
+	autoLatch = latchOnEveryChange;
 }
 
 void OutputPins::debug() {

@@ -36,9 +36,16 @@ void BAMOutputPins::setPin(byte pinNdx, byte pinValue) {
 }
 
 void BAMOutputPins::latch() {
+	// TODO - this should use a timer or something
+	delay(latchAndGetCycleDuration());
+}
+
+unsigned int BAMOutputPins::latchAndGetCycleDuration() {
 	bitInCycle = (bitInCycle + 1) & 0x07;
 	for (int i = pins->getPinCount() - 1; i >= 0; i--) {
 		pins->setPin(i, (values[i] & valueMask[bitInCycle]) !=0);
 	}
-	delay(dutyCycleMicros[bitInCycle]);
+	return dutyCycleMicros[bitInCycle];
 }
+
+

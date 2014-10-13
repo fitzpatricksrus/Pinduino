@@ -74,6 +74,9 @@ void SPIOutputPins::setPin(byte pinNdx, bool value) {
 	byte bit = pinNdx % 8;
 	byte bite = pinNdx / 8;
 	fastBitWrite(encodedBytes[bite], bit, value);
+	if (getAutoLatch()) {
+		latch();
+	}
 }
 
 byte SPIOutputPins::getPinCount() const {

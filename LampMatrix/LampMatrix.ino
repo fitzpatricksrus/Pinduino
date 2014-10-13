@@ -1,6 +1,23 @@
 // #include "FlexiTimer2.h"
 
 // #include "MatrixColumnPattern.h"
+
+//#define RUN_MatrixPinsTest
+
+#include "Tests/TestClass.h"
+#include "Tests/DirectOutputPinsTest.h"
+
+TestClass* thisTest = &DirectOutputPinsTest::TEST;
+
+void setup() {
+	thisTest->setup();
+}
+
+void loop() {
+	thisTest->loop();
+}
+
+#ifdef RUN_MatrixPinsTest
 #include "DirectOutputPins.h"
 #include "MatrixPins.h"
 #include "Arduino.h"
@@ -18,7 +35,7 @@ long count = 0;
 Time start;
 long matrix = 0;
 
-void setup() {
+void setupx() {
 //    Logging::DEFAULT_LOG.init(Logging::LOG_LEVEL_ERROR, 115200);
     LAMP_MATRIX.initialize();
     LAMP_MATRIX.setPattern(Matrix8by8::getPattern(0));
@@ -26,7 +43,7 @@ void setup() {
     start = millis();
 }
 
-void loop() {
+void loopx() {
 	count++;
 	LAMP_MATRIX.refresh(micros());
     Time duration = millis() - start;
@@ -41,3 +58,4 @@ void loop() {
     	start = millis();
     }
 }
+#endif

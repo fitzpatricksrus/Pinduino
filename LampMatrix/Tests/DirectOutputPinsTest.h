@@ -10,6 +10,10 @@
 
 #include "TestClass.h"
 
+/*
+ * This test runs on pins 2, 3, 4, 5, 6, 7, 8, 9
+ * in various different orders repeatedly.
+ */
 class DirectOutputPinsTest : public TestClass {
 public:
 	DirectOutputPinsTest();
