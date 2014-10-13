@@ -8,6 +8,8 @@
 #ifndef TESTCLASS_H_
 #define TESTCLASS_H_
 
+namespace Tests {
+
 class TestClass {
 public:
 	TestClass();
@@ -17,4 +19,5 @@ public:
 	virtual void loop() = 0;
 };
 
+}
 #endif /* TESTCLASS_H_ */

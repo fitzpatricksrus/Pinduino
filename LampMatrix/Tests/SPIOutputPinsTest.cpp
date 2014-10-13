@@ -11,6 +11,8 @@
 #include "Arduino.h"
 #include "../SPI.h"
 
+namespace Tests {
+
 SPIOutputPinsTest SPIOutputPinsTest::TEST;
 static byte SLAVE_PIN = 2;
 
@@ -57,4 +59,6 @@ void SPIOutputPinsTest::loop() {
 		pins.latch();
 		delay(50);
 	}
+}
+
 }

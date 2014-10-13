@@ -9,6 +9,8 @@
 #include "../DirectOutputPins.h"
 #include "Arduino.h"
 
+namespace Tests {
+
 DirectOutputPinsTest DirectOutputPinsTest::TEST;
 
 static byte pins[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -76,4 +78,6 @@ void DirectOutputPinsTest::loop() {
 	dop.setPin(0, false);
 	dop.setAutoLatch(false);
 	delay(100);
+}
+
 }

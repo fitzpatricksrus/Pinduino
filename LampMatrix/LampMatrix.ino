@@ -9,7 +9,7 @@
 #include "Tests/SPIOutputPinsTest.h"
 
 //TestClass* thisTest = &DirectOutputPinsTest::TEST;
-TestClass* thisTest = &SPIOutputPinsTest::TEST;
+Tests::TestClass* thisTest = &Tests::SPIOutputPinsTest::TEST;
 
 void setup() {
 	Serial.begin(28800);

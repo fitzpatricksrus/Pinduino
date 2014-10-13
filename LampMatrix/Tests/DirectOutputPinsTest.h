@@ -10,6 +10,8 @@
 
 #include "TestClass.h"
 
+namespace Tests {
+
 /*
  * This test runs on pins 2, 3, 4, 5, 6, 7, 8, 9
  * in various different orders repeatedly.
@@ -23,5 +25,7 @@ public:
 
 	static DirectOutputPinsTest TEST;
 };
+
+}
 
 #endif /* DIRECTOUTPUTPINSTEST_H_ */
