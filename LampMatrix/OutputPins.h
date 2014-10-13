@@ -18,6 +18,7 @@
  */
 class OutputPins {
 public:
+	OutputPins();
 	virtual ~OutputPins() {}
 	virtual void initPins() const = 0;
     virtual bool getPin(byte pinNdx) const = 0;

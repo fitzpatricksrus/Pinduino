@@ -11,8 +11,8 @@
 
 DirectOutputPinsTest DirectOutputPinsTest::TEST;
 
-byte pins[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
-DirectOutputPins dop(8, pins);
+static byte pins[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
+static DirectOutputPins dop(8, pins);
 
 DirectOutputPinsTest::DirectOutputPinsTest() {
 }
@@ -25,13 +25,13 @@ void DirectOutputPinsTest::setup() {
 }
 
 
-void allOn() {
+static void allOn() {
 	for (int i = 0; i < dop.getPinCount(); i++) {
 		dop.setPin(i, true);
 	}
 }
 
-void allOff() {
+static void allOff() {
 	for (int i = 0; i < dop.getPinCount(); i++) {
 		dop.setPin(i, false);
 	}

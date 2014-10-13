@@ -17,10 +17,15 @@ public:
 	virtual ~SPIOutputPins();
 	virtual SPIOutputPins& operator=(const SPIOutputPins& other);
 
+	virtual void initPins() const;
     virtual bool getPin(byte pinNdx) const;
     virtual void setPin(byte pinNdx, bool value);
     virtual byte getPinCount() const;
     virtual void latch();
+
+    SPIOutputPins& slaveSelectPin(byte pinNumber);
+    SPIOutputPins& clockPin(byte pinNumber);
+    SPIOutputPins& dataPin(byte pinNumber);
 
 private:
     byte valueCount;

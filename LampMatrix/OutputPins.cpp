@@ -6,6 +6,10 @@
  */
 #include "OutputPins.h"
 
+OutputPins::OutputPins()
+: autoLatch(false)
+{
+}
 
 bool OutputPins::operator[](byte pinNdx) const {
 	return getPin(pinNdx);

@@ -6,10 +6,13 @@
 
 #include "Tests/TestClass.h"
 #include "Tests/DirectOutputPinsTest.h"
+#include "Tests/SPIOutputPinsTest.h"
 
-TestClass* thisTest = &DirectOutputPinsTest::TEST;
+//TestClass* thisTest = &DirectOutputPinsTest::TEST;
+TestClass* thisTest = &SPIOutputPinsTest::TEST;
 
 void setup() {
+	Serial.begin(28800);
 	thisTest->setup();
 }
 

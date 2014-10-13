@@ -57,12 +57,36 @@ SPIOutputPins& SPIOutputPins::operator=(const SPIOutputPins& other) {
 }
 
 static const byte masks[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
-static const byte notmasks[] = { 0xFE, 0xFE, 0xFB, 0xF7, 0xEF, 0xDF, 0xBF, 0x7F };
+static const byte notmasks[] = { 0xFE, 0xFD, 0xFB, 0xF7, 0xEF, 0xDF, 0xBF, 0x7F };
 
-#define fastBitRead(value, bit) (value & masks[bit])
-#define fastBitSet(value, bit) (value |= masks[bit])
-#define fastBitClear(value, bit) (value &= notmasks[bit])
-#define fastBitWrite(value, bit, bitvalue) (bitvalue ? fastBitSet(value, bit) : fastBitClear(value, bit))
+//#define fastBitRead(value, bit) (value & masks[bit])
+//#define fastBitSet(value, bit) (value | masks[bit])
+//#define fastBitClear(value, bit) (value & notmasks[bit])
+//#define fastBitWrite(value, bit, bitvalue) (bitvalue ? fastBitSet(value, bit) : fastBitClear(value, bit))
+
+static byte fastBitRead(byte value, byte bit) {
+	return value & masks[bit];
+}
+
+static byte fastBitSet(byte value, byte bit) {
+	return value | masks[bit];
+}
+
+static byte fastBitClear(byte value, byte bit) {
+	return value & notmasks[bit];
+}
+
+static byte fastBitWrite(byte value, byte bit, byte bitvalue) {
+	if (bitvalue) {
+		return fastBitSet(value, bit);
+	} else {
+		return fastBitClear(value, bit);
+	}
+}
+
+void SPIOutputPins::initPins() const {
+	SPI.begin();
+}
 
 bool SPIOutputPins::getPin(byte pinNdx) const {
 	byte bit = pinNdx % 8;
@@ -73,7 +97,7 @@ bool SPIOutputPins::getPin(byte pinNdx) const {
 void SPIOutputPins::setPin(byte pinNdx, bool value) {
 	byte bit = pinNdx % 8;
 	byte bite = pinNdx / 8;
-	fastBitWrite(encodedBytes[bite], bit, value);
+	encodedBytes[bite] = fastBitWrite(encodedBytes[bite], bit, value);
 	if (getAutoLatch()) {
 		latch();
 	}
@@ -84,10 +108,32 @@ byte SPIOutputPins::getPinCount() const {
 }
 
 void SPIOutputPins::latch() {
+	Serial.println(">latch");
 	digitalWrite(SSPin, LOW);
+	delay(1);
 	for (int i = encodedByteCount - 1; i >= 0; i--) {
+		Serial.print("  encodedBytes: ");
+		Serial.println(encodedBytes[i]);
 		SPI.transfer(encodedBytes[i]);
+		delay(1);
 	}
 	digitalWrite(SSPin, HIGH);
+	delay(1);
+	Serial.println("<latch");
+}
+
+SPIOutputPins& SPIOutputPins::slaveSelectPin(byte pinNumber) {
+	SSPin = pinNumber;
+	return *this;
+}
+
+SPIOutputPins& SPIOutputPins::clockPin(byte pinNumber) {
+	SCKPin = pinNumber;
+	return *this;
+}
+
+SPIOutputPins& SPIOutputPins::dataPin(byte pinNumber) {
+	MOSIPin = pinNumber;
+	return *this;
 }
 
