@@ -106,16 +106,27 @@ void SPIOutputPins::setPin(byte pinNdx, bool value) {
 	}
 }
 
+void SPIOutputPins::setAllPins(long value) {
+	for (int i = 0; i < encodedByteCount; i++) {
+		encodedBytes[i] = value & 0xFF;
+		value = value >> 8;
+	}
+}
+
 byte SPIOutputPins::getPinCount() const {
 	return valueCount;
 }
 
 void SPIOutputPins::latch() {
 	digitalWrite(SSPin, LOW);
+//	Serial.print("dev: "); Serial.print(SSPin); Serial.print(" ");
 	for (int i = encodedByteCount - 1; i >= 0; i--) {
 		SPI.transfer(encodedBytes[i]);
+//		Serial.print(encodedBytes[i]);
+//		Serial.print(" ");
 	}
 	digitalWrite(SSPin, HIGH);
+//	Serial.println(" ");
 }
 
 SPIOutputPins& SPIOutputPins::slaveSelectPin(byte pinNumber) {
@@ -131,5 +142,15 @@ SPIOutputPins& SPIOutputPins::clockPin(byte pinNumber) {
 SPIOutputPins& SPIOutputPins::dataPin(byte pinNumber) {
 	MOSIPin = pinNumber;
 	return *this;
+}
+
+byte SPIOutputPins::getSlavePin() const {
+	return SSPin;
+}
+byte SPIOutputPins::getClockPin() const {
+	return SCKPin;
+}
+byte SPIOutputPins::getDataPin() const {
+	return MOSIPin;
 }
 
