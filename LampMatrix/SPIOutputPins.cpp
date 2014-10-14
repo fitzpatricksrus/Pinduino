@@ -8,6 +8,7 @@
 #include "SPIOutputPins.h"
 
 #include <Arduino.h>
+#include <Binary.h>
 #include "SPI.h"
 
 /*
@@ -57,27 +58,27 @@ SPIOutputPins& SPIOutputPins::operator=(const SPIOutputPins& other) {
 	return *this;
 }
 
-static const byte masks[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
-static const byte notmasks[] = { 0xFE, 0xFD, 0xFB, 0xF7, 0xEF, 0xDF, 0xBF, 0x7F };
+static const byte masks[] =    { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
+static const byte notmasks[] = { B11111110,B11111101,B11111011,B11110111,B11101111,B11011111,B10111111,B01111111 };
 
 //#define fastBitRead(value, bit) (value & masks[bit])
 //#define fastBitSet(value, bit) (value | masks[bit])
 //#define fastBitClear(value, bit) (value & notmasks[bit])
 //#define fastBitWrite(value, bit, bitvalue) (bitvalue ? fastBitSet(value, bit) : fastBitClear(value, bit))
 
-static byte fastBitRead(byte value, byte bit) {
+static inline byte fastBitRead(byte value, byte bit) {
 	return value & masks[bit];
 }
 
-static byte fastBitSet(byte value, byte bit) {
+static inline byte fastBitSet(byte value, byte bit) {
 	return value | masks[bit];
 }
 
-static byte fastBitClear(byte value, byte bit) {
+static inline byte fastBitClear(byte value, byte bit) {
 	return value & notmasks[bit];
 }
 
-static byte fastBitWrite(byte value, byte bit, byte bitvalue) {
+static inline byte fastBitWrite(byte value, byte bit, byte bitvalue) {
 	if (bitvalue) {
 		return fastBitSet(value, bit);
 	} else {
