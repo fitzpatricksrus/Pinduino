@@ -21,9 +21,10 @@ void OutputPins::setPins(bool* values) {
 	}
 }
 
-void OutputPins::setAllPins(bool value) {
-	for (int i = getPinCount() - 1; i >= 0; i--) {
-		setPin(i, value);
+void OutputPins::setAllPins(long value) {
+	for (int i = 0; i < getPinCount(); i++) {
+		setPin(i, value & 0x01);
+		value = value >> 1;
 	}
 }
 

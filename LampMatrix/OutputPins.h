@@ -25,7 +25,7 @@ public:
     virtual bool operator[](byte pinNdx) const;
     virtual void setPin(byte pinNdx, bool value) = 0;
     virtual void setPins(bool* values);
-    virtual void setAllPins(bool value);
+    virtual void setAllPins(long value);
     virtual byte getPinCount() const = 0;
     virtual void latch() = 0;
     virtual bool getAutoLatch() const;
