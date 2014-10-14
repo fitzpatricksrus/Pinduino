@@ -12,7 +12,7 @@
 #include <Arduino.h>
 //#include <WProgram.h>
 
-namespace SchedulerLib {
+namespace scheduler {
 
 //provide a typedef for a void function pointer
 typedef void (*function)();

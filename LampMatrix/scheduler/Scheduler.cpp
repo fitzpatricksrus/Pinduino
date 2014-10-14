@@ -7,7 +7,7 @@
 
 #include "Scheduler.h"
 
-namespace SchedulerLib {
+namespace scheduler {
 
 Scheduler::Scheduler(){
 	action[0].action = NULL;
