@@ -7,9 +7,10 @@
 #include "Tests/TestClass.h"
 #include "Tests/DirectOutputPinsTest.h"
 #include "Tests/SPIOutputPinsTest.h"
+#include "Tests/SPILampMatrixTest.h"
 
 //TestClass* thisTest = &DirectOutputPinsTest::TEST;
-Tests::TestClass* thisTest = &Tests::SPIOutputPinsTest::TEST;
+Tests::TestClass* thisTest = &Tests::SPILampMatrixTest::TEST;
 
 void setup() {
 	Serial.begin(28800);
