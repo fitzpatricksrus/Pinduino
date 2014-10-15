@@ -138,10 +138,16 @@ void SPIOutputPins::setPin(byte pinNdx, bool value) {
 	}
 }
 
-void SPIOutputPins::setAllPins(long value) {
+void SPIOutputPins::set32Pins(long value) {
 	for (int i = 0; i < encodedByteCount; i++) {
 		encodedBytes[i] = value & 0xFF;
 		value = value >> 8;
+	}
+}
+
+void SPIOutputPins::setAllPins(byte* value) {
+	for (int i = encodedByteCount - 1; i >= 0; i--) {
+		encodedBytes[i] = value[i];
 	}
 }
 
@@ -150,7 +156,6 @@ byte SPIOutputPins::getPinCount() const {
 }
 
 void SPIOutputPins::latch() {
-//	digitalWrite(SSPin, LOW);
 	Macro_SetPin(SSPin, LOW);
 //	Serial.print("dev: "); Serial.print(SSPin); Serial.print(" ");
 	for (int i = encodedByteCount - 1; i >= 0; i--) {
@@ -158,7 +163,6 @@ void SPIOutputPins::latch() {
 //		Serial.print(encodedBytes[i]);
 //		Serial.print(" ");
 	}
-//	digitalWrite(SSPin, HIGH);
 	Macro_SetPin(SSPin, HIGH);
 //	Serial.println(" ");
 }

@@ -7,7 +7,7 @@
 
 #include "BAMOutputPins.h"
 
-static const byte valueMask[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
+static const byte valueMask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
 
 BAMOutputPins::BAMOutputPins(unsigned int dutyCycleIn, OutputPins* pinsIn)
 : AnalogOutputPins(), pins(pinsIn), values(0), dutyCycleMicros(), bitInCycle(0)
@@ -37,15 +37,9 @@ void BAMOutputPins::setPin(byte pinNdx, byte pinValue) {
 
 void BAMOutputPins::latch() {
 	// TODO - this should use a timer or something
-	delay(latchAndGetCycleDuration());
-}
-
-unsigned int BAMOutputPins::latchAndGetCycleDuration() {
-	bitInCycle = (bitInCycle + 1) & 0x07;
 	for (int i = pins->getPinCount() - 1; i >= 0; i--) {
 		pins->setPin(i, (values[i] & valueMask[bitInCycle]) !=0);
 	}
-	return dutyCycleMicros[bitInCycle];
+	bitInCycle = (bitInCycle + 1) & 0x07;
 }
-
 

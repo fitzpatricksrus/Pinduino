@@ -43,18 +43,48 @@ static SPIOutputPins cols = SPIOutputPins(8).slaveSelectPin(ColSelect);
 
 
 void SPILampMatrixTest::setup() {
-	Serial.begin(9600);
 	pinMode(RowSelect, OUTPUT);
 	pinMode(ColSelect, OUTPUT);
 	pinMode(SCKPin, OUTPUT);
 	pinMode(MOSIPin, OUTPUT);
+	SPI.setClockDivider(SPI_CLOCK_DIV2);
     SPI.begin();
+
 }
 
-unsigned long values[] = {
+static unsigned long values[] = {
 		1L    , 1L<<1,1L<<2 ,1L<<3 ,1L<<4 ,1L<<5 ,1L<<6 ,1L<<7,
 		1L<<8 , 1L<<9,1L<<10,1L<<11,1L<<12,1L<<13,1L<<14,1L<<15,
 		1L<<16,1L<<17,1L<<18,1L<<19,1L<<20,1L<<21,1L<<22,1L<<23,
+};
+
+static byte valueBytes[][3] = {
+		{ B00000000,B00000000,B00000001 },
+		{ B00000000,B00000000,B00000010 },
+		{ B00000000,B00000000,B00000100 },
+		{ B00000000,B00000000,B00001000 },
+		{ B00000000,B00000000,B00010000 },
+		{ B00000000,B00000000,B00100000 },
+		{ B00000000,B00000000,B01000000 },
+		{ B00000000,B00000000,B10000000 },
+
+		{ B00000000,B00000001,B00000000 },
+		{ B00000000,B00000010,B00000000 },
+		{ B00000000,B00000100,B00000000 },
+		{ B00000000,B00001000,B00000000 },
+		{ B00000000,B00010000,B00000000 },
+		{ B00000000,B00100000,B00000000 },
+		{ B00000000,B01000000,B00000000 },
+		{ B00000000,B10000000,B00000000 },
+
+		{ B00000001,B00000000,B00000000 },
+		{ B00000010,B00000000,B00000000 },
+		{ B00000100,B00000000,B00000000 },
+		{ B00001000,B00000000,B00000000 },
+		{ B00010000,B00000000,B00000000 },
+		{ B00100000,B00000000,B00000000 },
+		{ B01000000,B00000000,B00000000 },
+		{ B10000000,B00000000,B00000000 },
 };
 
 #ifdef LOOP1
@@ -77,10 +107,10 @@ void SPILampMatrixTest::loop()
 void SPILampMatrixTest::loop()
 {
 	for (long row = 0; row < rows.getPinCount(); row++) {
-		rows.setAllPins(values[row]);
+		rows.set32Pins(values[row]);
 		rows.latch();
 		for (int col = 0; col < cols.getPinCount(); col++) {
-			cols.setAllPins(values[col]);
+			cols.set32Pins(values[col]);
 			cols.latch();
 			delayMicroseconds(loopDelayMicros);
 			delay(loopDelayMillis);

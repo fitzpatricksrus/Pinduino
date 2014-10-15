@@ -20,7 +20,8 @@ public:
 	virtual void initPins() const;
     virtual bool getPin(byte pinNdx) const;
     virtual void setPin(byte pinNdx, bool value);
-    virtual void setAllPins(long value);
+    virtual void set32Pins(long value);
+    virtual void setAllPins(byte* value);
     virtual byte getPinCount() const;
     virtual void latch();
 
