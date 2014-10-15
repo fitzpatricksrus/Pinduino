@@ -19,6 +19,41 @@
     uint8_t MOSIPin;
 */
 
+static const byte masks[] =    { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
+static const byte notmasks[] = { B11111110,B11111101,B11111011,B11110111,B11101111,B11011111,B10111111,B01111111 };
+
+
+#ifdef ARDUINO_AVR_UNO
+inline void Macro_SetPinLow(byte pin)  {
+	if ( (pin) < 8 ) {
+		PORTD = PORTD & notmasks[pin];
+	} else {
+		PORTB = PORTB & notmasks[pin - 8];
+	}
+}
+
+inline void Macro_SetPinHigh( byte pin ) {
+	if ( (pin) < 8 ) {
+		PORTD = PORTD | masks[pin];
+	} else {
+		PORTB = PORTB | masks[pin - 8];
+	}
+}
+
+inline void Macro_SetPin(byte pin, bool state ) {
+	if ( state  ) {
+		Macro_SetPinHigh( (pin) );
+	} else {
+		Macro_SetPinLow( (pin) );
+	}
+}
+#else
+inline void Macro_SetPin(byte pin, bool state ) {
+	digitalWrite(pin, state);
+}
+#endif
+
+
 SPIOutputPins::SPIOutputPins(byte valueCountIn, byte slaveSelectPinIn, byte clockPinIn, byte dataPinIn)
 : valueCount(valueCountIn), encodedByteCount(0), SSPin(slaveSelectPinIn), SCKPin(clockPinIn), MOSIPin(dataPinIn)
 {
@@ -57,9 +92,6 @@ SPIOutputPins& SPIOutputPins::operator=(const SPIOutputPins& other) {
 	}
 	return *this;
 }
-
-static const byte masks[] =    { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
-static const byte notmasks[] = { B11111110,B11111101,B11111011,B11110111,B11101111,B11011111,B10111111,B01111111 };
 
 //#define fastBitRead(value, bit) (value & masks[bit])
 //#define fastBitSet(value, bit) (value | masks[bit])
@@ -118,14 +150,16 @@ byte SPIOutputPins::getPinCount() const {
 }
 
 void SPIOutputPins::latch() {
-	digitalWrite(SSPin, LOW);
+//	digitalWrite(SSPin, LOW);
+	Macro_SetPin(SSPin, LOW);
 //	Serial.print("dev: "); Serial.print(SSPin); Serial.print(" ");
 	for (int i = encodedByteCount - 1; i >= 0; i--) {
 		SPI.transfer(encodedBytes[i]);
 //		Serial.print(encodedBytes[i]);
 //		Serial.print(" ");
 	}
-	digitalWrite(SSPin, HIGH);
+//	digitalWrite(SSPin, HIGH);
+	Macro_SetPin(SSPin, HIGH);
 //	Serial.println(" ");
 }
 
