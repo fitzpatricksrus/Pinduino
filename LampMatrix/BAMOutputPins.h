@@ -10,9 +10,9 @@
 
 #include "AnalogOutputPins.h"
 #include "OutputPins.h"
-#include "scheduler/scheduler.h"
+#include "scheduler/timer.h"
 
-class BAMOutputPins: public AnalogOutputPins {
+class BAMOutputPins: public AnalogOutputPins, private scheduler::Timer::Callback {
 public:
 	BAMOutputPins(unsigned int dutyCycleMicros, OutputPins* pins);
 	virtual ~BAMOutputPins();
@@ -21,9 +21,11 @@ public:
 	virtual void setPin(byte pinNdx, byte pinValue);
 	virtual void latch();
 private:
+	virtual void setup();
+	virtual void run();
+
 	OutputPins* pins;
 	byte* values;
-	unsigned int dutyCycleMicros[8];
 	byte bitInCycle;
 };
 
