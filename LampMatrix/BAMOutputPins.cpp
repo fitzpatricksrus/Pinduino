@@ -20,8 +20,8 @@ void BAMOutputPins::run() {
 	//latch the pins
 }
 
-BAMOutputPins::BAMOutputPins(unsigned int dutyCycleIn, OutputPins* pinsIn)
-: AnalogOutputPins(), pins(pinsIn), values(0)
+BAMOutputPins::BAMOutputPins(OutputPins* pinsIn)
+: AnalogOutputPins(), pins(pinsIn), values(0), bitInCycle(0)
 {
 	values = new byte[pins->getPinCount()];
 }
@@ -44,10 +44,10 @@ void BAMOutputPins::setPin(byte pinNdx, byte pinValue) {
 
 void BAMOutputPins::latch() {
 	if (scheduler::Timer::TIMER1.getCallback() != this) {
-		scheduler::Timer::TIMER1.setCallback(this, 256 << bitInCycle);
+		// if this set of pins wasn't latch, make it the active pins
+		scheduler::Timer::TIMER1.setCallback(this, scheduler::Timer::PS64, 256 << bitInCycle);
 	}
 
-	// TODO - this should use a timer or something
 	for (int i = pins->getPinCount() - 1; i >= 0; i--) {
 		pins->setPin(i, (values[i] & valueMask[bitInCycle]) !=0);
 	}

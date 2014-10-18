@@ -23,8 +23,25 @@ Timer::Callback* Timer::getCallback() const {
 	return callback;
 }
 
-void Timer::setCallback(Timer::Callback* callbackIn, int ticks) {
-	callback = callbackIn;
+void Timer::setCallback(Timer::Callback* callbackIn, Prescalar p, int ticks) {
+	if (callbackIn) {
+		if (callbackIn != getCallback()) {
+			getCallback()->setup();
+			cli();
+			callback = callbackIn;
+			setPrescalar(p);
+			setTicks(p);
+			// enable timer compare interrupt:
+			enableCallbacks();
+			sei();
+		}
+	} else {
+	    // disable timer compare interrupt:
+		cli();
+		disableCallBacks();
+		callback = callbackIn;
+	    sei();
+	}
 }
 
 //-----------------------------------------------------------------------
@@ -32,10 +49,10 @@ class Timer1: public Timer {
 public:
 	Timer1();
 	virtual ~Timer1();
-	virtual void setCallback(Timer::Callback* callback, int ticks);
 	virtual void resetTimer();
-	virtual void setPrescalar(Prescalar scalar);
-	virtual int getTicks() const;
+	virtual void enableCallbacks();
+	virtual void disableCallBacks();
+	virtual void setPrescalar(Prescalar p);
 	virtual void setTicks(int ticks);
 };
 
@@ -44,14 +61,11 @@ Timer1::Timer1() {
     TCCR1A = 0;     // set entire TCCR1A register to 0
     TCCR1B = 0;     // same for TCCR1B
 
-    // set compare match register to desired timer count:
-    OCR1A = 65565;
+    disableCallBacks();
+    setTicks(65535);
+    setPrescalar(TIMER_OFF);
     // turn on CTC mode:
     TCCR1B |= (1 << WGM12);
-    // Set CS10 and CS12 bits for 1024 prescaler:
-    TCCR1B |= PS1024;
-    // enable timer compare interrupt:
-//    TIMSK1 |= (1 << OCIE1A);
     // enable global interrupts:
     sei();
 }
@@ -59,42 +73,39 @@ Timer1::Timer1() {
 Timer1::~Timer1() {
 }
 
-void Timer1::setCallback(Timer::Callback* callbackIn, int ticks) {
-	if (callbackIn) {
-		if (callbackIn != getCallback()) {
-			getCallback()->setup();
-			cli();
-			Timer::setCallback(callbackIn, ticks);
-			// enable timer compare interrupt:
-			TIMSK1 |= (1 << OCIE1A);
-			sei();
-		}
-	} else {
-	    // disable timer compare interrupt:
-		cli();
-		Timer::setCallback(callbackIn, ticks);
-	    TIMSK1 &= ~(1 << OCIE1A);
-	    sei();
-	}
-}
-
 void Timer1::resetTimer() {
 	TCNT1H = 0;
 	TCNT1L = 0;
 }
 
-void Timer1::setPrescalar(Prescalar scalar) {
-    cli();          // disable global interrupts
-    TCCR1B |= (1 << CS10);
-    sei();
+void Timer1::enableCallbacks() {
+	TIMSK1 |= (1 << OCIE1A);
 }
-int Timer1::getTicks() const {
-    // set compare match register to desired timer count:
-    return OCR1A;
+
+void Timer1::disableCallBacks() {
+    TIMSK1 &= ~(1 << OCIE1A);
+}
+
+static byte prescalarValueMask = ~((1<<CS10) | (1<<CS11) | (1<<CS12));
+static byte prescalarValues[] = {
+		0,
+		(1<<CS10),
+		(1<<CS11),
+		(1<<CS10) | (1<<CS11),
+		(1<<CS12),
+		(1<<CS12) | (1<<CS10),
+		(1<<CS12) | (1<<CS11),
+		(1<<CS12) | (1<<CS11) | (1<<CS10)
+};
+
+void Timer1::setPrescalar(Prescalar p) {
+	TCCR1B = (TCCR1B & prescalarValueMask) | prescalarValues[p];
 }
 void Timer1::setTicks(int ticks) {
-    // set compare match register to desired timer count:
-    OCR1A = ticks;
+	cli();
+	OCR1A = ticks;
+	resetTimer();
+	sei();
 }
 
 static Timer1 timer1Instance;

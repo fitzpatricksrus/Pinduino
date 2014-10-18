@@ -14,10 +14,10 @@
 
 class BAMOutputPins: public AnalogOutputPins, private scheduler::Timer::Callback {
 public:
-	BAMOutputPins(unsigned int dutyCycleMicros, OutputPins* pins);
+	BAMOutputPins(OutputPins* pins);
 	virtual ~BAMOutputPins();
 	virtual byte getPinCount() const;
-	virtual byte getPin(byte) const;
+	virtual byte getPin(byte ndx) const;
 	virtual void setPin(byte pinNdx, byte pinValue);
 	virtual void latch();
 private:
