@@ -11,10 +11,6 @@ OutputPins::OutputPins()
 {
 }
 
-bool OutputPins::operator[](byte pinNdx) const {
-	return getPin(pinNdx);
-}
-
 void OutputPins::setPins(bool* values) {
 	for (int i = getPinCount() - 1; i >= 0; i--) {
 		setPin(i, values[i]);
@@ -26,14 +22,6 @@ void OutputPins::setAllPins(long value) {
 		setPin(i, value & 0x01);
 		value = value >> 1;
 	}
-}
-
-bool OutputPins::getAutoLatch() const {
-	return autoLatch;
-}
-
-void OutputPins::setAutoLatch(bool latchOnEveryChange) {
-	autoLatch = latchOnEveryChange;
 }
 
 void OutputPins::debug() {

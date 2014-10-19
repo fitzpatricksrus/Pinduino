@@ -16,9 +16,10 @@ class Timer {
 public:
 	class Callback {
 	public:
-		virtual void setup() = 0;
-		virtual void run() = 0;
+		virtual void setup();
+		virtual void loop();
 	};
+	typedef void (*CallbackFunction)();
 
 	virtual ~Timer();
 
@@ -31,19 +32,18 @@ public:
 		PS1024,		// 0.064 ms
 		PSExternalFalling, PSExternalRising };
 
-	Timer::Callback* getCallback() const;
-	virtual void setCallback(Timer::Callback* callback, Prescalar p, int ticks);
+	virtual void init() = 0;
+	virtual void setCallback(CallbackFunction function, Prescalar p, unsigned int ticks);
+	virtual void setCallback(Timer::Callback* callback, Prescalar p, unsigned int ticks);
 	virtual void enableCallbacks() = 0;
-	virtual void disableCallBacks() = 0;
+	virtual void disableCallbacks() = 0;
 	virtual void setPrescalar(Prescalar p) = 0;
-	virtual void setTicks(int ticks) = 0;
+	virtual void setTicks(unsigned int ticks) = 0;
 
 	static Timer& TIMER1;
 
 protected:
 	Timer();
-
-private:
 	Timer::Callback* callback;
 };
 

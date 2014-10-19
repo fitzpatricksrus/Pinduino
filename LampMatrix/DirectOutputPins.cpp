@@ -39,6 +39,7 @@ DirectOutputPins& DirectOutputPins::operator=(const DirectOutputPins& other) {
 void DirectOutputPins::initPins() const {
 	for (int i = pinCount - 1; i >= 0; i--) {
 		pinMode(pinNumber[i], OUTPUT);
+		pinValue[i] = digitalRead(pinNumber[i]);
 	}
 }
 

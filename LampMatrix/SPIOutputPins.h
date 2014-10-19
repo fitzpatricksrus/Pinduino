@@ -12,7 +12,7 @@
 
 class SPIOutputPins : public OutputPins {
 public:
-	SPIOutputPins(byte valueCount, byte slaveSelectPin = 10, byte clockPin = 13, byte dataPin = 11);
+	SPIOutputPins(byte valueCount, byte slaveSelectPin_ST_CP = 10, byte clockPin_SH_CP = 13, byte dataPin_DS = 11);
 	SPIOutputPins(const SPIOutputPins& source);
 	virtual ~SPIOutputPins();
 	virtual SPIOutputPins& operator=(const SPIOutputPins& other);

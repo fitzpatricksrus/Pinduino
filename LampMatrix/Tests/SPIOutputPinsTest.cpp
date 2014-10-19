@@ -14,7 +14,7 @@
 namespace Tests {
 
 SPIOutputPinsTest SPIOutputPinsTest::TEST;
-static byte SLAVE_PIN = 2;
+static byte SLAVE_PIN = 10;
 
 static SPIOutputPins pins = SPIOutputPins(8).slaveSelectPin(SLAVE_PIN);
 

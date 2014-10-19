@@ -8,14 +8,16 @@
 #include "Tests/DirectOutputPinsTest.h"
 #include "Tests/SPIOutputPinsTest.h"
 #include "Tests/SPILampMatrixTest.h"
+#include "scheduler/Tests/TimerTest.h"
 
 //TestClass* thisTest = &DirectOutputPinsTest::TEST;
-Tests::TestClass* thisTest = &Tests::SPILampMatrixTest::TEST;
+Tests::TestClass* thisTest = &scheduler::tests::TimerTest::TEST;
 
-static int count = 0;
+static unsigned long count = 0;
 static unsigned long lastLoop = 0;
 void setup() {
 	Serial.begin(28800);
+	Serial.println("LampMatrix.ino Setup");
 	thisTest->setup();
 }
 
@@ -23,7 +25,7 @@ void loop() {
 	thisTest->loop();
 	count++;
 	if (millis() - lastLoop > 1000) {
-//		Serial.println(count);
+		Serial.println(count);
 		count = 0;
 		lastLoop = millis();
 	}
