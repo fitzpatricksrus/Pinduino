@@ -24,7 +24,8 @@ namespace tests {
 TimerTest TimerTest::TEST;
 
 static byte pins[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
-static SPIOutputPins dop(8); //, pins);
+static DirectOutputPins dop(8, pins);
+static SPIOutputPins spiop(8); //, pins);
 
 static void timerTestCallback() {
 	TimerTest::TEST.togglePins();
@@ -37,15 +38,18 @@ TimerTest::TimerTest() {
 TimerTest::~TimerTest() {
 }
 
-static unsigned int delayValue = -1;
+static unsigned int delayValue = 32000u;
 
 void TimerTest::setup() {
 	debugln("TimerTest::setup");
 	dop.initPins();
+	spiop.initPins();
 	for (int i = 0; i < dop.getPinCount(); i += 2) {
 		dop.setPin(i, true);
+		spiop.setPin(i, true);
 	}
 	dop.latch();
+	spiop.latch();
 
 	Timer::TIMER1.init();
 	Timer::TIMER1.setCallback(timerTestCallback, Timer::PS64, delayValue);
@@ -62,6 +66,14 @@ void TimerTest::togglePins() {
 		}
 	}
 	dop.latch();
+	for (int i = 0; i < spiop.getPinCount(); i++) {
+		if (spiop.getPin(i)) {
+			spiop.setPin(i, false);
+		} else {
+			spiop.setPin(i, true);
+		}
+	}
+	spiop.latch();
 //	delayValue = delayValue << 1;
 	if (delayValue == 0) delayValue = 1;
 	Timer::TIMER1.setTicks(delayValue);
