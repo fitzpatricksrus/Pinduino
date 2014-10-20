@@ -38,7 +38,6 @@ void SPIOutputPinsTest::setAllPins(bool value) {
 }
 
 void SPIOutputPinsTest::loop() {
-	setAllPins(false);
 	for (int i = 0; i < pins.getPinCount(); i++) {
 		pins.setPin(i, true);
 		pins.latch();

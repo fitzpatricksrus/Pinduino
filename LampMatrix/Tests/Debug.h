@@ -154,4 +154,4 @@ enum _EndLineCode { endl };
 inline Print &operator <<(Print &obj, _EndLineCode arg)
 { obj.println(); return obj; }
 
-#endif DEBUG_H_
+#endif // DEBUG_H_

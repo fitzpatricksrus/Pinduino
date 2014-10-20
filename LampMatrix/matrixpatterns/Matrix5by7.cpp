@@ -7,6 +7,7 @@
 
 #include "Matrix5by7.h"
 #include "SimpleMatrixPattern.h"
+#include <Arduino.h>
 
 static SimpleMatrixPattern<5,6>::ValueArray MATRIX_VALUES1 = {
 	    { 59,  9, 00,  0,  9, 59 },

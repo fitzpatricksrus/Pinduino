@@ -7,9 +7,10 @@
 #include "DirectOutputPins.h"
 
 #include "Arduino.h"
+#include "Tests/Debug.h"
 
-DirectOutputPins::DirectOutputPins(byte pinCountIn, byte pinsIn[])
-: pinNumber(&pinsIn[0]), pinCount(pinCountIn)
+DirectOutputPins::DirectOutputPins(byte pinCountIn, byte* pinsIn)
+: pinNumber(pinsIn), pinCount(pinCountIn)
 {
 	pinValue = new bool[pinCountIn];
 }
@@ -39,7 +40,7 @@ DirectOutputPins& DirectOutputPins::operator=(const DirectOutputPins& other) {
 void DirectOutputPins::initPins() const {
 	for (int i = pinCount - 1; i >= 0; i--) {
 		pinMode(pinNumber[i], OUTPUT);
-		pinValue[i] = digitalRead(pinNumber[i]);
+		pinValue[i] = false;
 	}
 }
 
@@ -51,7 +52,17 @@ void DirectOutputPins::setPin(byte pinNdx, bool value) {
 }
 
 void DirectOutputPins::latch() {
-	for (int i = pinCount - 1; i >= 0; i--) {
+	for (int i = 0; i < pinCount; i++) {
 		digitalWrite(pinNumber[i], pinValue[i] ? HIGH : LOW);
 	}
 }
+
+byte DirectOutputPins::getPinCount() const {
+    return pinCount;
+}
+
+bool DirectOutputPins::getPin(byte pinNdx) const {
+	return pinValue[pinNdx];
+}
+
+

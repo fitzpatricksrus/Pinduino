@@ -20,9 +20,11 @@ public:
 	virtual byte getPin(byte ndx) const;
 	virtual void setPin(byte pinNdx, byte pinValue);
 	virtual void latch();
+
+	long cycleCount;
 private:
 	virtual void setup();
-	virtual void run();
+	virtual void loop();
 
 	OutputPins* pins;
 	byte* values;

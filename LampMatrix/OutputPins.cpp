@@ -11,6 +11,23 @@ OutputPins::OutputPins()
 {
 }
 
+OutputPins::~OutputPins()
+{
+}
+
+bool OutputPins::operator[](byte pinNdx) const {
+	return getPin(pinNdx);
+}
+
+bool OutputPins::getAutoLatch() const {
+	return autoLatch;
+}
+
+void OutputPins::setAutoLatch(bool latchOnEveryChange) {
+	autoLatch = latchOnEveryChange;
+}
+
+
 void OutputPins::setPins(bool* values) {
 	for (int i = getPinCount() - 1; i >= 0; i--) {
 		setPin(i, values[i]);
@@ -30,10 +47,10 @@ void OutputPins::debug() {
 
 void OutputPins::debug(const char* prefix, const char* postfix) {
 	String s(prefix);
-	s = s + "[";
+	s = s + F("[");
 	for (int i = 0; i < getPinCount(); i++) {
-		s = s + getPin(i) + ", ";
+		s = s + getPin(i) + F(", ");
 	}
-	s = s + "]" + postfix;
+	s = s + F("]") + postfix;
 	Serial.print(s);
 }

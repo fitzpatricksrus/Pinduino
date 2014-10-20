@@ -19,7 +19,7 @@
 class OutputPins {
 public:
 	OutputPins();
-	virtual ~OutputPins() {}
+	virtual ~OutputPins();
 	virtual void initPins() const = 0;
     virtual bool getPin(byte pinNdx) const = 0;
     bool operator[](byte pinNdx) const;
@@ -37,19 +37,5 @@ public:
 private:
     bool autoLatch;
 };
-
-inline bool OutputPins::operator[](byte pinNdx) const {
-	return getPin(pinNdx);
-}
-
-inline bool OutputPins::getAutoLatch() const {
-	return autoLatch;
-}
-
-inline void OutputPins::setAutoLatch(bool latchOnEveryChange) {
-	autoLatch = latchOnEveryChange;
-}
-
-
 
 #endif /* OUTPUTPINS_H_ */

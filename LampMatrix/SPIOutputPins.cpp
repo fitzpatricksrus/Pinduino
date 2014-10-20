@@ -121,7 +121,7 @@ static inline byte fastBitWrite(byte value, byte bit, byte bitvalue) {
 void SPIOutputPins::initPins() const {
 	SPI.begin();
 	pinMode(SSPin, OUTPUT);
-//	SPI.setClockDivider(SPI_CLOCK_DIV2);
+	SPI.setClockDivider(SPI_CLOCK_DIV2);
 }
 
 bool SPIOutputPins::getPin(byte pinNdx) const {

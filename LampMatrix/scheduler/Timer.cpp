@@ -147,6 +147,7 @@ void Timer1::setPrescalar(Prescalar p) {
 }
 void Timer1::setTicks(unsigned int ticks) {
 //	print("setTicks: "); println(ticks);
+	resetTimer();
 	OCR1A = ticks;
 }
 

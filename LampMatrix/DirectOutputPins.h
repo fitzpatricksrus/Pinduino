@@ -14,7 +14,7 @@
 class DirectOutputPins : public OutputPins {
 public:
 	DirectOutputPins();
-	DirectOutputPins(byte pinCount, byte pins[]);
+	DirectOutputPins(byte pinCount, byte* pins);
 	DirectOutputPins(const DirectOutputPins& source);
 	virtual ~DirectOutputPins();
 	virtual DirectOutputPins& operator=(const DirectOutputPins& other);
@@ -29,13 +29,5 @@ private:
     bool* pinValue;
     byte pinCount;
 };
-
-inline byte DirectOutputPins::getPinCount() const {
-    return pinCount;
-}
-
-inline bool DirectOutputPins::getPin(byte pinNdx) const {
-	return pinValue[pinNdx];
-}
 
 #endif /* DIRECTOUTPUTPINS_H_ */

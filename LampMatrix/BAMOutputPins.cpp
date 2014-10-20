@@ -8,6 +8,7 @@
 #include "BAMOutputPins.h"
 
 #include "scheduler/Timer.h"
+#include "Tests/Debug.h"
 
 static const byte valueMask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
 
@@ -15,19 +16,22 @@ void BAMOutputPins::setup() {
 	//reset the timer
 	bitInCycle = 0;
 	scheduler::Timer::TIMER1.setTicks(256 << bitInCycle);
+	Serial << "setTicks(" << (256 << bitInCycle) << ")" << endl;
 }
 
-void BAMOutputPins::run() {
+void BAMOutputPins::loop() {
 	for (int i = pins->getPinCount() - 1; i >= 0; i--) {
 		pins->setPin(i, (values[i] & valueMask[bitInCycle]) !=0);
 	}
+	pins->latch();
 	scheduler::Timer::TIMER1.setTicks(256 << bitInCycle);
 
 	bitInCycle = (bitInCycle + 1) & 0x07;
+	cycleCount++;
 }
 
 BAMOutputPins::BAMOutputPins(OutputPins* pinsIn)
-: AnalogOutputPins(), pins(pinsIn), values(0), bitInCycle(0)
+: AnalogOutputPins(), pins(pinsIn), values(0), bitInCycle(0), cycleCount(0)
 {
 	values = new byte[pins->getPinCount()];
 }
@@ -49,6 +53,6 @@ void BAMOutputPins::setPin(byte pinNdx, byte pinValue) {
 }
 
 void BAMOutputPins::latch() {
-	scheduler::Timer::TIMER1.setCallback(this, scheduler::Timer::PS64, 256 << bitInCycle);
+	scheduler::Timer::TIMER1.setCallback(this, scheduler::Timer::PS8, 256 << bitInCycle);
 }
 
