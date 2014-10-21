@@ -19,7 +19,6 @@ public:
 		virtual void setup();
 		virtual void loop();
 	};
-	typedef void (*CallbackFunction)();
 
 	virtual ~Timer();
 
@@ -33,8 +32,7 @@ public:
 		PSExternalFalling, PSExternalRising };
 
 	virtual void init() = 0;
-	virtual void setCallback(CallbackFunction function, Prescalar p, unsigned int ticks);
-	virtual void setCallback(Timer::Callback* callback, Prescalar p, unsigned int ticks);
+	virtual void addCallback(Callback* function, Prescalar p, unsigned int ticks);
 	virtual void enableCallbacks() = 0;
 	virtual void disableCallbacks() = 0;
 	virtual void setPrescalar(Prescalar p) = 0;
@@ -44,7 +42,7 @@ public:
 
 protected:
 	Timer();
-	Timer::Callback* callback;
+	Timer::Callback* callbacks[8];
 };
 
 } /* namespace scheduler */

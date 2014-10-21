@@ -25,47 +25,27 @@ void Timer::Callback::setup() {
 void Timer::Callback::loop() {
 }
 
-Timer::Callback EmptyCallback;
-
-// a single instance of this class is reused
-// for implementing the function callback.
-class FunctionCallback : public Timer::Callback {
-public:
-	virtual ~FunctionCallback() {}
-	virtual void loop();
-
-	Timer::CallbackFunction f;
-};
-
-void FunctionCallback::loop() {
-	(*f)();
-}
-
-static FunctionCallback functionCallback;
-
 Timer::Timer()
-	: callback(&EmptyCallback)
+	: callbacks()
 {
+	for (int i = 0; i < 8; i++) {
+		callbacks[i] = 0;
+	}
 }
 
 Timer::~Timer() {
 }
 
-void Timer::setCallback(CallbackFunction callback, Prescalar p, unsigned int ticks) {
-	if (callback) {
-		functionCallback.f = callback;
-		setCallback(&functionCallback, p, ticks);
-	} else {
-		setCallback(&EmptyCallback, p, ticks);
-	}
-}
-
-void Timer::setCallback(Timer::Callback* callbackIn, Prescalar p, unsigned int ticks) {
+void Timer::addCallback(Callback* callbackIn, Prescalar p, unsigned int ticks) {
 	disableCallbacks();
-	if (!callbackIn) callbackIn = &EmptyCallback;
-	callbackIn->setup();
 //	cli();
-	callback = callbackIn;
+	for (int i = 0; i < 8; i++) {
+		if (callbacks[i] == 0) {
+			callbacks[i] = callbackIn;
+			callbackIn->setup();
+			break;
+		}
+	}
 	setPrescalar(p);
 	setTicks(ticks);
 	// enable timer compare interrupt:
@@ -146,13 +126,16 @@ void Timer1::setPrescalar(Prescalar p) {
 	TCCR1B = (TCCR1B & prescalarValueMask) | prescalarValues[p];
 }
 void Timer1::setTicks(unsigned int ticks) {
-//	print("setTicks: "); println(ticks);
-	resetTimer();
 	OCR1A = ticks;
+	resetTimer();
 }
 
 void Timer1::loop() {
-	callback->loop();
+	for (int i = 0; i < 8; i++) {
+		if (callbacks[i]) {
+			callbacks[i]->loop();
+		}
+	}
 }
 
 static Timer1 timer1Instance;

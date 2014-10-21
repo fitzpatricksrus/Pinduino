@@ -16,7 +16,7 @@ void BAMOutputPins::setup() {
 	//reset the timer
 	bitInCycle = 0;
 	scheduler::Timer::TIMER1.setTicks(256 << bitInCycle);
-	Serial << "setTicks(" << (256 << bitInCycle) << ")" << endl;
+//	Serial << "setTicks(" << (256 << bitInCycle) << ")" << endl;
 }
 
 void BAMOutputPins::loop() {
@@ -27,11 +27,10 @@ void BAMOutputPins::loop() {
 	scheduler::Timer::TIMER1.setTicks(256 << bitInCycle);
 
 	bitInCycle = (bitInCycle + 1) & 0x07;
-	cycleCount++;
 }
 
 BAMOutputPins::BAMOutputPins(OutputPins* pinsIn)
-: AnalogOutputPins(), pins(pinsIn), values(0), bitInCycle(0), cycleCount(0)
+: AnalogOutputPins(), pins(pinsIn), values(0), bitInCycle(0)
 {
 	values = new byte[pins->getPinCount()];
 }
@@ -53,6 +52,6 @@ void BAMOutputPins::setPin(byte pinNdx, byte pinValue) {
 }
 
 void BAMOutputPins::latch() {
-	scheduler::Timer::TIMER1.setCallback(this, scheduler::Timer::PS8, 256 << bitInCycle);
+	scheduler::Timer::TIMER1.addCallback(this, scheduler::Timer::PS64, 256 << bitInCycle);
 }
 

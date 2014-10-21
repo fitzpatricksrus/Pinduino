@@ -21,7 +21,6 @@ public:
 	virtual void setPin(byte pinNdx, byte pinValue);
 	virtual void latch();
 
-	long cycleCount;
 private:
 	virtual void setup();
 	virtual void loop();

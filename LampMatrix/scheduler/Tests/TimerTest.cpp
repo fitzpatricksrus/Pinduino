@@ -27,9 +27,16 @@ static byte pins[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
 static DirectOutputPins dop(8, pins);
 static SPIOutputPins spiop(8); //, pins);
 
-static void timerTestCallback() {
+class TimerTestCallback : public Timer::Callback {
+public:
+	virtual void loop();
+};
+
+void TimerTestCallback::loop() {
 	TimerTest::TEST.togglePins();
 }
+
+static TimerTestCallback Callback;
 
 TimerTest::TimerTest() {
 
@@ -52,7 +59,7 @@ void TimerTest::setup() {
 	spiop.latch();
 
 	Timer::TIMER1.init();
-	Timer::TIMER1.setCallback(timerTestCallback, Timer::PS64, delayValue);
+	Timer::TIMER1.addCallback(&Callback, Timer::PS64, delayValue);
 }
 void TimerTest::loop() {
 }
