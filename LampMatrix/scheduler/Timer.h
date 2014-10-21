@@ -29,20 +29,28 @@ public:
 		PS64, 		// 0.004 ms
 		PS256, 		// 0.016 ms
 		PS1024,		// 0.064 ms
-		PSExternalFalling, PSExternalRising };
+		PSExternalFalling,
+		PSExternalRising };
 
-	virtual void init() = 0;
-	virtual void addCallback(Callback* function, Prescalar p, unsigned int ticks);
-	virtual void enableCallbacks() = 0;
-	virtual void disableCallbacks() = 0;
-	virtual void setPrescalar(Prescalar p) = 0;
-	virtual void setTicks(unsigned int ticks) = 0;
+	void init();
+	void addCallback(Callback* function, Prescalar p, unsigned int ticks);
+	void enableCallbacks();
+	void disableCallbacks();
+	void setPrescalar(Prescalar p);
+	void setTicks(unsigned int ticks);
 
 	static Timer& TIMER1;
 
 protected:
+	static const byte MAX_CALLBACKS = 8;
 	Timer();
-	Timer::Callback* callbacks[8];
+	Timer::Callback* callbacks[MAX_CALLBACKS];
+
+	virtual void initInternal() = 0;
+	virtual void enableCallbacksInternal() = 0;
+	virtual void disableCallbacksInternal() = 0;
+	virtual void setPrescalarInternal(Prescalar p) = 0;
+	virtual void setTicksInternal(unsigned int ticks) = 0;
 };
 
 } /* namespace scheduler */

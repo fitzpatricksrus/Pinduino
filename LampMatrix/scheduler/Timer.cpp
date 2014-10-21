@@ -28,7 +28,7 @@ void Timer::Callback::loop() {
 Timer::Timer()
 	: callbacks()
 {
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < MAX_CALLBACKS; i++) {
 		callbacks[i] = 0;
 	}
 }
@@ -38,8 +38,12 @@ Timer::~Timer() {
 
 void Timer::addCallback(Callback* callbackIn, Prescalar p, unsigned int ticks) {
 	disableCallbacks();
-//	cli();
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < MAX_CALLBACKS; i++) {
+		if (callbacks[i] == callbackIn) {
+			return;
+		}
+	}
+	for (int i = 0; i < MAX_CALLBACKS; i++) {
 		if (callbacks[i] == 0) {
 			callbacks[i] = callbackIn;
 			callbackIn->setup();
@@ -50,8 +54,24 @@ void Timer::addCallback(Callback* callbackIn, Prescalar p, unsigned int ticks) {
 	setTicks(ticks);
 	// enable timer compare interrupt:
 	enableCallbacks();
-//	sei();
 }
+
+void Timer::init() {
+	initInternal();
+}
+void Timer::enableCallbacks() {
+	enableCallbacksInternal();
+}
+void Timer::disableCallbacks() {
+	disableCallbacksInternal();
+}
+void Timer::setPrescalar(Prescalar p) {
+	setPrescalarInternal(p);
+}
+void Timer::setTicks(unsigned int ticks) {
+	setTicksInternal(ticks);
+}
+
 
 //-----------------------------------------------------------------------
 // Timer1 is a singleton implementation for Timer1 only.  The AVR
@@ -60,12 +80,11 @@ class Timer1: public Timer {
 public:
 	Timer1();
 	virtual ~Timer1();
-	virtual void init();
-	virtual void resetTimer();
-	virtual void enableCallbacks();
-	virtual void disableCallbacks();
-	virtual void setPrescalar(Prescalar p);
-	virtual void setTicks(unsigned int ticks);
+	virtual void initInternal();
+	virtual void enableCallbacksInternal();
+	virtual void disableCallbacksInternal();
+	virtual void setPrescalarInternal(Prescalar p);
+	virtual void setTicksInternal(unsigned int ticks);
 
 	void loop(); // used by ISR
 };
@@ -76,9 +95,8 @@ Timer1::Timer1() {
 Timer1::~Timer1() {
 }
 
-void Timer1::init() {
-	println("Timer1::init");
-//    cli();          // disable global interrupts
+void Timer1::initInternal() {
+    disableCallbacks();
     TCCR1A = 0;     // set entire TCCR1A register to 0
     TCCR1B = 0;     // same for TCCR1B
 
@@ -86,25 +104,14 @@ void Timer1::init() {
     // turn on CTC mode:
     TCCR1B |= (1 << WGM12);
     setPrescalar(TIMER_OFF);
-    disableCallbacks();
     // enable global interrupts:
-//    sei();
 }
 
-void Timer1::resetTimer() {
-	TCNT1H = 0;
-	TCNT1L = 0;
-}
-
-void Timer1::enableCallbacks() {
-	print("TIMSK1: enable ");
-	println(((int)(TIMSK1 | (1 << OCIE1A))));
+void Timer1::enableCallbacksInternal() {
 	TIMSK1 = TIMSK1 | (1 << OCIE1A);
 }
 
-void Timer1::disableCallbacks() {
-	print("TIMSK1: disable ");
-	println(((int)(TIMSK1 & ~(1 << OCIE1A))));
+void Timer1::disableCallbacksInternal() {
     TIMSK1 = TIMSK1 & ~(1 << OCIE1A);
 }
 
@@ -120,14 +127,21 @@ static byte prescalarValues[] = {
 		(1<<CS12) | (1<<CS11) | (1<<CS10)
 };
 
-void Timer1::setPrescalar(Prescalar p) {
-	print("setPrescalar: "); print(p); print("  TCCR1B: ");
-	println(((int)((TCCR1B & prescalarValueMask) | prescalarValues[p])));
+void Timer1::setPrescalarInternal(Prescalar p) {
 	TCCR1B = (TCCR1B & prescalarValueMask) | prescalarValues[p];
 }
-void Timer1::setTicks(unsigned int ticks) {
+void Timer1::setTicksInternal(unsigned int ticks) {
 	OCR1A = ticks;
-	resetTimer();
+	unsigned long count = TCNT1;
+	// try to get close to the range we, keeping accumulated ticks if there are any.
+	if (count > ticks) {
+		TCNT1H = 0;
+		TCNT1L = 0;
+	} else {
+		unsigned int remaining = ticks - count;
+		TCNT1H = remaining >> 8;
+		TCNT1L = remaining & 0xFF;
+	}
 }
 
 void Timer1::loop() {
