@@ -130,22 +130,22 @@ static byte prescalarValues[] = {
 void Timer1::setPrescalarInternal(Prescalar p) {
 	TCCR1B = (TCCR1B & prescalarValueMask) | prescalarValues[p];
 }
-void Timer1::setTicksInternal(unsigned int ticks) {
-	OCR1A = ticks;
-	unsigned long count = TCNT1;
+void Timer1::setTicksInternal(unsigned int desiredTicks) {
+	OCR1A = desiredTicks;
+	unsigned long ticksPassedThisCycle = TCNT1;
 	// try to get close to the range we, keeping accumulated ticks if there are any.
-	if (count > ticks) {
+	if (ticksPassedThisCycle > ticks) {
 		TCNT1H = 0;
 		TCNT1L = 0;
 	} else {
-		unsigned int remaining = ticks - count;
+		unsigned int remaining = desiredTicks - ticksPassedThisCycle;
 		TCNT1H = remaining >> 8;
 		TCNT1L = remaining & 0xFF;
 	}
 }
 
 void Timer1::loop() {
-	for (int i = 0; i < 8; i++) {
+	for (char i = MAX_CALLBACKS - 1; i >= 0; i--) {
 		if (callbacks[i]) {
 			callbacks[i]->loop();
 		}
