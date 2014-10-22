@@ -12,11 +12,11 @@
 
 static const byte valueMask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
 
+#define bitMultiplier 1
+
 void BAMOutputPins::setup() {
 	//reset the timer
 	bitInCycle = 0;
-	scheduler::Timer::TIMER1.setTicks(256 << bitInCycle);
-//	Serial << "setTicks(" << (256 << bitInCycle) << ")" << endl;
 }
 
 void BAMOutputPins::loop() {
@@ -24,7 +24,7 @@ void BAMOutputPins::loop() {
 		pins->setPin(i, (values[i] & valueMask[bitInCycle]) !=0);
 	}
 	pins->latch();
-	scheduler::Timer::TIMER1.setTicks(256 << bitInCycle);
+	scheduler::Timer::TIMER1.setTicks(valueMask[bitInCycle] << bitMultiplier);
 
 	bitInCycle = (bitInCycle + 1) & 0x07;
 }
@@ -52,6 +52,6 @@ void BAMOutputPins::setPin(byte pinNdx, byte pinValue) {
 }
 
 void BAMOutputPins::latch() {
-	scheduler::Timer::TIMER1.addCallback(this, scheduler::Timer::PS64, 256 << bitInCycle);
+	scheduler::Timer::TIMER1.addCallback(this, scheduler::Timer::PS8, valueMask[0] << bitMultiplier);
 }
 

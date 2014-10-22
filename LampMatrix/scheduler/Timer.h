@@ -26,7 +26,9 @@ public:
 		TIMER_OFF,
 		PS1, 		// 0.0000625 ms
 		PS8, 		// 0.0005 ms
+		PS32,		// timer 2 only
 		PS64, 		// 0.004 ms
+		PS128,		// timer 2 only
 		PS256, 		// 0.016 ms
 		PS1024,		// 0.064 ms
 		PSExternalFalling,
@@ -40,6 +42,8 @@ public:
 	void setTicks(unsigned int ticks);
 
 	static Timer& TIMER1;
+
+	static Timer& T2;
 
 protected:
 	static const byte MAX_CALLBACKS = 8;
