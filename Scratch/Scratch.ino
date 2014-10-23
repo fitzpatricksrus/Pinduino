@@ -1,59 +1,54 @@
-// Arduino timer CTC interrupt example
-// www.engblaze.com
+// #include "FlexiTimer2.h"
 
-// avr-libc library includes
+// #include "MatrixColumnPattern.h"
+
+//#define RUN_MatrixPinsTest
+
 #include <Arduino.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
 
-static const byte LEDPIN = 2;
-static const unsigned int MAX_CYCLE = 15624;
-static const unsigned int MIN_CYCLE = 156;
+#include "Tests/Debug.h"
+#include "DirectOutputPins.h"
 
-void setup()
-{
-    pinMode(LEDPIN, OUTPUT);
+static byte pinsNums[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
+static DirectOutputPins pins(8, pinsNums);
 
-    // initialize Timer1
-    cli();          // disable global interrupts
-    TCCR1A = 0;     // set entire TCCR1A register to 0
-    TCCR1B = 0;     // same for TCCR1B
 
-    // set compare match register to desired timer count:
-    OCR1A = MAX_CYCLE;
-    // turn on CTC mode:
-    TCCR1B |= (1 << WGM12);
-    // Set CS10 and CS12 bits for 1024 prescaler:
-    TCCR1B |= (1 << CS10);
-    TCCR1B |= (1 << CS12);
-    // enable timer compare interrupt:
-    TIMSK1 |= (1 << OCIE1A);
-    // enable global interrupts:
-    sei();
-    Serial.begin(28800);
+void setup() {
+	Serial.begin(57200);
+	pins.initPins();
 }
 
-static long count = 0;
-static long startTime = 0;
-void loop()
-{
-	count++;
-	if (millis() - startTime > 1000) {
-		Serial.println(count);
-		count = 0;
-		startTime = millis();
+static const long mask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
+static long values[] = { B00000001,B0000100,B00000111,B0001000,B0001111,B0010000,B0001111,B00000000 };
+
+
+uint32_t cycleCount = 0;
+uint8_t bitInCycle = 0;
+uint32_t lastCycle = 0;
+uint32_t cycleDelay = 0;
+
+uint32_t lastTime = 0;
+byte lastCount = 0;
+void loop() {
+
+	if (micros() - lastCycle > cycleDelay) {
+		for (int i = 0; i < 8; i++) {
+			pins.setPin(i, (values[i] & mask[cycleCount]) != 0);
+		}
+		pins.latch();
+
+		cycleCount = (cycleCount + 1) & 0x07;
+		lastCycle = micros();
+		cycleDelay = mask[cycleCount] << 4;
 	}
-    // do some crazy stuff while my LED keeps blinking
-}
 
-ISR(TIMER1_COMPA_vect)
-{
-	const int pinValue = digitalRead(LEDPIN);
-    digitalWrite(LEDPIN, !pinValue);
-    OCR1A = OCR1A * 4 / 5;
-    if (OCR1A < MIN_CYCLE) {
-    	OCR1A = MAX_CYCLE;
-    }
+	if (millis() - lastTime > 250) {
+		for (int i = 0; i < 8; i++) {
+			values[i] = lastCount % 256;
+		}
+		lastCount = (lastCount + 1) % 256;
+		lastTime = millis();
+	}
 }
 
 
