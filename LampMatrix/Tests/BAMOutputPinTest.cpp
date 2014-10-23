@@ -10,6 +10,7 @@
 #include "../SPIOutputPins.h"
 #include "../DirectOutputPins.h"
 #include "../BAMOutputPins.h"
+#include "../scheduler/Timer.h"
 #include "Debug.h"
 
 namespace Tests {
@@ -82,17 +83,20 @@ void BAMOutputPinTest::setup() {
 static byte count = 0;
 static unsigned long lastLoop = 0;
 void BAMOutputPinTest::loop() {
-		if (millis() - lastLoop > 500) {
+#define DLKFJ
+#ifdef DLKFJ
+		if (millis() - lastLoop > 750) {
+//			Serial << "value: " << _BIN(count) << " cycles: " << opins.cycleCount << " on: " << opins.cyclesOn << " %: " << (opins.cyclesOn * 100 / opins.cycleCount) << endl ;
 			for (int i = 0; i < 8; i++) {
 				opins.setPin(i, count);
 				opins2.setPin(i, count);
 			}
-			count = (count + 1) % 256;
+			opins.cycleCount = 0; opins.cyclesOn = 0;
+			count = (count + 1) % 128;
 			lastLoop = millis();
-			Serial << count << endl ;
 		}
-
-/*	if (millis() - lastLoop > 58) {
+#else
+	if (millis() - lastLoop > 1000) {
 		for (int i = 0; i < 8; i++) {
 			opins.setPin(i, brightness[(count + 0 + i) % brightnessCount]);
 			opins2.setPin(i, brightness[(count + 8 + i) % brightnessCount]);
@@ -100,7 +104,8 @@ void BAMOutputPinTest::loop() {
 //		Serial << "Brightness: " << brightness[count] << endl;
 		count = (count + 1) % brightnessCount;
 		lastLoop = millis();
-	} */
+	}
+#endif
 }
 
 BAMOutputPinTest BAMOutputPinTest::TEST;

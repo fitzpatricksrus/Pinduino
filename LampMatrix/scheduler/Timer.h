@@ -42,7 +42,6 @@ public:
 	void setTicks(unsigned int ticks);
 
 	static Timer& TIMER1;
-
 	static Timer& T2;
 
 protected:

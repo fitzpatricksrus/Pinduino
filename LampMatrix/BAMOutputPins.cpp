@@ -11,22 +11,28 @@
 #include "Tests/Debug.h"
 
 static const byte valueMask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
-
-#define bitMultiplier 1
+static const int delayTime[] = { B00000001 << 8,B00000010 << 8,B00000100 << 8,B00001000 << 8,B00010000 << 8,B00100000 << 8,B01000000 << 8,B10000000 << 8 };
 
 void BAMOutputPins::setup() {
 	//reset the timer
 	bitInCycle = 0;
+	cyclesOn = 0;
+	cycleCount = 0;
 }
 
 void BAMOutputPins::loop() {
+	cycleCount++;
+	bool pinsOn = false;
 	for (int i = pins->getPinCount() - 1; i >= 0; i--) {
-		pins->setPin(i, (values[i] & valueMask[bitInCycle]) !=0);
+		bool valueBitIsSet = (values[i] & valueMask[bitInCycle]) !=0;
+		pins->setPin(i, valueBitIsSet);
+		pinsOn = pinsOn || valueBitIsSet;
 	}
+	cyclesOn += (pinsOn) ? delayTime[bitInCycle] : 0;
 	pins->latch();
-	scheduler::Timer::TIMER1.setTicks(valueMask[bitInCycle] << bitMultiplier);
+	scheduler::Timer::TIMER1.setTicks(valueMask[bitInCycle]);
 
-	bitInCycle = (bitInCycle + 1) & 0x07;
+	bitInCycle = (bitInCycle + 1) & B0000111;
 }
 
 BAMOutputPins::BAMOutputPins(OutputPins* pinsIn)
@@ -52,6 +58,6 @@ void BAMOutputPins::setPin(byte pinNdx, byte pinValue) {
 }
 
 void BAMOutputPins::latch() {
-	scheduler::Timer::TIMER1.addCallback(this, scheduler::Timer::PS8, valueMask[0] << bitMultiplier);
+	scheduler::Timer::TIMER1.addCallback(this, scheduler::Timer::PS64, delayTime[0]);
 }
 

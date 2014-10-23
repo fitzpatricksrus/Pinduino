@@ -72,6 +72,8 @@ void Timer::setTicks(unsigned int ticks) {
 	setTicksInternal(ticks);
 }
 
+static int timerTicks = 0;
+
 //-----------------------------------------------------------------------
 // Timer1 is a singleton implementation for Timer1 only.  The AVR
 // library macros make it hard to abstract away registers.
@@ -137,13 +139,14 @@ void Timer1::setPrescalarInternal(Prescalar p) {
 }
 void Timer1::setTicksInternal(unsigned int desiredTicks) {
 	OCR1A = desiredTicks;
-	unsigned long ticksPassedThisCycle = TCNT1;
+	uint16_t ticksPassedThisCycle = TCNT1;
 	// try to get close to the range we, keeping accumulated ticks if there are any.
 	if (ticksPassedThisCycle > desiredTicks) {
-		TCNT1H = 0;
-		TCNT1L = 0;
+		uint16_t overflow = (ticksPassedThisCycle - desiredTicks) % desiredTicks;  // handle 1 overflow, but no more
+		TCNT1H = overflow >> 8;
+		TCNT1L = overflow & 0xFF;
 	} else {
-		unsigned int remaining = desiredTicks - ticksPassedThisCycle;
+		uint16_t remaining = desiredTicks - ticksPassedThisCycle;
 		TCNT1H = remaining >> 8;
 		TCNT1L = remaining & 0xFF;
 	}

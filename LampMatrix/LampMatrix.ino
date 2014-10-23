@@ -20,7 +20,7 @@ Tests::TestClass* thisTest = &Tests::BAMOutputPinTest::TEST;
 static unsigned long count = 0;
 static unsigned long lastLoop = 0;
 void setup() {
-	Serial.begin(9600);
+	Serial.begin(57600);
 	debugScope("main::setup");
 	thisTest->setup();
 }
@@ -29,7 +29,7 @@ void loop() {
 	thisTest->loop();
 	count++;
 	if (millis() - lastLoop > 1000) {
-		Serial << F("Count: ") << count << F("  free memory: ") << availableRam() << endl;
+//		Serial << F("Count: ") << count << F("  free memory: ") << availableRam() << endl;
 //		Serial.println(count);
 //		Serial.println((int)availableMemory());
 //		Serial.println((int)availableRam());
