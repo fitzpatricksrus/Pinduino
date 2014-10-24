@@ -18,37 +18,35 @@ void setup() {
 	pins.initPins();
 }
 
-static const long mask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
-static long values[] = { B00000001,B0000100,B00000111,B0001000,B0001111,B0010000,B0001111,B00000000 };
+static const int mask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
+static int values[] = { B00000001,B0000100,B00000111,B0001000,B0001111,B0010000,B0001111,B00000000 };
 
+unsigned int lastCycle = 0;
+unsigned int cycleDelay = 0;
+byte partOfCycle = 0;
+int processCycle(int value) {
+    partOfCycle = (partOfCycle + 1) & 0x07;
+    cycleDelay = mask[partOfCycle];
+    bool isOn = ((value & mask[partOfCycle]) != 0);
+    for (int i = 0; i < 8; i++) pins.setPin(i, isOn);
+    pins.latch();
+    return mask[partOfCycle];
+}
 
-uint32_t cycleCount = 0;
-uint8_t bitInCycle = 0;
-uint32_t lastCycle = 0;
-uint32_t cycleDelay = 0;
-
-uint32_t lastTime = 0;
-byte lastCount = 0;
+unsigned long lastTime = 0;
+int value = 0;
 void loop() {
-
 	if (micros() - lastCycle > cycleDelay) {
-		for (int i = 0; i < 8; i++) {
-			pins.setPin(i, (values[i] & mask[cycleCount]) != 0);
-		}
-		pins.latch();
-
-		cycleCount = (cycleCount + 1) & 0x07;
+		cycleDelay = processCycle(value);
 		lastCycle = micros();
-		cycleDelay = mask[cycleCount] << 4;
 	}
 
-	if (millis() - lastTime > 250) {
-		for (int i = 0; i < 8; i++) {
-			values[i] = lastCount % 256;
-		}
-		lastCount = (lastCount + 1) % 256;
+	if ((millis() - lastTime) > 1000) {
+		value = (value + 1) % 256;
 		lastTime = millis();
+		Serial << value << "  " << millis() << "  " << lastTime << endl;
 	}
+
 }
 
 
