@@ -58,10 +58,8 @@ static byte brightness[] = {
 //static byte brightness[512];
 static byte brightnessCount = 18;
 
-static SPIOutputPins spipins2(8);
-static DirectOutputPins spipins(8, pins);
-static BAMOutputPins opins(&spipins);
-static BAMOutputPins opins2(&spipins2);
+static DirectOutputPins dopins(8, pins);
+static BAMOutputPins spipins(&dopins);
 
 BAMOutputPinTest::BAMOutputPinTest() {
 }
@@ -70,35 +68,39 @@ BAMOutputPinTest::~BAMOutputPinTest() {
 }
 
 void BAMOutputPinTest::setup() {
-	spipins.initPins();
-	spipins2.initPins();
-	for (int i = 0; i < 8; i++) {
-		opins.setPin(i, brightness[0]);
-		opins2.setPin(i, brightness[0]);
-	}
-	opins.latch();
-	opins2.latch();
+	dopins.initPins();
+	dopins.latch();
+	spipins.latch();
+	scheduler::Timer::timer1.init();
+	Serial << " cycles: " << spipins.cycleCount << " on: " << spipins.cyclesOn << " %: " << (spipins.cyclesOn * 100 / spipins.cycleCount) << endl ;
 }
 
 static byte count = 0;
 static unsigned long lastLoop = 0;
+static unsigned long fakeTime = 0;
 void BAMOutputPinTest::loop() {
 #define DLKFJ
 #ifdef DLKFJ
-		if (millis() - lastLoop > 750) {
-//			Serial << "value: " << _BIN(count) << " cycles: " << opins.cycleCount << " on: " << opins.cyclesOn << " %: " << (opins.cyclesOn * 100 / opins.cycleCount) << endl ;
-			for (int i = 0; i < 8; i++) {
-				opins.setPin(i, count);
-				opins2.setPin(i, count);
-			}
-			opins.cycleCount = 0; opins.cyclesOn = 0;
-			count = (count + 1) % 128;
+	if (millis() - lastLoop > 100) {
+			scheduler::Timer::tickDebugTimer(fakeTime++);
+//			Serial << count << endl;
+			byte value = count;
+			Serial << "value: " << _BIN(value) << " cycles: " << spipins.cycleCount << " on: " << spipins.cyclesOn << " %: " << (spipins.cyclesOn * 100 / spipins.cycleCount) << "fakeTime: " << fakeTime << endl ;
+//			if (fakeTime % 256 == 0) {
+				for (int i = 0; i < 8; i++) {
+					spipins.setPin(i, count);
+				}
+				count = (count + 1);
+//			}
+//			spipins.latch();
+			spipins.cycleCount = 0;
+			spipins.cyclesOn = 0;
 			lastLoop = millis();
-		}
+	}
 #else
 	if (millis() - lastLoop > 1000) {
 		for (int i = 0; i < 8; i++) {
-			opins.setPin(i, brightness[(count + 0 + i) % brightnessCount]);
+			spipins.setPin(i, brightness[(count + 0 + i) % brightnessCount]);
 			opins2.setPin(i, brightness[(count + 8 + i) % brightnessCount]);
 		}
 //		Serial << "Brightness: " << brightness[count] << endl;

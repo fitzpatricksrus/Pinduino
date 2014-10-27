@@ -9,14 +9,6 @@
 
 #include <Arduino.h>
 
-#ifdef __DEBUG__
-#define println(x) if (Serial) Serial.println(x);
-#define print(x) if (Serial) Serial.print(x);
-#else
-#define println(x)
-#define print(x)
-#endif
-
 namespace scheduler {
 
 void Timer::Callback::setup() {
@@ -72,8 +64,6 @@ void Timer::setTicks(unsigned int ticks) {
 	setTicksInternal(ticks);
 }
 
-static int timerTicks = 0;
-
 //-----------------------------------------------------------------------
 // Timer1 is a singleton implementation for Timer1 only.  The AVR
 // library macros make it hard to abstract away registers.
@@ -121,7 +111,7 @@ void Timer1::initInternal() {
 
     setTicks(32000);
     // turn on CTC mode:
-    TCCR1B |= (1 << WGM12);
+    TCCR1B |= (1 << WGM12);	//CTC1 ClearTime/Counter1 on compare
     setPrescalar(TIMER_OFF);
     // enable global interrupts:
 }
@@ -141,6 +131,7 @@ void Timer1::setTicksInternal(unsigned int desiredTicks) {
 	OCR1A = desiredTicks;
 	uint16_t ticksPassedThisCycle = TCNT1;
 	// try to get close to the range we, keeping accumulated ticks if there are any.
+
 	if (ticksPassedThisCycle > desiredTicks) {
 		uint16_t overflow = (ticksPassedThisCycle - desiredTicks) % desiredTicks;  // handle 1 overflow, but no more
 		TCNT1H = overflow >> 8;
@@ -161,7 +152,7 @@ void Timer1::loop() {
 }
 
 static Timer1 timer1Instance;
-Timer& Timer::TIMER1 = timer1Instance;
+Timer& Timer::timer1 = timer1Instance;
 
 ISR(TIMER1_COMPA_vect)
 {
@@ -253,12 +244,73 @@ void Timer2::loop() {
 }
 
 static Timer2 Timer2Instance;
-Timer& Timer::T2 = Timer2Instance;
+Timer& Timer::timer2 = Timer2Instance;
 
 ISR(TIMER2_COMPA_vect)
 {
 	Timer2Instance.loop();
 }
 
+
+//-----------------------------------------------------------------------
+// Timer1 is a singleton implementation for Timer1 only.  The AVR
+// library macros make it hard to abstract away registers.
+class DebugTimer : public Timer {
+public:
+	DebugTimer();
+	virtual ~DebugTimer();
+	virtual void initInternal();
+	virtual void enableCallbacksInternal();
+	virtual void disableCallbacksInternal();
+	virtual void setPrescalarInternal(Prescalar p);
+	virtual void setTicksInternal(unsigned int ticks);
+
+	unsigned long ticksPerCallback;
+	unsigned long lastCallbackTime;
+	bool callbacksEnabled;
+};
+
+DebugTimer::DebugTimer()
+: ticksPerCallback(0), lastCallbackTime(0), callbacksEnabled(false)
+{
+}
+
+DebugTimer::~DebugTimer() {
+}
+
+void DebugTimer::initInternal() {
+}
+
+void DebugTimer::enableCallbacksInternal() {
+	callbacksEnabled = true;
+}
+
+void DebugTimer::disableCallbacksInternal() {
+	callbacksEnabled = false;
+}
+
+
+void DebugTimer::setPrescalarInternal(Prescalar p) {
+}
+
+void DebugTimer::setTicksInternal(unsigned int desiredTicks) {
+	ticksPerCallback = desiredTicks;
+}
+
+static DebugTimer debugTimerInstance;
+Timer& Timer::debugTimer = debugTimerInstance;
+
+void Timer::tickDebugTimer(unsigned long currentTime) {
+	if (currentTime - debugTimerInstance.lastCallbackTime >= debugTimerInstance.ticksPerCallback) {
+		if (debugTimerInstance.callbacksEnabled) {
+			for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
+				if (debugTimerInstance.callbacks[i]) {
+					debugTimerInstance.callbacks[i]->loop();
+				}
+			}
+		}
+		debugTimerInstance.lastCallbackTime = currentTime;
+	}
+}
 
 } /* namespace Tests */

@@ -13,14 +13,6 @@
 namespace scheduler {
 namespace tests {
 
-#ifdef __DEBUG__
-#define debugln(x) if (Serial) Serial.debugln(x);
-#define debug(x) if (Serial) Serial.debug(x);
-#else
-#define debugln(x)
-#define debug(x)
-#endif
-
 TimerTest TimerTest::TEST;
 
 static byte pins[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -45,10 +37,9 @@ TimerTest::TimerTest() {
 TimerTest::~TimerTest() {
 }
 
-static unsigned int delayValue = 32000u;
+static unsigned int delayValue = -1;
 
 void TimerTest::setup() {
-	debugln("TimerTest::setup");
 	dop.initPins();
 	spiop.initPins();
 	for (int i = 0; i < dop.getPinCount(); i += 2) {
@@ -58,8 +49,8 @@ void TimerTest::setup() {
 	dop.latch();
 	spiop.latch();
 
-	Timer::TIMER1.init();
-	Timer::TIMER1.addCallback(&Callback, Timer::PS64, delayValue);
+	Timer::timer1.init();
+	Timer::timer1.addCallback(&Callback, Timer::PS256, delayValue);
 }
 void TimerTest::loop() {
 }
@@ -81,9 +72,9 @@ void TimerTest::togglePins() {
 		}
 	}
 	spiop.latch();
-//	delayValue = delayValue << 1;
-	if (delayValue == 0) delayValue = 1;
-	Timer::TIMER1.setTicks(delayValue);
+	delayValue = delayValue - 512;
+	if (delayValue < 512) delayValue = -1;
+	Timer::timer1.setTicks(delayValue);
 }
 
 } /* namespace scheduler_test */

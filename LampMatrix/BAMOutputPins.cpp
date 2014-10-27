@@ -10,29 +10,32 @@
 #include "scheduler/Timer.h"
 #include "Tests/Debug.h"
 
-static const byte valueMask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
-static const int delayTime[] = { B00000001 << 8,B00000010 << 8,B00000100 << 8,B00001000 << 8,B00010000 << 8,B00100000 << 8,B01000000 << 8,B10000000 << 8 };
+static const byte mask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
+static scheduler::Timer& timer = scheduler::Timer::timer2;
 
 void BAMOutputPins::setup() {
 	//reset the timer
 	bitInCycle = 0;
 	cyclesOn = 0;
 	cycleCount = 0;
+	for (int i = 0; i < 8; i++) {
+		values[i] = 255;
+	}
 }
 
 void BAMOutputPins::loop() {
 	cycleCount++;
-	bool pinsOn = false;
+	bitInCycle = (bitInCycle + 1) & 0b00000111;
+//	Serial << "BAMOutputPins::loop" << endl;
 	for (int i = pins->getPinCount() - 1; i >= 0; i--) {
-		bool valueBitIsSet = (values[i] & valueMask[bitInCycle]) !=0;
-		pins->setPin(i, valueBitIsSet);
-		pinsOn = pinsOn || valueBitIsSet;
+		bool isOn = ((values[i] & mask[bitInCycle]) != 0);
+		pins->setPin(i, isOn);
+		if (i == 0 && isOn) cyclesOn = cyclesOn + mask[bitInCycle];	// we only count on cycles for pin 0
 	}
-	cyclesOn += (pinsOn) ? delayTime[bitInCycle] : 0;
 	pins->latch();
-	scheduler::Timer::TIMER1.setTicks(valueMask[bitInCycle]);
-
-	bitInCycle = (bitInCycle + 1) & B0000111;
+	unsigned long rval = mask[bitInCycle];
+//	Serial << "   debugTimer.setTicks(" << rval << ")" << endl;
+	timer.setTicks(rval);
 }
 
 BAMOutputPins::BAMOutputPins(OutputPins* pinsIn)
@@ -58,6 +61,6 @@ void BAMOutputPins::setPin(byte pinNdx, byte pinValue) {
 }
 
 void BAMOutputPins::latch() {
-	scheduler::Timer::TIMER1.addCallback(this, scheduler::Timer::PS64, delayTime[0]);
+	timer.addCallback(this, scheduler::Timer::PS64, mask[0]);
 }
 

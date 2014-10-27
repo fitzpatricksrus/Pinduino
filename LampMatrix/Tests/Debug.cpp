@@ -10,9 +10,29 @@
 
 namespace Tests {
 
+DebugCounter::DebugCounter()
+: count(0), lastPrint(0) {
+
+}
+
+void DebugCounter::ping() {
+	count++;
+}
+
+void DebugCounter::print(Print &obj) {
+	if (millis() - lastPrint > 1000) {
+		obj.print(count);
+		count = 0;
+		lastPrint = millis();
+	}
+}
+
+DebugCounter::operator bool() {
+	return millis() - lastPrint > 1000;
+}
+
 int DebugScopeImpl::nesting = 0;
 bool DebugScopeImpl::needsIndent = true;
-
 
 void DebugScopeImpl::indent() {
 	if (needsIndent) {

@@ -13,6 +13,24 @@
 #define __DEBUG__
 #ifdef __DEBUG__
 namespace Tests {
+
+class DebugCounter {
+public:
+	DebugCounter();
+	void ping();
+	void print(Print &obj);
+	operator bool();
+
+	unsigned long count;
+	unsigned long lastPrint;
+};
+
+inline Print &operator <<(Print &obj, DebugCounter &arg)
+{
+	arg.print(obj);
+	return obj;
+}
+
 	class DebugScopeImpl {
 	public:
 		DebugScopeImpl(const char* message);
