@@ -73,6 +73,7 @@ static TimerCallback callback;
 void setup() {
 //	BAMSetup();
 	BC::doSetup();
+	Timer::timer1.init();
 	Timer::timer1.addCallback(&callback, Timer::PS1024, 256);
 	Timer::timer1.enableCallbacks();
 }
