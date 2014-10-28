@@ -62,7 +62,6 @@ public:
 	void setTicks(unsigned int ticks);
 
 	static Timer& timer1;
-	static Timer& timer2;
 	static Timer& debugTimer;
 	static void tickDebugTimer(unsigned long currentTime);
 

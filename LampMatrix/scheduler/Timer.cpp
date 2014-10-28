@@ -89,9 +89,7 @@ const byte Timer1::prescalarValues[] = {
 		0,
 		(1<<CS10),
 		(1<<CS11),
-		0,
 		(1<<CS10) | (1<<CS11),
-		0,
 		(1<<CS12),
 		(1<<CS12) | (1<<CS10),
 		(1<<CS12) | (1<<CS11),
@@ -105,7 +103,7 @@ Timer1::~Timer1() {
 }
 
 void Timer1::initInternal() {
-    disableCallbacks();
+/*    disableCallbacks();
     TCCR1A = 0;     // set entire TCCR1A register to 0
     TCCR1B = 0;     // same for TCCR1B
 
@@ -113,7 +111,25 @@ void Timer1::initInternal() {
     // turn on CTC mode:
     TCCR1B |= (1 << WGM12);	//CTC1 ClearTime/Counter1 on compare
     setPrescalar(TIMER_OFF);
+    /*
     // enable global interrupts:
+    // initialize Timer1*/
+    cli();          // disable global interrupts
+    disableCallbacksInternal();
+
+    TCCR1A = 0;     // set entire TCCR1A register to 0
+    TCCR1B = 0;     // same for TCCR1B
+
+    // set compare match register to desired timer count:
+    OCR1A = 32000;
+    // turn on CTC mode:
+    TCCR1B |= (1 << WGM12);
+    // Set CS10 and CS12 bits for 1024 prescaler:
+    TCCR1B |= (1 << CS10);
+    TCCR1B |= (1 << CS12);
+    // enable global interrupts:
+    sei();
+
 }
 
 void Timer1::enableCallbacksInternal() {
@@ -136,10 +152,6 @@ void Timer1::setTicksInternal(unsigned int desiredTicks) {
 		uint16_t overflow = (ticksPassedThisCycle - desiredTicks) % desiredTicks;  // handle 1 overflow, but no more
 		TCNT1H = overflow >> 8;
 		TCNT1L = overflow & 0xFF;
-	} else {
-		uint16_t remaining = desiredTicks - ticksPassedThisCycle;
-		TCNT1H = remaining >> 8;
-		TCNT1L = remaining & 0xFF;
 	}
 }
 
@@ -158,99 +170,6 @@ ISR(TIMER1_COMPA_vect)
 {
 	timer1Instance.loop();
 }
-
-//-----------------------------------------------------------------------
-// Timer1 is a singleton implementation for Timer1 only.  The AVR
-// library macros make it hard to abstract away registers.
-class Timer2 : public Timer {
-public:
-	Timer2();
-	virtual ~Timer2();
-	virtual void initInternal();
-	virtual void enableCallbacksInternal();
-	virtual void disableCallbacksInternal();
-	virtual void setPrescalarInternal(Prescalar p);
-	virtual void setTicksInternal(unsigned int ticks);
-
-	void loop(); // used by ISR
-
-	static byte prescalarValueMask;
-	static byte prescalarValues[];
-
-};
-
-byte Timer2::prescalarValueMask = ~((1<<CS20) | (1<<CS21) | (1<<CS22));
-byte Timer2::prescalarValues[] = {
-		0,
-		(1<<CS20),
-		(1<<CS21),
-		0,
-		(1<<CS20) | (1<<CS21),
-		0,
-		(1<<CS22),
-		(1<<CS22) | (1<<CS20),
-		(1<<CS22) | (1<<CS21),
-		(1<<CS22) | (1<<CS21) | (1<<CS20)
-};
-
-Timer2::Timer2() {
-}
-
-Timer2::~Timer2() {
-}
-
-void Timer2::initInternal() {
-    disableCallbacks();
-    TCCR2A = 0;     // set entire TCCR1A register to 0
-    TCCR2B = 0;     // same for TCCR1B
-
-    setTicks(32000);
-    // turn on CTC mode:
-    TCCR2B |= (1 << WGM22);
-    setPrescalar(TIMER_OFF);
-    // enable global interrupts:
-}
-
-void Timer2::enableCallbacksInternal() {
-	TIMSK2 = TIMSK2 | (1 << OCIE2A);
-}
-
-void Timer2::disableCallbacksInternal() {
-    TIMSK2 = TIMSK2 & ~(1 << OCIE2A);
-}
-
-
-void Timer2::setPrescalarInternal(Prescalar p) {
-	TCCR2B = (TCCR2B & prescalarValueMask) | prescalarValues[p];
-}
-void Timer2::setTicksInternal(unsigned int desiredTicks) {
-	OCR2A = desiredTicks;
-	unsigned long ticksPassedThisCycle = TCNT2;
-	// try to get close to the range we, keeping accumulated ticks if there are any.
-	if (ticksPassedThisCycle > desiredTicks) {
-		TCNT2 = 0;
-	} else {
-		byte remaining = desiredTicks - ticksPassedThisCycle;
-		TCNT2 = remaining;
-	}
-}
-
-void Timer2::loop() {
-	for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
-		if (callbacks[i]) {
-			callbacks[i]->loop();
-		}
-	}
-}
-
-static Timer2 Timer2Instance;
-Timer& Timer::timer2 = Timer2Instance;
-
-ISR(TIMER2_COMPA_vect)
-{
-	Timer2Instance.loop();
-}
-
 
 //-----------------------------------------------------------------------
 // Timer1 is a singleton implementation for Timer1 only.  The AVR

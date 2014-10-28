@@ -17,7 +17,7 @@ namespace Tests {
 
 static byte pins[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
 
-static scheduler::Timer* timer = &scheduler::Timer::debugTimer;
+static scheduler::Timer* timer = &scheduler::Timer::timer1;
 static DirectOutputPins dpins(8, pins);
 static BAMOutputPins dopins(timer, &dpins);
 static SPIOutputPins spins(8);
@@ -34,9 +34,9 @@ void BAMOutputPinTest::setup() {
 	timer->enableCallbacks();
 	dpins.initPins();
 	dpins.latch();
-	spins.initPins();
-	spins.latch();
-	spipins.latch();
+//	spins.initPins();
+//	spins.latch();
+//	spipins.latch();
 	dopins.latch();
 }
 
@@ -48,8 +48,8 @@ void BAMOutputPinTest::loop() {
 //	if ((splitter % 4) == 0)
 	scheduler::Timer::tickDebugTimer(micros());
 //	splitter++;
-	if ((millis() - lastLoop) > 10) {
-		count = (count + 1) & 0x1FF;
+	if ((millis() - lastLoop) > 100) {
+		count = (count + 16) & 0x1FF;
 		for (int i = 0; i < 8; i++) {
 			int val = count;
 #if 1
@@ -62,7 +62,7 @@ void BAMOutputPinTest::loop() {
 #endif
 			byte value = val / 4 * 4;
 			dopins.setPin(i, value);
-			spipins.setPin(i, value);
+//			spipins.setPin(i, value);
 		}
 		lastLoop = millis();
 	}
