@@ -26,11 +26,12 @@ void setup() {
 }
 
 void loop() {
+	// This test works well at 10K Hz
 	thisTest->loop();
 	count++;
 	if (millis() - lastLoop > 1000) {
 //		Serial << F("Count: ") << count << F("  free memory: ") << availableRam() << endl;
-//		Serial.println(count);
+		Serial.println(count);
 //		Serial.println((int)availableMemory());
 //		Serial.println((int)availableRam());
 //		Serial.println();

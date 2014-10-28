@@ -16,50 +16,12 @@
 namespace Tests {
 
 static byte pins[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
-//static byte brightness[] = { 255, 64, 4, 0, 4, 64, 255, 128 };
-//static byte brightness[] = { 255, 127, 63, 31, 15, 7, 3, 0, 3, 7, 15, 31, 63, 127 };
-//static byte brightness[] = { B11111111, B01111111, B00111111, B00011111, B00001111, B00000111, B00000011, B00000001,
-//		B00000000, B00000000, B00000001, B00000011, B00000111, B00001111, B00011111, B00111111, B01111111, B11111111 };
-static byte brightness[] = {
-		B11111111,
-		B01111111,
-//		B01111111,
-		B00111111,
-//		B00111111,
-		B00011111,
-//		B00011111,
-		B00001111,
-//		B00001111,
-		B00000111,
-//		B00000111,
-		B00000011,
-//		B00000011,
-		B00000001,
-//		B00000001,
-		B00000000,
-		B00000000,
-		B00000001,
-//		B00000001,
-		B00000011,
-//		B00000011,
-		B00000111,
-//		B00000111,
-		B00001111,
-//		B00001111,
-		B00011111,
-//		B00011111,
-		B00111111,
-//		B00111111,
-		B01111111,
-//		B01111111,
-		B11111111
-};
-//static byte values[] = { 255, 255, 255, 255, 255, 255, 255, 255 };
-//static byte brightness[512];
-static byte brightnessCount = 18;
 
-static DirectOutputPins dopins(8, pins);
-static BAMOutputPins spipins(&dopins);
+static scheduler::Timer* timer = &scheduler::Timer::debugTimer;
+static DirectOutputPins dpins(8, pins);
+static BAMOutputPins dopins(timer, &dpins);
+static SPIOutputPins spins(8);
+static BAMOutputPins spipins(timer, &spins);
 
 BAMOutputPinTest::BAMOutputPinTest() {
 }
@@ -68,21 +30,37 @@ BAMOutputPinTest::~BAMOutputPinTest() {
 }
 
 void BAMOutputPinTest::setup() {
-	dopins.initPins();
-	dopins.latch();
+	timer->init();
+	dpins.initPins();
+	dpins.latch();
+	spins.initPins();
+	spins.latch();
 	spipins.latch();
-	scheduler::Timer::timer1.init();
-	Serial << " cycles: " << spipins.cycleCount << " on: " << spipins.cyclesOn << " %: " << (spipins.cyclesOn * 100 / spipins.cycleCount) << endl ;
+	dopins.latch();
 }
 
 static int count = 0;
 static unsigned long lastLoop = 0;
+//static byte splitter = 0;
 void BAMOutputPinTest::loop() {
+
+//	if ((splitter % 4) == 0)
 	scheduler::Timer::tickDebugTimer(micros());
+//	splitter++;
 	if ((millis() - lastLoop) > 10) {
-		count = (count + 1) % 0x1FF;
-		byte value = ((count) < 256) ? count : (512 - count);
+		count = (count + 1) & 0x1FF;
 		for (int i = 0; i < 8; i++) {
+			int val = count;
+#if 1
+			val = val & 0x1FF;
+			val = (val < 256) ? val : (511 - val);
+#else
+			val = val & 0x1FF;
+			val = (val + i*(512/8)) & 0x1FF;
+			val = (val < 256) ? val : (511 - val);
+#endif
+			byte value = val / 4 * 4;
+			dopins.setPin(i, value);
 			spipins.setPin(i, value);
 		}
 		lastLoop = millis();
