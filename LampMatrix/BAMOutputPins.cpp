@@ -11,7 +11,7 @@
 #include "Tests/Debug.h"
 
 static const byte mask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
-static scheduler::Timer& timer = scheduler::Timer::timer2;
+static scheduler::Timer& timer = scheduler::Timer::debugTimer;
 
 void BAMOutputPins::setup() {
 	//reset the timer
@@ -19,23 +19,22 @@ void BAMOutputPins::setup() {
 	cyclesOn = 0;
 	cycleCount = 0;
 	for (int i = 0; i < 8; i++) {
-		values[i] = 255;
+		values[i] = 0;
+		pins->setPin(i, 0);
 	}
 }
 
 void BAMOutputPins::loop() {
-	cycleCount++;
+//	cycleCount++;
 	bitInCycle = (bitInCycle + 1) & 0b00000111;
-//	Serial << "BAMOutputPins::loop" << endl;
-	for (int i = pins->getPinCount() - 1; i >= 0; i--) {
-		bool isOn = ((values[i] & mask[bitInCycle]) != 0);
-		pins->setPin(i, isOn);
-		if (i == 0 && isOn) cyclesOn = cyclesOn + mask[bitInCycle];	// we only count on cycles for pin 0
-	}
-	pins->latch();
-	unsigned long rval = mask[bitInCycle];
-//	Serial << "   debugTimer.setTicks(" << rval << ")" << endl;
-	timer.setTicks(rval);
+    for (int i = 0; i < 8; i++) {
+        bool isOn = ((values[i] & mask[bitInCycle]) != 0);
+    	pins->setPin(i, isOn);
+//		if (i == 0 && isOn) cyclesOn = cyclesOn + mask[bitInCycle];	// we only count on cycles for pin 0
+    }
+    pins->latch();
+    unsigned long rval = mask[bitInCycle];
+    timer.setTicks(rval << 5);
 }
 
 BAMOutputPins::BAMOutputPins(OutputPins* pinsIn)

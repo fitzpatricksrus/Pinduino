@@ -75,39 +75,18 @@ void BAMOutputPinTest::setup() {
 	Serial << " cycles: " << spipins.cycleCount << " on: " << spipins.cyclesOn << " %: " << (spipins.cyclesOn * 100 / spipins.cycleCount) << endl ;
 }
 
-static byte count = 0;
+static int count = 0;
 static unsigned long lastLoop = 0;
-static unsigned long fakeTime = 0;
 void BAMOutputPinTest::loop() {
-#define DLKFJ
-#ifdef DLKFJ
-	if (millis() - lastLoop > 100) {
-			scheduler::Timer::tickDebugTimer(fakeTime++);
-//			Serial << count << endl;
-			byte value = count;
-			Serial << "value: " << _BIN(value) << " cycles: " << spipins.cycleCount << " on: " << spipins.cyclesOn << " %: " << (spipins.cyclesOn * 100 / spipins.cycleCount) << "fakeTime: " << fakeTime << endl ;
-//			if (fakeTime % 256 == 0) {
-				for (int i = 0; i < 8; i++) {
-					spipins.setPin(i, count);
-				}
-				count = (count + 1);
-//			}
-//			spipins.latch();
-			spipins.cycleCount = 0;
-			spipins.cyclesOn = 0;
-			lastLoop = millis();
-	}
-#else
-	if (millis() - lastLoop > 1000) {
+	scheduler::Timer::tickDebugTimer(micros());
+	if ((millis() - lastLoop) > 10) {
+		count = (count + 1) % 0x1FF;
+		byte value = ((count) < 256) ? count : (512 - count);
 		for (int i = 0; i < 8; i++) {
-			spipins.setPin(i, brightness[(count + 0 + i) % brightnessCount]);
-			opins2.setPin(i, brightness[(count + 8 + i) % brightnessCount]);
+			spipins.setPin(i, value);
 		}
-//		Serial << "Brightness: " << brightness[count] << endl;
-		count = (count + 1) % brightnessCount;
 		lastLoop = millis();
 	}
-#endif
 }
 
 BAMOutputPinTest BAMOutputPinTest::TEST;
