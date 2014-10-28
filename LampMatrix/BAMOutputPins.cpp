@@ -11,6 +11,7 @@
 #include "Tests/Debug.h"
 
 static const byte mask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
+static byte valueMap[256];
 
 void BAMOutputPins::setup() {
 	//reset the timer
@@ -19,17 +20,29 @@ void BAMOutputPins::setup() {
 		values[i] = 0;
 		pins->setPin(i, 0);
 	}
+	for (int i = 0; i < 256; i++) {
+		valueMap[i] = i;
+		if (i > 128) {
+    		valueMap[i] = map(i, 128, 256, 92, 256);
+    	} else if (i > 32){
+    		valueMap[i] = map(i, 32, 128, 16, 92);
+    	} else {
+    		valueMap[i] = map(i, 0, 32, 0, 16);
+    	}
+	}
 }
 
 void BAMOutputPins::loop() {
 	bitInCycle = (bitInCycle + 1) & 0b00000111;
     for (int i = 0; i < 8; i++) {
-        bool isOn = ((values[i] & mask[bitInCycle]) != 0);
+    	byte value = values[i];
+    	value = valueMap[value];
+        bool isOn = ((value & mask[bitInCycle]) != 0);
     	pins->setPin(i, isOn);
     }
     pins->latch();
     unsigned long rval = mask[bitInCycle];
-    timer->setTicks(rval << 5);
+    timer->setTicks(rval << 6);
 }
 
 BAMOutputPins::BAMOutputPins(scheduler::Timer* timerIn, OutputPins* pinsIn)

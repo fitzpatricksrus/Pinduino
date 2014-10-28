@@ -31,6 +31,7 @@ BAMOutputPinTest::~BAMOutputPinTest() {
 
 void BAMOutputPinTest::setup() {
 	timer->init();
+	timer->enableCallbacks();
 	dpins.initPins();
 	dpins.latch();
 	spins.initPins();
