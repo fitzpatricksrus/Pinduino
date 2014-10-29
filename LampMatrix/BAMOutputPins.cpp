@@ -42,7 +42,7 @@ void BAMOutputPins::loop() {
     }
     pins->latch();
     unsigned long rval = mask[bitInCycle];
-    timer->setTicks(rval<<5);
+    timer->setTicks(rval << 1);
 }
 
 BAMOutputPins::BAMOutputPins(scheduler::Timer* timerIn, OutputPins* pinsIn)

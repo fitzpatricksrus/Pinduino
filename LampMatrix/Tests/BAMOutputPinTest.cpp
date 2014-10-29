@@ -31,15 +31,15 @@ BAMOutputPinTest::~BAMOutputPinTest() {
 
 void BAMOutputPinTest::setup() {
 	timer->init();
-	timer->setPrescalar(scheduler::Timer::PS8);
+	timer->setPrescalar(scheduler::Timer::PS256);
 	timer->setTicks(1);
 	timer->enableCallbacks();
 	dpins.initPins();
 	dpins.latch();
+	dopins.latch();
 //	spins.initPins();
 //	spins.latch();
 //	spipins.latch();
-	dopins.latch();
 }
 
 static int count = 0;
@@ -50,11 +50,11 @@ void BAMOutputPinTest::loop() {
 //	if ((splitter % 4) == 0)
 	scheduler::Timer::tickDebugTimer(micros());
 //	splitter++;
-	if ((millis() - lastLoop) > 70) {
-		count = (count + 8) & 0x1FF;
+	if ((millis() - lastLoop) > 7) {
+		count = (count + 1) & 0x1FF;
 		for (int i = 0; i < 8; i++) {
 			int val = count;
-#if 0
+#if 1
 			val = val & 0x1FF;
 			val = (val < 256) ? val : (511 - val);
 #else
@@ -62,7 +62,7 @@ void BAMOutputPinTest::loop() {
 			val = (val + i*(512/8)) & 0x1FF;
 			val = (val < 256) ? val : (511 - val);
 #endif
-			byte value = val / 4 * 4;
+			byte value = val;// / 4 * 4;
 			dopins.setPin(i, value);
 //			spipins.setPin(i, value);
 		}
