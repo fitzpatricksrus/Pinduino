@@ -1,65 +1,149 @@
-// #include "FlexiTimer2.h"
-
-// #include "MatrixColumnPattern.h"
-
-//#define RUN_MatrixPinsTest
-
 #include <Arduino.h>
 
 #include "Tests/Debug.h"
-#include "DirectOutputPins.h"
-#include "SPIOutputPins.h"
 #include "SPI.h"
-#include "Timer.h"
+#include "LedControl.h"
 
+static byte SLAVE_PIN = 10;
 
-static const byte LEDPIN = 4;
-static const unsigned int MAX_CYCLE = 65535;
-static const unsigned int MIN_CYCLE = 10;
+enum MAX7221_COMMAND {
+	noop =      B00000000,
+	digit0 =    B00000001,
+	digit1 =    B00000010,
+	digit2 =    B00000011,
+	digit3 =    B00000100,
+	digit4 =    B00000101,
+	digit5 =    B00000110,
+	digit6 =    B00000111,
+	digit7 =    B00001000,
+	decode =    B00001001,
+	intensity = B00001010,
+	scanLimit = B00001011,
+	enable =    B00001100,
+	unused1 =   B00001101,
+	unused2 =   B00001110,
+	test =      B00001111
+} MAX7221_COMMAND;
 
-void setup()
+void send7221Command(int command, int value)
 {
-    pinMode(LEDPIN, OUTPUT);
-
-    // initialize Timer1
-    cli();          // disable global interrupts
-    TCCR1A = 0;     // set entire TCCR1A register to 0
-    TCCR1B = 0;     // same for TCCR1B
-
-    // set compare match register to desired timer count:
-    OCR1A = MAX_CYCLE;
-    // turn on CTC mode:
-    TCCR1B |= (1 << WGM12);
-    // Set CS10 and CS12 bits for 1024 prescaler:
-    TCCR1B |= (1 << CS10);
-    TCCR1B |= (1 << CS12);
-    // enable timer compare interrupt:
-    TIMSK1 |= (1 << OCIE1A);
-    // enable global interrupts:
-    sei();
-    Serial.begin(57600);
+   digitalWrite(SLAVE_PIN,LOW); //chip select is active low
+   //2-byte data transfer to the 7221
+   SPI.transfer(command);
+   SPI.transfer(value);
+   digitalWrite(SLAVE_PIN,HIGH); //release chip, signal end transfer
+   Serial << _HEX(command) << " " << _BIN(value) << endl;
 }
 
-static long count = 0;
-static long startTime = 0;
-void loop()
-{
-	count++;
-	if (millis() - startTime > 1000) {
-		Serial.println(count);
-		count = 0;
-		startTime = millis();
+bool life[8][8];
+bool plife[8][8];
+
+static LedControl* control;
+
+void MAXSetup() {
+	Serial.begin(57200);
+	Serial << ">setup" << endl;
+	control = new LedControl(MOSI, SCK, SS);
+	control->setIntensity(0, 0x01);
+	control->shutdown(0, false);
+	Serial << "<setup" << endl;
+    randomSeed(analogRead(0));
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			life[i][j] = random(2) != 0;
+		}
 	}
-    // do some crazy stuff while my LED keeps blinking
 }
 
-ISR(TIMER1_COMPA_vect)
-{
-	const int pinValue = digitalRead(LEDPIN);
-    digitalWrite(LEDPIN, !pinValue);
-    OCR1A = OCR1A * 4 / 5;
-    if (OCR1A < MIN_CYCLE) {
-    	OCR1A = MAX_CYCLE;
-    }
+int p(int value) {
+	if (value < 0) {
+		return 7;
+	} else if (value > 7) {
+		return 0;
+	} else {
+		return value;
+	}
 }
 
+int countAround(int x, int y) {
+	int cnt = 0;
+	for (int dx = -1; dx <= 1; dx++) {
+		for (int dy = -1; dy <= 1; dy++) {
+			if (dx != 0 || dy != 0) {
+				cnt = cnt + ((plife[p(x+dx)][p(y+dy)]) ? 1 : 0);
+			}
+		}
+	}
+	return cnt;
+}
+
+/*
+Any live cell with fewer than two live neighbours dies, as if caused by under-population.
+Any live cell with two or three live neighbours lives on to the next generation.
+Any live cell with more than three live neighbours dies, as if by overcrowding.
+Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+ */
+
+static int unchangedCount = 0;
+
+void MAXLoop() {
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			plife[i][j] = life[i][j];
+		}
+	}
+
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			int cnt = countAround(i, j);
+			if (cnt < 2) {
+				life[i][j] = false;
+			} else if (cnt == 2) {
+				// leave alone
+			} else if (cnt == 3) {
+				life[i][j] = true;
+			} else {
+				life[i][j] = false;
+			}
+		}
+	}
+
+	unchangedCount++;
+	digitalWrite(SLAVE_PIN, HIGH);
+	for (int row = 0; row < 8; row++) {
+		for (int col = 0; col < 8; col++) {
+			control->setLed(0, row, col, life[row][col]);
+			if (life[row][col] != plife[row][col]) {
+				if (unchangedCount == 1) {
+					Serial << row << "," << col << endl;
+				}
+				unchangedCount = 0;
+			}
+		}
+	}
+	digitalWrite(SLAVE_PIN, LOW);
+	Serial << unchangedCount << endl;
+	if (unchangedCount > 6) {
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				life[i][j] = random(2) != 0;
+			}
+		}
+	}
+	delay(100);
+}
+
+void setup() {
+	Serial.begin(57600);
+	pinMode(A0, INPUT);
+	Serial << "setup" << endl;
+}
+
+unsigned long lastLoop = 0;
+void loop() {
+	if (millis() - lastLoop > 500) {
+		int value  = analogRead(A0);
+		Serial << value << endl;
+		lastLoop = millis();
+	}
+}
