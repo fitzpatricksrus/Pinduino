@@ -72,7 +72,7 @@ void BC::doLoop() {
 
 	if ((millis() - lastTime) > 10) {
 		value = (value + 1) % 0x1FF;
-		if (value == 0) value = 1;
+//		if (value == 0) value = 1;
 //		Serial << value << "  " << millis() << "  " << lastTime << "   " << "  "<< count << endl;
 		lastTime = millis();
 		count = 0;

@@ -162,10 +162,10 @@ void Timer1::loop() {
 static Timer1 timer1Instance;
 Timer& Timer::timer1 = timer1Instance;
 
-ISR(TIMER1_COMPA_vect)
+/*ISR(TIMER1_COMPA_vect)
 {
 	timer1Instance.loop();
-}
+} */
 
 //-----------------------------------------------------------------------
 // Timer1 is a singleton implementation for Timer1 only.  The AVR

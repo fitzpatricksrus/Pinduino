@@ -10,82 +10,56 @@
 #include "DirectOutputPins.h"
 #include "SPIOutputPins.h"
 #include "SPI.h"
-#include "LedControl.h"
 #include "Timer.h"
-#include "BC.h"
 
 
-static byte pinsNums[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
-static DirectOutputPins pins(8, pinsNums);
-static SPIOutputPins spins(8);
-static byte SLAVE_PIN = 10;
+static const byte LEDPIN = 4;
+static const unsigned int MAX_CYCLE = 65535;
+static const unsigned int MIN_CYCLE = 10;
 
-unsigned long lastTime = 0;
-int value = 0;
-long count = 0;
+void setup()
+{
+    pinMode(LEDPIN, OUTPUT);
 
-void BAMSetup() {
-	Serial.begin(57200);
-	pins.initPins();
-	spins.slaveSelectPin(SLAVE_PIN);
-	spins.initPins();
+    // initialize Timer1
+    cli();          // disable global interrupts
+    TCCR1A = 0;     // set entire TCCR1A register to 0
+    TCCR1B = 0;     // same for TCCR1B
+
+    // set compare match register to desired timer count:
+    OCR1A = MAX_CYCLE;
+    // turn on CTC mode:
+    TCCR1B |= (1 << WGM12);
+    // Set CS10 and CS12 bits for 1024 prescaler:
+    TCCR1B |= (1 << CS10);
+    TCCR1B |= (1 << CS12);
+    // enable timer compare interrupt:
+    TIMSK1 |= (1 << OCIE1A);
+    // enable global interrupts:
+    sei();
+    Serial.begin(57600);
 }
 
-static const int mask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
-
-unsigned long lastCycle = 0;
-unsigned long cycleDelay = 0;
-byte partOfCycle = 0;
-unsigned long processCycle(int value) {
-    partOfCycle = (partOfCycle + 1) & 0b00000111;
-    bool isOn = ((value & mask[partOfCycle]) != 0);
-    for (int i = 0; i < 8; i++) {
-    	pins.setPin(i, isOn);
-    	spins.setPin(i, isOn);
-    }
-    pins.latch();
-    spins.latch();
-    unsigned long rval = mask[partOfCycle];
-    return rval << 6;
-}
-
-void BAMLoop() {
+static long count = 0;
+static long startTime = 0;
+void loop()
+{
 	count++;
-	if (micros() - lastCycle > cycleDelay) {
-		cycleDelay = processCycle(value);
-//		Serial << cycleDelay << endl;
-		lastCycle = micros();
-	}
-
-	if ((millis() - lastTime) > 10) {
-		value = (value + 1) % 0xFF;
-		if (value == 0) value = 1;
-//		Serial << value << "  " << millis() << "  " << lastTime << "   " << "  "<< count << endl;
-		lastTime = millis();
+	if (millis() - startTime > 1000) {
+		Serial.println(count);
 		count = 0;
+		startTime = millis();
 	}
+    // do some crazy stuff while my LED keeps blinking
 }
 
-
-static Tests::DebugCounter cnt;
-static TimerCallback callback;
-
-void setup() {
-//	BAMSetup();
-	BC::doSetup();
-	Timer::timer1.init();
-	Timer::timer1.addCallback(&callback, Timer::PS1024, 256);
-	Timer::timer1.enableCallbacks();
+ISR(TIMER1_COMPA_vect)
+{
+	const int pinValue = digitalRead(LEDPIN);
+    digitalWrite(LEDPIN, !pinValue);
+    OCR1A = OCR1A * 4 / 5;
+    if (OCR1A < MIN_CYCLE) {
+    	OCR1A = MAX_CYCLE;
+    }
 }
 
-void loop() {
-//	BAMLoop();
-	BC::doLoop();
-	cnt.ping();
-	if (cnt) {
-		Serial << "Total: " << cnt <<  endl;
-	}
-	if (callback.timerCnt) {
-		Serial << "timer: " << callback.timerCnt << endl;
-	}
-}
