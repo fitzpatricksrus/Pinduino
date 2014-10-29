@@ -68,6 +68,6 @@ void BAMOutputPins::setPin(byte pinNdx, byte pinValue) {
 }
 
 void BAMOutputPins::latch() {
-	timer->addCallback(this, scheduler::Timer::PS8, mask[0]);
+	timer->addCallback(this);
 }
 

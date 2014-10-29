@@ -50,7 +50,9 @@ void TimerTest::setup() {
 	spiop.latch();
 
 	Timer::timer1.init();
-	Timer::timer1.addCallback(&Callback, Timer::PS256, delayValue);
+	Timer::timer1.setPrescalar(Timer::PS256);
+	Timer::timer1.setTicks(delayValue);
+	Timer::timer1.addCallback(&Callback);
 }
 void TimerTest::loop() {
 }

@@ -55,7 +55,7 @@ public:
 	};
 
 	void init();
-	void addCallback(Callback* function, Prescalar p, unsigned int ticks);
+	void addCallback(Callback* function);
 	void enableCallbacks();
 	void disableCallbacks();
 	void setPrescalar(Prescalar p);

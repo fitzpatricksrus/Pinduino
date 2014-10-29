@@ -28,7 +28,7 @@ Timer::Timer()
 Timer::~Timer() {
 }
 
-void Timer::addCallback(Callback* callbackIn, Prescalar p, unsigned int ticks) {
+void Timer::addCallback(Callback* callbackIn) {
 	disableCallbacks();
 	for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
 		if (callbacks[i] == callbackIn) {
@@ -42,8 +42,6 @@ void Timer::addCallback(Callback* callbackIn, Prescalar p, unsigned int ticks) {
 			break;
 		}
 	}
-	setPrescalar(p);
-	setTicks(ticks);
 	// enable timer compare interrupt:
 	enableCallbacks();
 }

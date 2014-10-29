@@ -31,6 +31,8 @@ BAMOutputPinTest::~BAMOutputPinTest() {
 
 void BAMOutputPinTest::setup() {
 	timer->init();
+	timer->setPrescalar(scheduler::Timer::PS8);
+	timer->setTicks(1);
 	timer->enableCallbacks();
 	dpins.initPins();
 	dpins.latch();
@@ -48,8 +50,8 @@ void BAMOutputPinTest::loop() {
 //	if ((splitter % 4) == 0)
 	scheduler::Timer::tickDebugTimer(micros());
 //	splitter++;
-	if ((millis() - lastLoop) > 100) {
-		count = (count + 16) & 0x1FF;
+	if ((millis() - lastLoop) > 70) {
+		count = (count + 8) & 0x1FF;
 		for (int i = 0; i < 8; i++) {
 			int val = count;
 #if 0
