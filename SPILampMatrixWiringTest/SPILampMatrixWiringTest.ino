@@ -34,7 +34,7 @@ void setup()
 	pinMode(A0, INPUT);
 	pinMode(A1, INPUT);
 	pinMode(A2, INPUT);
-	Serial.begin(9600);
+	Serial.begin(57600);
     SPI.begin();
     timer.init();
     rgbPins.initPins();
@@ -104,7 +104,45 @@ static void loop3() {
 	}
 }
 
+static void loop4() {
+	unsigned long lastLoop = 0;
+	byte color = 0;
+	Serial.println("HEllo");
+
+	while (true) {
+		if (millis() - lastLoop > 2000) {
+			color++;
+			color = color % 3;
+			Serial.println(color);
+			int value = 0;
+			switch (color) {
+			case 0:
+				value = analogRead(A0) >> 2;
+				break;
+			case 1:
+				value = analogRead(A1) >> 2;
+				break;
+			default:
+				value = analogRead(A2) >> 2;
+			}
+			for (int col = 0; col < 8; col++) {
+				digitalWrite(ColSelect, LOW);
+				SPI.transfer(1 << col);
+				digitalWrite(ColSelect, HIGH);
+
+				for (int row = 0; row < 24; row++) {
+					rgbPins.setPin(row, 0);
+				}
+				for (int row = 0; row < 8; row++) {
+					rgbPins.setPin(row, value << (8*color));
+				}
+				delay(2);
+			}
+		}
+	}
+}
+
 void loop() {
-	loop3();
+	loop4();
 }
 
