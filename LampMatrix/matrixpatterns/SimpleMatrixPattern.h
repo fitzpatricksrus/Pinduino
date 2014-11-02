@@ -10,63 +10,63 @@
 
 #include "MatrixPattern.h"
 
-template<int COLS, int ROWS>
+template<byte COLS, byte ROWS>
 class SimpleMatrixPattern: public MatrixPattern {
 public:
-	typedef CellValue ValueArray[COLS][ROWS];
+	typedef byte ValueArray[COLS][ROWS];
 
-	SimpleMatrixPattern(ValueArray& values, int pwmSteps);
+	SimpleMatrixPattern(ValueArray& values, byte pwmSteps);
 	virtual ~SimpleMatrixPattern();
-	virtual int getPWMSteps() const;
-	virtual int getRowCount() const;
-	virtual int getColumnCount() const;
-	virtual CellValue getValue(int row, int column) const;
-	virtual CellValue const* operator[](int columnIndex) const;
-	virtual CellValue* operator[](int columnIndex);
+	virtual byte getPWMSteps() const;
+	virtual byte getRowCount() const;
+	virtual byte getColumnCount() const;
+	virtual byte getValue(byte row, byte column) const;
+	virtual byte const* operator[](byte columnIndex) const;
+	virtual byte* operator[](byte columnIndex);
 
 protected:
-	int pwmSteps;
+	byte pwmSteps;
 	ValueArray& values;
 };
 
-template<int COLS, int ROWS>
+template<byte COLS, byte ROWS>
 SimpleMatrixPattern<COLS, ROWS>::SimpleMatrixPattern(
-		ValueArray& valuesIn, int pwnStepsIn) :
+		ValueArray& valuesIn, byte pwnStepsIn) :
 		pwmSteps(pwnStepsIn), values(valuesIn) {
 }
 
-template<int COLS, int ROWS>
+template<byte COLS, byte ROWS>
 SimpleMatrixPattern<COLS, ROWS>::~SimpleMatrixPattern() {
 }
 
-template<int COLS, int ROWS>
-int SimpleMatrixPattern<COLS, ROWS>::getPWMSteps() const {
+template<byte COLS, byte ROWS>
+byte SimpleMatrixPattern<COLS, ROWS>::getPWMSteps() const {
 	return pwmSteps;
 }
 
-template<int COLS, int ROWS>
-int SimpleMatrixPattern<COLS, ROWS>::getRowCount() const {
+template<byte COLS, byte ROWS>
+byte SimpleMatrixPattern<COLS, ROWS>::getRowCount() const {
 	return ROWS;
 }
 
-template<int COLS, int ROWS>
-int SimpleMatrixPattern<COLS, ROWS>::getColumnCount() const {
+template<byte COLS, byte ROWS>
+byte SimpleMatrixPattern<COLS, ROWS>::getColumnCount() const {
 	return COLS;
 }
 
-template<int COLS, int ROWS>
-MatrixPattern::CellValue SimpleMatrixPattern<COLS, ROWS>::getValue(int row, int column) const {
+template<byte COLS, byte ROWS>
+byte SimpleMatrixPattern<COLS, ROWS>::getValue(byte row, byte column) const {
 	return values[column][row];
 }
 
-template<int COLS, int ROWS>
-MatrixPattern::CellValue const* SimpleMatrixPattern<COLS, ROWS>::operator[](
-		int columnIndex) const {
+template<byte COLS, byte ROWS>
+byte const* SimpleMatrixPattern<COLS, ROWS>::operator[](
+		byte columnIndex) const {
 	return values[columnIndex];
 }
 
-template<int COLS, int ROWS>
-MatrixPattern::CellValue* SimpleMatrixPattern<COLS, ROWS>::operator[](int columnIndex) {
+template<byte COLS, byte ROWS>
+byte* SimpleMatrixPattern<COLS, ROWS>::operator[](byte columnIndex) {
 	return values[columnIndex];
 }
 
