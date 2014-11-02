@@ -16,7 +16,7 @@ static byte valueMap[256];
 void BAMOutputPins::setup() {
 	//reset the timer
 	bitInCycle = 0;
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < pins->getPinCount(); i++) {
 		values[i] = 0;
 		pins->setPin(i, 0);
 	}
@@ -34,7 +34,7 @@ void BAMOutputPins::setup() {
 
 void BAMOutputPins::loop() {
 	bitInCycle = (bitInCycle + 1) & 0b00000111;
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < pins->getPinCount(); i++) {
     	byte value = values[i];
     	value = valueMap[value];
         bool isOn = ((value & mask[bitInCycle]) != 0);
