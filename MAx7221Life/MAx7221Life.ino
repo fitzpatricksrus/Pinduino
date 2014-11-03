@@ -2,28 +2,30 @@
 
 #include "Tests/Debug.h"
 #include "SPI.h"
-#include "LedControl.h"
 
 static byte SLAVE_PIN = 10;
 
-enum MAX7221_COMMAND {
-	noop =      B00000000,
-	digit0 =    B00000001,
-	digit1 =    B00000010,
-	digit2 =    B00000011,
-	digit3 =    B00000100,
-	digit4 =    B00000101,
-	digit5 =    B00000110,
-	digit6 =    B00000111,
-	digit7 =    B00001000,
-	decode =    B00001001,
-	intensity = B00001010,
-	scanLimit = B00001011,
-	enable =    B00001100,
-	unused1 =   B00001101,
-	unused2 =   B00001110,
-	test =      B00001111
-} MAX7221_COMMAND;
+class MAX7221_COMMAND {
+public:
+	enum {
+		noop =      B00000000,
+		digit0 =    B00000001,
+		digit1 =    B00000010,
+		digit2 =    B00000011,
+		digit3 =    B00000100,
+		digit4 =    B00000101,
+		digit5 =    B00000110,
+		digit6 =    B00000111,
+		digit7 =    B00001000,
+		decode =    B00001001,
+		intensity = B00001010,
+		scanLimit = B00001011,
+		enable =    B00001100,
+		unused1 =   B00001101,
+		unused2 =   B00001110,
+		test =      B00001111
+	};
+};
 
 void send7221Command(int command, int value)
 {
@@ -32,21 +34,20 @@ void send7221Command(int command, int value)
    SPI.transfer(command);
    SPI.transfer(value);
    digitalWrite(SLAVE_PIN,HIGH); //release chip, signal end transfer
-   Serial << _HEX(command) << " " << _BIN(value) << endl;
 }
 
 bool life[8][8];
 bool plife[8][8];
 
-static LedControl* control;
-
 void MAXSetup() {
-	Serial.begin(57200);
-	Serial << ">setup" << endl;
-	control = new LedControl(MOSI, SCK, SS);
-	control->setIntensity(0, 0x01);
-	control->shutdown(0, false);
-	Serial << "<setup" << endl;
+	SPI.begin();
+
+	//control->setIntensity(0x01);
+	send7221Command(MAX7221_COMMAND::intensity, 0x01);
+
+	//control->shutdown(false);
+	send7221Command(MAX7221_COMMAND::enable, true);
+
     randomSeed(analogRead(0));
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
@@ -111,18 +112,19 @@ void MAXLoop() {
 	unchangedCount++;
 	digitalWrite(SLAVE_PIN, HIGH);
 	for (int row = 0; row < 8; row++) {
+		byte colValue = 0;
 		for (int col = 0; col < 8; col++) {
-			control->setLed(0, row, col, life[row][col]);
+			if (life[row][col]) {
+				colValue |= (1 << col);
+			}
+
 			if (life[row][col] != plife[row][col]) {
-				if (unchangedCount == 1) {
-					Serial << row << "," << col << endl;
-				}
 				unchangedCount = 0;
 			}
 		}
+		send7221Command(MAX7221_COMMAND::digit0+row, colValue);
 	}
 	digitalWrite(SLAVE_PIN, LOW);
-	Serial << unchangedCount << endl;
 	if (unchangedCount > 6) {
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
