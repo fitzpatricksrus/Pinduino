@@ -10,7 +10,7 @@
 
 #include "AnalogOutputPins.h"
 #include "OutputPins.h"
-#include "scheduler/timer.h"
+#include "../scheduler/timer.h"
 
 class BAMOutputPins: public AnalogOutputPins, private scheduler::Timer::Callback {
 public:

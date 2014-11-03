@@ -7,7 +7,7 @@
 #include "DirectOutputPins.h"
 
 #include "Arduino.h"
-#include "Tests/Debug.h"
+#include "../Tests/Debug.h"
 
 DirectOutputPins::DirectOutputPins(byte pinCountIn, byte* pinsIn)
 : pinNumber(pinsIn), pinCount(pinCountIn)

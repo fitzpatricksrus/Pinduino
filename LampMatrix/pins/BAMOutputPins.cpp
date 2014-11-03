@@ -7,8 +7,8 @@
 
 #include "BAMOutputPins.h"
 
-#include "scheduler/Timer.h"
-#include "Tests/Debug.h"
+#include "../scheduler/Timer.h"
+#include "../Tests/Debug.h"
 
 static const byte mask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
 static byte valueMap[256];
