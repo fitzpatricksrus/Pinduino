@@ -41,13 +41,8 @@ bool plife[8][8];
 
 void MAXSetup() {
 	SPI.begin();
-
-	//control->setIntensity(0x01);
 	send7221Command(MAX7221_COMMAND::intensity, 0x01);
-
-	//control->shutdown(false);
 	send7221Command(MAX7221_COMMAND::enable, true);
-
     randomSeed(analogRead(0));
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
@@ -110,21 +105,18 @@ void MAXLoop() {
 	}
 
 	unchangedCount++;
-	digitalWrite(SLAVE_PIN, HIGH);
 	for (int row = 0; row < 8; row++) {
 		byte colValue = 0;
 		for (int col = 0; col < 8; col++) {
 			if (life[row][col]) {
-				colValue |= (1 << col);
+				colValue = colValue | (1 << col);
 			}
-
 			if (life[row][col] != plife[row][col]) {
 				unchangedCount = 0;
 			}
 		}
 		send7221Command(MAX7221_COMMAND::digit0+row, colValue);
 	}
-	digitalWrite(SLAVE_PIN, LOW);
 	if (unchangedCount > 6) {
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
