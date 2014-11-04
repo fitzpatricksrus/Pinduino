@@ -41,7 +41,10 @@ bool plife[8][8];
 
 void MAXSetup() {
 	SPI.begin();
+	send7221Command(MAX7221_COMMAND::test, false);
 	send7221Command(MAX7221_COMMAND::intensity, 0x01);
+	send7221Command(MAX7221_COMMAND::decode, false);
+	send7221Command(MAX7221_COMMAND::scanLimit, 7);
 	send7221Command(MAX7221_COMMAND::enable, true);
     randomSeed(analogRead(0));
 	for (int i = 0; i < 8; i++) {
