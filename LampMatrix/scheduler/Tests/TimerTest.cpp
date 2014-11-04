@@ -6,8 +6,8 @@
  */
 
 #include "TimerTest.h"
-#include "../../DirectOutputPins.h"
-#include "../../SPIOutputPins.h"
+#include "../../pins/DirectOutputPins.h"
+#include "../../pins/SPIOutputPins.h"
 #include "../Timer.h"
 
 namespace scheduler {

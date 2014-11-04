@@ -9,7 +9,7 @@
 #define MATRIXPINS_H_
 
 #include "MatrixPattern.h"
-#include "../DirectOutputPins.h"
+#include "../pins/DirectOutputPins.h"
 #include "Arduino.h"
 
 typedef unsigned long Time;

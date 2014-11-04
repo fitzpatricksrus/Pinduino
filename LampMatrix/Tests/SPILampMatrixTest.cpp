@@ -7,7 +7,7 @@
 
 #include "SPILampMatrixTest.h"
 #include "../SPI.h"
-#include "../SPIOutputPins.h"
+#include "../pins/SPIOutputPins.h"
 
 namespace Tests {
 

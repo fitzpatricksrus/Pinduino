@@ -7,9 +7,9 @@
 
 #include "BAMOutputPinTest.h"
 
-#include "../SPIOutputPins.h"
-#include "../DirectOutputPins.h"
-#include "../BAMOutputPins.h"
+#include "../pins/SPIOutputPins.h"
+#include "../pins/DirectOutputPins.h"
+#include "../pins/BAMOutputPins.h"
 #include "../scheduler/Timer.h"
 #include "Debug.h"
 

@@ -6,7 +6,7 @@
  */
 
 #include "DirectOutputPinsTest.h"
-#include "../DirectOutputPins.h"
+#include "../pins/DirectOutputPins.h"
 #include "Arduino.h"
 #include "Debug.h"
 

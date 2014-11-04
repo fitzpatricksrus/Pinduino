@@ -22,13 +22,13 @@ void BAMOutputPins::setup() {
 	}
 	for (int i = 0; i < 256; i++) {
 		valueMap[i] = i;
-		if (i > 128) {
+/*		if (i > 128) {
     		valueMap[i] = map(i, 128, 256, 64, 256);
     	} else if (i > 16){
     		valueMap[i] = map(i, 16, 128, 8, 64);
     	} else {
     		valueMap[i] = map(i, 0, 16, 0, 8);
-    	}
+    	} */
 	}
 }
 
@@ -41,8 +41,8 @@ void BAMOutputPins::loop() {
     	pins->setPin(i, isOn);
     }
     pins->latch();
-    unsigned long rval = mask[bitInCycle];
-    timer->setTicks(rval << 1);
+    unsigned int rval = mask[bitInCycle];
+    timer->setTicks(rval);
 }
 
 BAMOutputPins::BAMOutputPins(scheduler::Timer* timerIn, OutputPins* pinsIn)
