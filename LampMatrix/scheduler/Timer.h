@@ -56,6 +56,7 @@ public:
 
 	void init();
 	void addCallback(Callback* function);
+	void removeCallback(Callback* function);
 	void enableCallbacks();
 	void disableCallbacks();
 	void setPrescalar(Prescalar p);

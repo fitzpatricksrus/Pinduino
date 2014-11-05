@@ -32,6 +32,7 @@ void Timer::addCallback(Callback* callbackIn) {
 	disableCallbacks();
 	for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
 		if (callbacks[i] == callbackIn) {
+			enableCallbacks();
 			return;
 		}
 	}
@@ -43,6 +44,16 @@ void Timer::addCallback(Callback* callbackIn) {
 		}
 	}
 	// enable timer compare interrupt:
+	enableCallbacks();
+}
+
+void Timer::removeCallback(Callback* callbackIn) {
+	disableCallbacks();
+	for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
+		if (callbacks[i] == callbackIn) {
+			callbacks[i] = 0;
+		}
+	}
 	enableCallbacks();
 }
 
