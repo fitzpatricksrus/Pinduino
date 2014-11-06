@@ -64,32 +64,69 @@ void Timer::enableCallbacks() {
 void Timer::disableCallbacks() {
 	disableCallbacksInternal();
 }
-void Timer::setPrescalar(Prescalar p) {
-	setPrescalarInternal(p);
-}
 void Timer::setTicks(unsigned int ticks) {
 	setTicksInternal(ticks);
 }
 
 //-----------------------------------------------------------------------
-// Timer1 is a singleton implementation for Timer1 only.  The AVR
+// DebugTimer is a singleton implementation for Timer1 only.  The AVR
 // library macros make it hard to abstract away registers.
-class Timer1 : public Timer {
+class DebugTimer : public Timer {
 public:
-	Timer1();
-	virtual ~Timer1();
+	DebugTimer();
+	virtual ~DebugTimer();
 	virtual void initInternal();
 	virtual void enableCallbacksInternal();
 	virtual void disableCallbacksInternal();
-	virtual void setPrescalarInternal(Prescalar p);
 	virtual void setTicksInternal(unsigned int ticks);
 
-	void loop(); // used by ISR
-
-	static const byte prescalarValueMask;
-	static const byte prescalarValues[];
-
+	unsigned long ticksPerCallback;
+	unsigned long lastCallbackTime;
+	bool callbacksEnabled;
 };
+
+DebugTimer::DebugTimer()
+: ticksPerCallback(0), lastCallbackTime(0), callbacksEnabled(false)
+{
+}
+
+DebugTimer::~DebugTimer() {
+}
+
+void DebugTimer::initInternal() {
+}
+
+void DebugTimer::enableCallbacksInternal() {
+	callbacksEnabled = true;
+}
+
+void DebugTimer::disableCallbacksInternal() {
+	callbacksEnabled = false;
+}
+
+void DebugTimer::setTicksInternal(unsigned int desiredTicks) {
+	ticksPerCallback = desiredTicks;
+}
+
+static DebugTimer debugTimerInstance;
+Timer& Timer::debugTimer = debugTimerInstance;
+
+void Timer::tickDebugTimer(unsigned long currentTime) {
+	if (currentTime - debugTimerInstance.lastCallbackTime >= debugTimerInstance.ticksPerCallback) {
+		if (debugTimerInstance.callbacksEnabled) {
+			for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
+				if (debugTimerInstance.callbacks[i]) {
+					debugTimerInstance.callbacks[i]->loop();
+				}
+			}
+		}
+		debugTimerInstance.lastCallbackTime = currentTime;
+	}
+}
+
+//-----------------------------------------------------------------------
+// Timer1 is a singleton implementation for Timer1 only.  The AVR
+// library macros make it hard to abstract away registers.
 
 const byte Timer1::prescalarValueMask = ~((1<<CS10) | (1<<CS11) | (1<<CS12));
 const byte Timer1::prescalarValues[] = {
@@ -137,7 +174,7 @@ void Timer1::disableCallbacksInternal() {
     TIMSK1 = TIMSK1 & ~(1 << OCIE1A);
 }
 
-void Timer1::setPrescalarInternal(Prescalar p) {
+void Timer1::setPrescalar(Prescalar p) {
 	TCCR1B = (TCCR1B & prescalarValueMask) | prescalarValues[p];
 }
 void Timer1::setTicksInternal(unsigned int desiredTicks) {
@@ -160,6 +197,7 @@ void Timer1::loop() {
 
 static Timer1 timer1Instance;
 Timer& Timer::timer1 = timer1Instance;
+Timer1& Timer1::INSTANCE = timer1Instance;
 
 ISR(TIMER1_COMPA_vect)
 {
@@ -167,64 +205,83 @@ ISR(TIMER1_COMPA_vect)
 }
 
 //-----------------------------------------------------------------------
-// Timer1 is a singleton implementation for Timer1 only.  The AVR
+// Timer2 is a singleton implementation for Timer1 only.  The AVR
 // library macros make it hard to abstract away registers.
-class DebugTimer : public Timer {
-public:
-	DebugTimer();
-	virtual ~DebugTimer();
-	virtual void initInternal();
-	virtual void enableCallbacksInternal();
-	virtual void disableCallbacksInternal();
-	virtual void setPrescalarInternal(Prescalar p);
-	virtual void setTicksInternal(unsigned int ticks);
 
-	unsigned long ticksPerCallback;
-	unsigned long lastCallbackTime;
-	bool callbacksEnabled;
+const byte Timer2::prescalarValueMask = ~((1<<CS20) | (1<<CS21) | (1<<CS22));
+const byte Timer2::prescalarValues[] = {
+		0,
+		(1<<CS20),
+		(1<<CS21),
+		(1<<CS20) | (1<<CS21),
+		(1<<CS22),
+		(1<<CS22) | (1<<CS20),
+		(1<<CS22) | (1<<CS21),
+		(1<<CS22) | (1<<CS21) | (1<<CS20)
 };
 
-DebugTimer::DebugTimer()
-: ticksPerCallback(0), lastCallbackTime(0), callbacksEnabled(false)
-{
+Timer2::Timer2() {
 }
 
-DebugTimer::~DebugTimer() {
+Timer2::~Timer2() {
 }
 
-void DebugTimer::initInternal() {
+void Timer2::initInternal() {
+    // initialize Timer2*/
+    cli();          // disable global interrupts
+    disableCallbacksInternal();
+
+    TCCR2A = 0;     // set entire TCCR1A register to 0
+    TCCR2B = 0;     // same for TCCR1B
+
+    // set compare match register to desired timer count:
+    OCR2A = 32000;
+    // turn on CTC mode:
+    TCCR2B |= (1 << WGM12);
+    // Set CS10 and CS12 bits for 1024 prescaler:
+    TCCR2B |= (1 << CS20);
+    TCCR2B |= (1 << CS22);
+    // enable global interrupts:
+    sei();
+
 }
 
-void DebugTimer::enableCallbacksInternal() {
-	callbacksEnabled = true;
+void Timer2::enableCallbacksInternal() {
+	TIMSK2 = TIMSK2 | (1 << OCIE2A);
 }
 
-void DebugTimer::disableCallbacksInternal() {
-	callbacksEnabled = false;
+void Timer2::disableCallbacksInternal() {
+    TIMSK2 = TIMSK2 & ~(1 << OCIE2A);
 }
 
-
-void DebugTimer::setPrescalarInternal(Prescalar p) {
+void Timer2::setPrescalar(Prescalar p) {
+	TCCR2B = (TCCR2B & prescalarValueMask) | prescalarValues[p];
 }
+void Timer2::setTicksInternal(unsigned int desiredTicks) {
+	OCR2A = desiredTicks;
+	uint8_t ticksPassedThisCycle = TCNT2;
+	// try to get close to the range we, keeping accumulated ticks if there are any.
 
-void DebugTimer::setTicksInternal(unsigned int desiredTicks) {
-	ticksPerCallback = desiredTicks;
-}
-
-static DebugTimer debugTimerInstance;
-Timer& Timer::debugTimer = debugTimerInstance;
-
-void Timer::tickDebugTimer(unsigned long currentTime) {
-	if (currentTime - debugTimerInstance.lastCallbackTime >= debugTimerInstance.ticksPerCallback) {
-		if (debugTimerInstance.callbacksEnabled) {
-			for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
-				if (debugTimerInstance.callbacks[i]) {
-					debugTimerInstance.callbacks[i]->loop();
-				}
-			}
-		}
-		debugTimerInstance.lastCallbackTime = currentTime;
+	if (ticksPassedThisCycle > desiredTicks) {
+		uint16_t overflow = (ticksPassedThisCycle - desiredTicks) % desiredTicks;  // handle 1 overflow, but no more
+		TCNT2 = overflow & 0xFF;
 	}
 }
+
+void Timer2::loop() {
+	for (int8_t i = callbackCount - 1; i >= 0; i--) {
+		callbacks[i]->loop();
+	}
+}
+
+static Timer2 Timer2Instance;
+Timer& Timer::timer2 = Timer2Instance;
+Timer2& Timer2::INSTANCE = Timer2Instance;
+
+ISR(TIMER2_COMPA_vect)
+{
+	Timer2Instance.loop();
+}
+
 
 } /* namespace Tests */

@@ -22,7 +22,36 @@ public:
 
 	virtual ~Timer();
 
+	void init();
+	void addCallback(Callback* function);
+	void removeCallback(Callback* function);
+	void enableCallbacks();
+	void disableCallbacks();
+	void setTicks(unsigned int ticks);
 
+	static Timer& timer1;
+	static Timer& timer2;
+	static Timer& debugTimer;
+	static void tickDebugTimer(unsigned long currentTime);
+
+protected:
+	static const byte MAX_CALLBACKS = 8;
+	Timer();
+	byte callbackCount;
+	Timer::Callback* callbacks[MAX_CALLBACKS];
+
+	virtual void initInternal() = 0;
+	virtual void enableCallbacksInternal() = 0;
+	virtual void disableCallbacksInternal() = 0;
+	virtual void setTicksInternal(unsigned int ticks) = 0;
+};
+
+
+//-----------------------------------------------------------------------
+// Timer1 is a singleton implementation for Timer1 only.  The AVR
+// library macros make it hard to abstract away registers.
+class Timer1 : public Timer {
+public:
 	enum Prescalar {
 		TIMER_OFF = B00000000,
 		//prescalar
@@ -54,29 +83,57 @@ public:
 
 	};
 
-	void init();
-	void addCallback(Callback* function);
-	void removeCallback(Callback* function);
-	void enableCallbacks();
-	void disableCallbacks();
-	void setPrescalar(Prescalar p);
-	void setTicks(unsigned int ticks);
+	virtual void setPrescalar(Prescalar p);
 
-	static Timer& timer1;
-	static Timer& debugTimer;
-	static void tickDebugTimer(unsigned long currentTime);
 
-protected:
-	static const byte MAX_CALLBACKS = 8;
-	Timer();
-	byte callbackCount;
-	Timer::Callback* callbacks[MAX_CALLBACKS];
+	Timer1();
+	virtual ~Timer1();
+	virtual void initInternal();
+	virtual void enableCallbacksInternal();
+	virtual void disableCallbacksInternal();
+	virtual void setTicksInternal(unsigned int ticks);
 
-	virtual void initInternal() = 0;
-	virtual void enableCallbacksInternal() = 0;
-	virtual void disableCallbacksInternal() = 0;
-	virtual void setPrescalarInternal(Prescalar p) = 0;
-	virtual void setTicksInternal(unsigned int ticks) = 0;
+	void loop(); // used by ISR
+
+	static const byte prescalarValueMask;
+	static const byte prescalarValues[];
+
+	static Timer1& INSTANCE;
+};
+
+//-----------------------------------------------------------------------
+// Timer1 is a singleton implementation for Timer1 only.  The AVR
+// library macros make it hard to abstract away registers.
+class Timer2 : public Timer {
+public:
+	enum Prescalar {
+		TIMER_OFF = B00000000,
+		//prescalar
+		PS1 = B00000001, 		// 0.0000625 ms
+		PS8 = B00000010, 		// 0.0005 ms
+		PS32 = B00000011, 		// 0.004 ms
+		PS64 = B00000100, 		// 0.016 ms
+		PS128 = B0000101,		// 0.064 ms
+		PS256 = B00000110,
+		PS1024 = B00000111,
+	};
+
+	virtual void setPrescalar(Prescalar p);
+
+
+	Timer2();
+	virtual ~Timer2();
+	virtual void initInternal();
+	virtual void enableCallbacksInternal();
+	virtual void disableCallbacksInternal();
+	virtual void setTicksInternal(unsigned int ticks);
+
+	void loop(); // used by ISR
+
+	static const byte prescalarValueMask;
+	static const byte prescalarValues[];
+
+	static Timer2& INSTANCE;
 };
 
 } /* namespace scheduler */
