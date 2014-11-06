@@ -10,6 +10,7 @@
 #include "../pins/SPIOutputPins.h"
 #include "../pins/DirectOutputPins.h"
 #include "../pins/BAMOutputPins.h"
+#include "../pins/BOP.h"
 #include "../scheduler/Timer.h"
 #include "Debug.h"
 
@@ -17,11 +18,11 @@ namespace Tests {
 
 static byte pins[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
 
-static scheduler::Timer1* timer = &scheduler::Timer1::INSTANCE;
+static scheduler::Timer2* timer = &scheduler::Timer2::INSTANCE;
 static DirectOutputPins dpins(8, pins);
-static BAMOutputPins dopins(timer, &dpins);
-static SPIOutputPins spins(8);
-static BAMOutputPins spipins(timer, &spins);
+static BOP dopins(timer, &dpins);
+//static SPIOutputPins spins(8);
+//static BAMOutputPins spipins(timer, &spins);
 
 BAMOutputPinTest::BAMOutputPinTest() {
 }
@@ -31,20 +32,20 @@ BAMOutputPinTest::~BAMOutputPinTest() {
 
 void BAMOutputPinTest::setup() {
 	timer->init();
-	timer->setPrescalar(scheduler::Timer1::PS1024);
+	timer->setPrescalar(scheduler::Timer2::PS1024);
 	timer->setTicks(1);
 	timer->enableCallbacks();
 	dpins.initPins();
 	dpins.latch();
-	spins.initPins();
-	for (byte i = 0; i < 8; i++) {
-		spins.setPin(i, i % 2);
-	}
-	spins.latch();
+//	spins.initPins();
+//	for (byte i = 0; i < 8; i++) {
+//		spins.setPin(i, i % 2);
+//	}
+//	spins.latch();
 
 	dopins.latch();
 	dopins.setEnabled(true);
-	spipins.latch();
+//	spipins.latch();
 //	spipins.setEnabled(true);
 }
 
