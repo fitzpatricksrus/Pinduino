@@ -10,6 +10,7 @@
 #include "../scheduler/Timer.h"
 #include "../Tests/Debug.h"
 
+#define DONT_LINEAR_BRIGHTNESS
 static byte valueMap[256];
 
 BOP::BOP(scheduler::Timer* timerIn, OutputPins* pinsIn)
@@ -62,6 +63,7 @@ void BOP::setEnabled(bool on) {
 		}
 		for (int i = 0; i < 256; i++) {
 			valueMap[i] = i;
+#ifndef LINEAR_BRIGHTNESS
 			if (i > 128) {
 	    		valueMap[i] = map(i, 128, 256, 64, 256);
 	    	} else if (i > 16){
@@ -69,6 +71,7 @@ void BOP::setEnabled(bool on) {
 	    	} else {
 	    		valueMap[i] = map(i, 0, 16, 0, 8);
 	    	}
+#endif
 		}
 		BAM.enableCallbacks();
 	} else {
@@ -100,7 +103,7 @@ void BOP::buildModulationValues() {
 		for (byte pin = 0; pin < pins->getPinCount(); pin++) {
 	    	byte value = values[pin];
 	    	value = valueMap[value];
-	        bool isOn = ((value & mask[cycle]) != 0);
+	        bool isOn = ((value & (1 << cycle)) != 0);
 	        modulatedValues[cycle][pin] = isOn;
 		}
 	}
