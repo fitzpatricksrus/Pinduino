@@ -8,7 +8,6 @@
 #include "SPIOutputPins.h"
 
 #include <Arduino.h>
-#include <Binary.h>
 #include "../SPI.h"
 
 /*
@@ -19,8 +18,8 @@
     uint8_t MOSIPin;
 */
 
-static const byte masks[] =    { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
-static const byte notmasks[] = { B11111110,B11111101,B11111011,B11110111,B11101111,B11011111,B10111111,B01111111 };
+static const byte masks[] =    { 0b00000001,0b00000010,0b00000100,0b00001000,0b00010000,0b00100000,0b01000000,0b10000000 };
+static const byte notmasks[] = { 0b11111110,0b11111101,0b11111011,0b11110111,0b11101111,0b11011111,0b10111111,0b01111111 };
 
 
 #ifdef ARDUINO_AVR_UNO
