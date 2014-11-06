@@ -18,9 +18,9 @@ void Timer::Callback::loop() {
 }
 
 Timer::Timer()
-	: callbacks()
+	: callbackCount(0), callbacks()
 {
-	for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
+	for (byte i = 0; i < MAX_CALLBACKS; i++) {
 		callbacks[i] = 0;
 	}
 }
@@ -30,28 +30,26 @@ Timer::~Timer() {
 
 void Timer::addCallback(Callback* callbackIn) {
 	disableCallbacks();
-	for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
+	for (byte i = 0; i < callbackCount; i++) {
 		if (callbacks[i] == callbackIn) {
+			// callback is already here.  just leave.
 			enableCallbacks();
 			return;
 		}
 	}
-	for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
-		if (callbacks[i] == 0) {
-			callbacks[i] = callbackIn;
-			callbackIn->setup();
-			break;
-		}
-	}
+	callbacks[callbackCount++] = callbackIn;
+	callbackIn->setup();
 	// enable timer compare interrupt:
 	enableCallbacks();
 }
 
 void Timer::removeCallback(Callback* callbackIn) {
 	disableCallbacks();
-	for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
+	for (byte i = 0; i < callbackCount; i++) {
 		if (callbacks[i] == callbackIn) {
-			callbacks[i] = 0;
+			callbackCount--;
+			callbacks[i] = callbacks[callbackCount];
+			callbacks[callbackCount] = 0;
 		}
 	}
 	enableCallbacks();
@@ -112,16 +110,6 @@ Timer1::~Timer1() {
 }
 
 void Timer1::initInternal() {
-/*    disableCallbacks();
-    TCCR1A = 0;     // set entire TCCR1A register to 0
-    TCCR1B = 0;     // same for TCCR1B
-
-    setTicks(32000);
-    // turn on CTC mode:
-    TCCR1B |= (1 << WGM12);	//CTC1 ClearTime/Counter1 on compare
-    setPrescalar(TIMER_OFF);
-    /*
-    // enable global interrupts:
     // initialize Timer1*/
     cli();          // disable global interrupts
     disableCallbacksInternal();
@@ -165,10 +153,8 @@ void Timer1::setTicksInternal(unsigned int desiredTicks) {
 }
 
 void Timer1::loop() {
-	for (int8_t i = MAX_CALLBACKS - 1; i >= 0; i--) {
-		if (callbacks[i]) {
-			callbacks[i]->loop();
-		}
+	for (int8_t i = callbackCount - 1; i >= 0; i--) {
+		callbacks[i]->loop();
 	}
 }
 

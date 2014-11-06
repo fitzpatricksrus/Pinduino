@@ -69,6 +69,7 @@ public:
 protected:
 	static const byte MAX_CALLBACKS = 8;
 	Timer();
+	byte callbackCount;
 	Timer::Callback* callbacks[MAX_CALLBACKS];
 
 	virtual void initInternal() = 0;
