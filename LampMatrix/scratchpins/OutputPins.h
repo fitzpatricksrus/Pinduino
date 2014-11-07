@@ -10,7 +10,9 @@
 
 #include <Arduino.h>
 
-#include <scratchpins/PinPattern.h>
+#include "PinPattern.h"
+
+namespace pins {
 
 /*
  * A set of pins with particular values.  Pin values
@@ -24,6 +26,9 @@ public:
 	virtual ~OutputPins();
 	virtual void initPins() const = 0;
     virtual void setPinPattern(PinPattern* pattern) = 0;
+    virtual void latch() = 0;
 };
+
+} //namespace pins
 
 #endif /* OUTPUTPINS_H_ */

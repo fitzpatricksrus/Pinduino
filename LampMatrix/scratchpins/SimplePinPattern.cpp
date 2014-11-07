@@ -5,4 +5,8 @@
  *      Author: jfitzpatrick
  */
 
-#include <scratchpins/SimplePinPattern.h>
+#include "SimplePinPattern.h"
+
+namespace pins{
+
+}

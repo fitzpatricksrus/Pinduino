@@ -5,7 +5,9 @@
  *      Author: jfitzpatrick
  */
 
-#include <scratchpins/PinPattern.h>
+#include "PinPattern.h"
+
+namespace pins {
 
 PinPattern::PinPattern() {
 }
@@ -16,3 +18,5 @@ PinPattern::~PinPattern() {
 bool PinPattern::operator [](byte ndx) const {
 	return getPinValue(ndx);
 }
+
+} // namespace pins

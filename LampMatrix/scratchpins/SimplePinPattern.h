@@ -8,7 +8,9 @@
 #ifndef SIMPLEPINPATTERN_H_
 #define SIMPLEPINPATTERN_H_
 
-#include <scratchpins/PinPattern.h>
+#include "PinPattern.h"
+
+namespace pins {
 
 template<byte count>
 class SimplePinPattern: public PinPattern {
@@ -55,5 +57,7 @@ template<byte count>
 inline byte& SimplePinPattern<count>::operator [](byte ndx) {
 	return values[ndx];
 }
+
+} //namespace pins
 
 #endif /* SIMPLEPINPATTERN_H_ */

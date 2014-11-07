@@ -11,23 +11,21 @@
 #include <Arduino.h>
 #include "OutputPins.h"
 
+namespace pins {
+
 class DirectOutputPins : public OutputPins {
 public:
-	DirectOutputPins();
-	DirectOutputPins(byte pinCount, byte* pins);
-	DirectOutputPins(const DirectOutputPins& source);
+	DirectOutputPins(byte pinCount, byte* pinsNumbers);
 	virtual ~DirectOutputPins();
-	virtual DirectOutputPins& operator=(const DirectOutputPins& other);
 	virtual void initPins() const;
-	virtual bool getPin(byte pinNdx) const;
-	virtual void setPin(byte pinNdx, bool value);
-	virtual byte getPinCount() const;
-	virtual void latch();
+    virtual void setPinPattern(PinPattern* pattern);
+    virtual void latch();
 
 private:
-	byte* pinNumber;
-    bool* pinValue;
     byte pinCount;
+	byte* pinNumber;
+	PinPattern* pattern;
 };
 
+} // namespace pins
 #endif /* DIRECTOUTPUTPINS_H_ */

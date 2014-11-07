@@ -10,6 +10,8 @@
 
 #include <Arduino.h>
 
+namespace pins {
+
 class PinPattern {
 public:
 	PinPattern();
@@ -19,5 +21,7 @@ public:
 	virtual bool getPinValue(byte ndx) const = 0;
 	virtual bool operator[](byte ndx) const;
 };
+
+} // namespace pins
 
 #endif /* PINPATTERN_H_ */

@@ -6,6 +6,8 @@
  */
 #include "OutputPins.h"
 
+namespace pins {
+
 OutputPins::OutputPins()
 {
 }
@@ -13,3 +15,5 @@ OutputPins::OutputPins()
 OutputPins::~OutputPins()
 {
 }
+
+} // namespace pins
