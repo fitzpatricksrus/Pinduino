@@ -7,6 +7,9 @@
 
 #include "MatrixPattern.h"
 
+namespace matrixpatterns {
+
 MatrixPattern::~MatrixPattern() {
 }
 
+}

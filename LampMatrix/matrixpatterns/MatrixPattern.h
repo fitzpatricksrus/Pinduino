@@ -10,6 +10,8 @@
 
 #include <Arduino.h>
 
+namespace matrixpatterns {
+
 class MatrixPattern {
   public:
     virtual ~MatrixPattern();
@@ -20,5 +22,7 @@ class MatrixPattern {
     virtual byte const* operator[](byte columnIndex) const = 0;
     virtual byte* operator[](byte columnIndex) = 0;
 };
+
+} // namespace matrixpatterns
 
 #endif /* MATRIXPATTERN_H_ */

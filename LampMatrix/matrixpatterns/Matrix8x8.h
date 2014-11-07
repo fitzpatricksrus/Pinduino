@@ -10,10 +10,13 @@
 
 #include "MatrixPattern.h"
 
+namespace matrixpatterns {
+
 class Matrix8by8 {
 public:
 	static MatrixPattern* getPattern(int ndx);
 };
 
+} // namespace matrixpatterns
 
 #endif /* MATRIX8X8_H_ */

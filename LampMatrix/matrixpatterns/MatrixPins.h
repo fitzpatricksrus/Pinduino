@@ -12,6 +12,8 @@
 #include "../pins/DirectOutputPins.h"
 #include "Arduino.h"
 
+namespace matrixpatterns {
+
 typedef unsigned long Time;
 
 class MatrixPins {
@@ -35,5 +37,6 @@ class MatrixPins {
 	MatrixPattern* currentPattern;
 };
 
+} // namespace matrixpatterns
 
 #endif /* MATRIXPINS_H_ */

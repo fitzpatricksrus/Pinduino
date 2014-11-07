@@ -11,6 +11,8 @@
 #include "Arduino.h"
 #include "MatrixPattern.h"
 
+namespace matrixpatterns {
+
 class RGBMatrixPattern {
 public:
 	enum RGBComponent { RED, GREEN, BLUE } ;
@@ -24,5 +26,7 @@ public:
 	virtual const MatrixPattern* operator[](RGBComponent comp) const = 0;
 	virtual MatrixPattern* operator[](RGBComponent comp) = 0;
 };
+
+} // namespace matrixpatterns
 
 #endif /* RGBMATRIXPATTERN_H_ */

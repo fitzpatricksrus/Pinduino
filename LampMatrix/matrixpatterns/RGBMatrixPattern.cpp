@@ -7,6 +7,8 @@
 
 #include "RGBMatrixPattern.h"
 
+namespace matrixpatterns {
+
 RGBMatrixPattern::RGBMatrixPattern() {
 	// TODO Auto-generated constructor stub
 
@@ -15,3 +17,5 @@ RGBMatrixPattern::RGBMatrixPattern() {
 RGBMatrixPattern::~RGBMatrixPattern() {
 	// TODO Auto-generated destructor stub
 }
+
+} // namespace matrixpatterns

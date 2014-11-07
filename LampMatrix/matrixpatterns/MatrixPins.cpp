@@ -8,6 +8,8 @@
 #include "MatrixPins.h"
 #include "Arduino.h"
 
+namespace matrixpatterns {
+
 MatrixPins::MatrixPins(OutputPins* colsIn, OutputPins* rowsIn, Time timePerColumnIn)
 : refreshRate(timePerColumnIn*colsIn->getPinCount()), pwmCutoffs(0), timePerColumn(timePerColumnIn),
   columns(colsIn), rows(rowsIn), currentPattern(0)
@@ -61,3 +63,4 @@ void MatrixPins::recalcPWM(int pulseWaveSteps) {
 	}
 }
 
+} // namespace matrixpatterns

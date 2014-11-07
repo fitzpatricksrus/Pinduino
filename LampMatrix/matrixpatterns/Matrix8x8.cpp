@@ -10,6 +10,8 @@
 #include "SimpleMatrixPattern.h"
 #include <Arduino.h>
 
+namespace matrixpatterns {
+
 static SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES1 = {
 	    {  9,  9,  9,  9,  9,  9,  9,  9,     0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0 },
 	    {  9,  9,  9,  9,  9,  9,  9,  9,     0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0 },
@@ -86,5 +88,7 @@ MatrixPattern* Matrix8by8::getPattern(int ndx) {
 		return &PATTERN5;
 	}
 }
+
+} // namespace matrixpatterns
 
 

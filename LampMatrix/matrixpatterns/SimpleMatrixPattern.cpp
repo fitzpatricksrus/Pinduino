@@ -7,4 +7,6 @@
 
 #include "SimpleMatrixPattern.h"
 
+namespace matrixpatterns {
 
+}

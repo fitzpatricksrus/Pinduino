@@ -10,6 +10,8 @@
 
 #include "MatrixPattern.h"
 
+namespace matrixpatterns {
+
 template<byte COLS, byte ROWS>
 class SimpleMatrixPattern: public MatrixPattern {
 public:
@@ -69,5 +71,7 @@ template<byte COLS, byte ROWS>
 byte* SimpleMatrixPattern<COLS, ROWS>::operator[](byte columnIndex) {
 	return values[columnIndex];
 }
+
+} // namespace matrixpatterns
 
 #endif /* CONCRETEMATRIXPATTERN_H_ */

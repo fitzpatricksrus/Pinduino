@@ -9,6 +9,8 @@
 #include "SimpleMatrixPattern.h"
 #include <Arduino.h>
 
+namespace matrixpatterns {
+
 static SimpleMatrixPattern<5,6>::ValueArray MATRIX_VALUES1 = {
 	    { 59,  9, 00,  0,  9, 59 },
 	    {  9, 59,  9,  9, 59,  9 },
@@ -33,3 +35,5 @@ MatrixPattern* Matrix5by7::getPattern1() {
 MatrixPattern* Matrix5by7::getPattern2() {
 	return &PATTERN2;
 }
+
+} // namespace matrixpatterns
