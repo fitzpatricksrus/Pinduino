@@ -14,10 +14,9 @@
 namespace pins {
 
 template <byte cols, byte rows>
-class SimpleMatrixPattern : public MatrixPattern {
-public:
-	SimpleMatrixPattern(bool** values);
-	virtual ~SimpleMatrixPattern();
+class SMatrixPattern : public MatrixPattern {
+	SMatrixPattern(bool** values);
+	virtual ~SMatrixPattern();
 
 	virtual byte getRowCount() const;
 	virtual byte getColCount() const;
@@ -26,21 +25,21 @@ public:
 	bool** values;
 };
 
-} /* namespace pins */
-
-template<byte cols, byte rows>
-inline byte SimpleMatrixPattern<cols, rows>::getRowCount() const {
+template <byte cols, byte rows>
+inline byte SMatrixPattern<cols,rows>::getRowCount() const {
 	return rows;
 }
 
-template<byte cols, byte rows>
-inline byte SimpleMatrixPattern<cols, rows>::getColCount() const {
+template <byte cols, byte rows>
+inline byte SMatrixPattern<cols,rows>::getColCount() const {
 	return cols;
 }
 
-template<byte cols, byte rows>
-inline bool* pins::SimpleMatrixPattern<cols, rows>::operator [](byte col) const {
-	return values[cols][rows];
+template <byte cols, byte rows>
+inline bool* SMatrixPattern<cols,rows>::operator[](byte col) const {
+	return values[col];
 }
+
+} // namespace pins
 
 #endif /* SCRATCHPINS_SIMPLEMATRIXPATTERN_H_ */

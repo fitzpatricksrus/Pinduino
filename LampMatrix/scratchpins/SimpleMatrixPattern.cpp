@@ -10,13 +10,13 @@
 namespace pins {
 
 template<byte cols, byte rows>
-inline SimpleMatrixPattern(bool** valuesIn)
+SMatrixPattern<cols, rows>::SMatrixPattern(bool** valuesIn)
 : values(valuesIn)
 {
 }
 
 template <byte cols, byte rows>
-SimpleMatrixPattern<cols,rows>::~SimpleMatrixPattern() {
+SMatrixPattern<cols,rows>::~SMatrixPattern() {
 }
 
 } /* namespace pins */
