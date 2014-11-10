@@ -19,7 +19,9 @@ public:
 
 	virtual byte getPinCount() const = 0;
 	virtual bool getPinValue(byte ndx) const = 0;
+	virtual bool* getPinValues() const = 0;
 	virtual bool operator[](byte ndx) const;
+	virtual PinPattern& operator=(const PinPattern& other) = 0;
 };
 
 } // namespace pins

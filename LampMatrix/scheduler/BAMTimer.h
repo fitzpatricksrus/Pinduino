@@ -12,6 +12,14 @@
 
 namespace scheduler {
 
+
+/*
+ * A BAMTimer has 8 cycles (0 - 7), each twice as long as the last.
+ * At the end of each cycle the loop() callback is called.  Timing
+ * is provided exclusively by the timer passed into the constructor.
+ * BAMTimer will register itself for timer callbacks and set the
+ * timer ticks per interrupt.
+ */
 class BAMTimer : private Timer::Callback {
 public:
 	class Callback {

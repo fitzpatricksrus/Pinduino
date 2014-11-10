@@ -31,7 +31,6 @@ private:
 
 	OutputPins* pins;			//the actual hardward pins
 	byte* values;				//the pwm value
-	scheduler::Timer* timer;
 	scheduler::BAMTimer BAM;
 #ifdef USE_MODULATED_VALUES
 	void buildModulationValues();

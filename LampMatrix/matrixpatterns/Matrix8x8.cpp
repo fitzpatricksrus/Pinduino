@@ -11,8 +11,8 @@
 #include <Arduino.h>
 
 namespace matrixpatterns {
-
-static SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES1 = {
+#if 0
+static const SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES1 = {
 	    {  9,  9,  9,  9,  9,  9,  9,  9,     0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0 },
 	    {  9,  9,  9,  9,  9,  9,  9,  9,     0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0 },
 	    {  9,  9,  9,  9,  9,  9,  9,  9,     0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0 },
@@ -24,7 +24,7 @@ static SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES1 = {
 };
 static SimpleMatrixPattern<8,24> PATTERN1(MATRIX_VALUES1, 10);
 
-static SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES2 = {
+static const SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES2 = {
 	    {  0,  0,  0,  0,  0,  0,  0,  0,     9,  9,  9,  9,  9,  9,  9,  9,     0,  0,  0,  0,  0,  0,  0,  0 },
 	    {  0,  0,  0,  0,  0,  0,  0,  0,     9,  9,  9,  9,  9,  9,  9,  9,     0,  0,  0,  0,  0,  0,  0,  0 },
 	    {  0,  0,  0,  0,  0,  0,  0,  0,     9,  9,  9,  9,  9,  9,  9,  9,     0,  0,  0,  0,  0,  0,  0,  0 },
@@ -36,7 +36,7 @@ static SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES2 = {
 };
 static SimpleMatrixPattern<8,24> PATTERN2(MATRIX_VALUES2, 10);
 
-static SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES3 = {
+static const SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES3 = {
 	    {  0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0,     9,  9,  9,  9,  9,  9,  9,  9 },
 	    {  0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0,     9,  9,  9,  9,  9,  9,  9,  9 },
 	    {  0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0,     9,  9,  9,  9,  9,  9,  9,  9 },
@@ -48,7 +48,7 @@ static SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES3 = {
 };
 static SimpleMatrixPattern<8,24> PATTERN3(MATRIX_VALUES3, 10);
 
-static SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES4 = {
+static const SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES4 = {
 	    {  0,  0,  0,  0,  0,  0,  0,  0,     9,  9,  9,  9,  9,  9,  9,  9,     9,  9,  9,  9,  9,  9,  9,  9 },
 	    {  0,  0,  0,  0,  0,  0,  0,  0,     9,  9,  9,  9,  9,  9,  9,  9,     9,  9,  9,  9,  9,  9,  9,  9 },
 	    {  0,  0,  0,  0,  0,  0,  0,  0,     9,  9,  9,  9,  9,  9,  9,  9,     9,  9,  9,  9,  9,  9,  9,  9 },
@@ -60,7 +60,7 @@ static SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES4 = {
 };
 static SimpleMatrixPattern<8,24> PATTERN4(MATRIX_VALUES4, 10);
 
-static SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES5 = {
+static const SimpleMatrixPattern<8,24>::ValueArray PROGMEM MATRIX_VALUES5 = {
 	    {  9,  9,  9,  9,  9,  9,  9,  9,     0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0 },
 	    {  0,  0,  0,  0,  0,  0,  0,  0,     9,  9,  9,  9,  9,  9,  9,  9,     0,  0,  0,  0,  0,  0,  0,  0 },
 	    {  0,  0,  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  0,  0,  0,  0,     9,  9,  9,  9,  9,  9,  9,  9 },
@@ -88,6 +88,12 @@ MatrixPattern* Matrix8by8::getPattern(int ndx) {
 		return &PATTERN5;
 	}
 }
+
+#endif
+MatrixPattern* Matrix8by8::getPattern(int ndx) {
+	return 0;
+}
+
 
 } // namespace matrixpatterns
 

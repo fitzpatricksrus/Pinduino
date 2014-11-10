@@ -57,7 +57,7 @@ void BAMOutputPinTest::loop() {
 //	if ((splitter % 4) == 0)
 //	scheduler::Timer::tickDebugTimer(micros());
 //	splitter++;
-	if ((millis() - lastLoop) > 7) {
+	if ((micros() - lastLoop) > 2000) {
 		count = (count + 1) & 0x1FF;
 		for (int i = 0; i < 8; i++) {
 			int val = count;
@@ -75,7 +75,7 @@ void BAMOutputPinTest::loop() {
 		}
 		dopins.latch();
 //		spipins.latch();
-		lastLoop = millis();
+		lastLoop = micros();
 	}
 }
 

@@ -10,11 +10,11 @@
 #include "../scheduler/Timer.h"
 #include "../Tests/Debug.h"
 
-#define DONT_LINEAR_BRIGHTNESS
+#define USE_LINEAR_BRIGHTNESS
 static byte valueMap[256];
 
 BOP::BOP(scheduler::Timer* timerIn, OutputPins* pinsIn)
-: AnalogOutputPins(), pins(pinsIn), values(0), timer(timerIn), BAM(timerIn, this)
+: AnalogOutputPins(), pins(pinsIn), values(0), BAM(timerIn, this)
 {
 	values = new byte[pins->getPinCount()];
 	for (byte i = 0; i < pins->getPinCount(); i++) {
@@ -62,8 +62,9 @@ void BOP::setEnabled(bool on) {
 			pins->setPin(i, 0);
 		}
 		for (int i = 0; i < 256; i++) {
+#ifdef USE_LINEAR_BRIGHTNESS
 			valueMap[i] = i;
-#ifndef LINEAR_BRIGHTNESS
+#else
 			if (i > 128) {
 	    		valueMap[i] = map(i, 128, 256, 64, 256);
 	    	} else if (i > 16){
@@ -87,7 +88,9 @@ void BOP::loop(byte bit, byte mask) {
 #else
 	for (int i = 0; i < pins->getPinCount(); i++) {
 		byte value = values[i];
+#ifndef USE_LINEAR_BRIGHTNESS
 		value = valueMap[value];
+#endif
 		bool isOn = ((value & mask) != 0);
 		pins->setPin(i, isOn);
 	}

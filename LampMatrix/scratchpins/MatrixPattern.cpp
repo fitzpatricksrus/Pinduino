@@ -15,8 +15,4 @@ MatrixPattern::MatrixPattern() {
 MatrixPattern::~MatrixPattern() {
 }
 
-bool MatrixPattern::getPinValue(byte col, byte row) const {
-	return (*this)[col][row];
-}
-
 } /* namespace pins */

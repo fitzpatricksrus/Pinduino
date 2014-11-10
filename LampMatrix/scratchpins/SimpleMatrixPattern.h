@@ -10,35 +10,41 @@
 
 #include <Arduino.h>
 #include "MatrixPattern.h"
+#include "SimplePinPattern.h"
 
 namespace pins {
 
-template <byte cols, byte rows>
 class SMatrixPattern : public MatrixPattern {
-	SMatrixPattern(bool** values);
+public:
+	SMatrixPattern(byte rows, byte cols, bool** values);
 	virtual ~SMatrixPattern();
 
 	virtual byte getRowCount() const;
 	virtual byte getColCount() const;
 	virtual bool* operator[](byte col) const;
+	virtual void getColumnPattern(byte col, PinPattern& pattern) const;
 
+	byte rows;
+	byte cols;
 	bool** values;
 };
 
-template <byte cols, byte rows>
-inline byte SMatrixPattern<cols,rows>::getRowCount() const {
+inline byte SMatrixPattern::getRowCount() const {
 	return rows;
 }
 
-template <byte cols, byte rows>
-inline byte SMatrixPattern<cols,rows>::getColCount() const {
+inline byte SMatrixPattern::getColCount() const {
 	return cols;
 }
 
-template <byte cols, byte rows>
-inline bool* SMatrixPattern<cols,rows>::operator[](byte col) const {
+inline bool* SMatrixPattern::operator[](byte col) const {
 	return values[col];
 }
+
+inline void SMatrixPattern::getColumnPattern(byte col, PinPattern& pattern) const {
+	pattern = SimplePinPattern(rows, values[col]);
+}
+
 
 } // namespace pins
 

@@ -12,49 +12,65 @@
 
 namespace pins {
 
-template<byte count>
 class SimplePinPattern: public PinPattern {
 public:
-	SimplePinPattern(byte* values);
+	SimplePinPattern(byte count, bool* values);
+	SimplePinPattern(const SimplePinPattern& source);
 	virtual ~SimplePinPattern();
+	virtual PinPattern& operator=(const PinPattern& other);
 
 	virtual byte getPinCount() const;
 	virtual bool getPinValue(byte ndx) const;
+	virtual bool* getPinValues() const;
 
 	virtual void setPinValue(byte ndx, byte value);
-	virtual byte& operator[](byte ndx);
+	virtual bool& operator[](byte ndx);
 
 private:
-	byte* values;
+	byte count;
+	bool* values;
 };
 
-template<byte count>
-inline SimplePinPattern<count>::SimplePinPattern(byte* valuesIn)
-: values(valuesIn)
+inline SimplePinPattern::SimplePinPattern(byte countIn, bool* valuesIn)
+: count(countIn), values(valuesIn)
 {
 }
 
-template<byte count>
-inline SimplePinPattern<count>::~SimplePinPattern() {
+inline SimplePinPattern::SimplePinPattern(const SimplePinPattern& source)
+: count(source.count), values(source.values)
+{
 }
 
-template<byte count>
-inline byte SimplePinPattern<count>::getPinCount() const {
+inline SimplePinPattern::~SimplePinPattern() {
+}
+
+inline PinPattern& SimplePinPattern::operator=(const PinPattern& other) {
+	if (this != &other) {
+		count = other.getPinCount();
+		values = other.getPinValues();
+	}
+
+	return *this;
+}
+
+inline byte SimplePinPattern::getPinCount() const {
 	return count;
 }
 
-template<byte count>
-inline bool SimplePinPattern<count>::getPinValue(byte ndx) const {
+inline bool SimplePinPattern::getPinValue(byte ndx) const {
 	return values[ndx];
 }
 
-template<byte count>
-inline void SimplePinPattern<count>::setPinValue(byte ndx, byte value) {
+inline bool* SimplePinPattern::getPinValues() const {
+	return values;
+}
+
+
+inline void SimplePinPattern::setPinValue(byte ndx, byte value) {
 	values[ndx] = value;
 }
 
-template<byte count>
-inline byte& SimplePinPattern<count>::operator [](byte ndx) {
+inline bool& SimplePinPattern::operator [](byte ndx) {
 	return values[ndx];
 }
 
