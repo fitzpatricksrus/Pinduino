@@ -64,6 +64,7 @@ public:
 	void loopB(); // used by ISR
 
 protected:
+	virtual void setCallbackTicks(bool callbackA, unsigned int ticks);
 	virtual void enableCallback(bool callbackA);
 	virtual void disableCallback(bool callbackA);
 

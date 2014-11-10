@@ -13,9 +13,6 @@ namespace timers {
 void Timer::Callback::loop() {
 }
 
-void Timer::setTicks(unsigned int ticks) {
-}
-
 Timer::Timer()
 	: callbackA(0), callbackB(0)
 {
@@ -44,4 +41,14 @@ void Timer::removeCallback(Callback* callbackIn) {
 	}
 }
 
+
+void Timer::setTicks(Callback* callbackIn, unsigned int ticks) {
+	if (callbackA == callbackIn) {
+		setCallbackTicks((bool)true, ticks);
+	} else if (callbackB == callbackIn) {
+		setCallbackTicks((bool)false, ticks);
+	} else {
+		// would be nice to throw an exception here
+	}
+}
 } /* namespace Tests */

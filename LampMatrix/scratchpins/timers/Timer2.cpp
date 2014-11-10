@@ -71,14 +71,11 @@ void Timer2::setPrescalar(Prescalar p) {
 	TCCR2B = (TCCR2B & prescalarValueMask) | prescalarValues[p];
 }
 
-void Timer2::setTicks(unsigned int desiredTicks) {
-	OCR2A = desiredTicks;
-	uint16_t ticksPassedThisCycle = TCNT2;
-	// try to get close to the range we, keeping accumulated ticks if there are any.
-
-	if (ticksPassedThisCycle > desiredTicks) {
-		uint16_t overflow = (ticksPassedThisCycle - desiredTicks) % desiredTicks;  // handle 1 overflow, but no more
-		TCNT2 = overflow;
+void Timer1::setCallbackTicks(bool callbackA, unsigned int desiredTicks) {
+	if (callbackA) {
+		OCR1A = desiredTicks;
+	} else {
+		OCR1B = desiredTicks;
 	}
 }
 

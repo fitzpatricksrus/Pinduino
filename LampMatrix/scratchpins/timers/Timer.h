@@ -37,10 +37,11 @@ public:
 	virtual void init() = 0;
 	void addCallback(Callback* function);
 	void removeCallback(Callback* function);
-	virtual void setTicks(unsigned int ticks) = 0;
+	virtual void setTicks(Callback* function, unsigned int ticks);
 
 protected:
 	Timer();
+	virtual void setCallbackTicks(bool callbackA, unsigned int ticks) = 0;
 	virtual void enableCallback(bool callbackA) = 0;
 	virtual void disableCallback(bool callbackA) = 0;
 	Timer::Callback* callbackA;
