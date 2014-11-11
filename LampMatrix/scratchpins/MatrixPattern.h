@@ -21,7 +21,6 @@ public:
 	virtual byte getRowCount() const = 0;
 	virtual byte getColCount() const = 0;
 	virtual bool* operator[](byte col) const = 0;
-	virtual void getColumnPattern(byte col, PinPattern& pattern) const = 0;
 	bool getPinValue(byte col, byte row) const;
 };
 

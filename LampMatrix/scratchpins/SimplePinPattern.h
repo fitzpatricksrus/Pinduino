@@ -24,6 +24,7 @@ public:
 	virtual bool* getPinValues() const;
 
 	virtual void setPinValue(byte ndx, byte value);
+	virtual void setPinValues(byte count, bool* values);
 	virtual bool& operator[](byte ndx);
 
 private:
@@ -68,6 +69,11 @@ inline bool* SimplePinPattern::getPinValues() const {
 
 inline void SimplePinPattern::setPinValue(byte ndx, byte value) {
 	values[ndx] = value;
+}
+
+inline void SimplePinPattern::setPinValues(byte countIn, bool* valuesIn) {
+	count = countIn;
+	values = valuesIn;
 }
 
 inline bool& SimplePinPattern::operator [](byte ndx) {

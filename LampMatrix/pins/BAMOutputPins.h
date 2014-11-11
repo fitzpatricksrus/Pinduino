@@ -12,7 +12,7 @@
 #include "OutputPins.h"
 #include "../scheduler/timer.h"
 
-#define USE_MODULATED_VALUES
+#define DONT_USE_MODULATED_VALUES
 
 class BAMOutputPins: public AnalogOutputPins, private scheduler::Timer::Callback {
 public:

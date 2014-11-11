@@ -49,7 +49,7 @@ void TimerTest::setup() {
 	dop.latch();
 	spiop.latch();
 
-	Timer1::INSTANCE.init();
+//	Timer1::INSTANCE.init();
 	Timer1::INSTANCE.setPrescalar(Timer1::PS256);
 	Timer1::INSTANCE.setTicks(delayValue);
 	Timer1::INSTANCE.addCallback(&Callback);

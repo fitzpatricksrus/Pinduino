@@ -10,26 +10,28 @@
 
 #include "MatrixPins.h"
 #include "MatrixPattern.h"
+#include "SimplePinPattern.h"
 #include "OutputPins.h"
-#include "../scheduler/Timer.h"
+#include "timers/Timer.h"
 
 namespace pins {
 
-class SimpleMatrixPins: public MatrixPins, scheduler::Timer::Callback {
+class SimpleMatrixPins: public MatrixPins, timers::Timer::Callback {
 public:
-	SimpleMatrixPins(scheduler::Timer* timer, OutputPins* pins);
+	SimpleMatrixPins(OutputPins* pins);
 	virtual ~SimpleMatrixPins();
 	virtual void initPins();
     virtual void setPattern(MatrixPattern* pattern);
+    virtual byte getCurrentColumn();
+    virtual void setCurrentColumn(byte column);
     virtual void latch();
 
-private:
-	virtual void setup();
 	virtual void loop();
 
-    scheduler::Timer* timer;
+private:
 	MatrixPattern* pattern;
 	byte currentColumn;
+	SimplePinPattern currentColumnPattern;
 	OutputPins* pins;
 };
 

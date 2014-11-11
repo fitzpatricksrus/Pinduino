@@ -95,6 +95,7 @@ void Timer1::loopB() {
 static Timer1 timer1Instance;
 Timer1& Timer1::INSTANCE = timer1Instance;
 
+#ifdef _ENABLE_
 ISR(TIMER1_COMPA_vect)
 {
 	timer1Instance.loopA();
@@ -104,6 +105,7 @@ ISR(TIMER1_COMPB_vect)
 {
 	timer1Instance.loopB();
 }
+#endif
 
 } // namespace timers
 

@@ -10,7 +10,7 @@
 #include "../scheduler/Timer.h"
 #include "../Tests/Debug.h"
 
-#define USE_LINEAR_BRIGHTNESS
+#define DONT_USE_LINEAR_BRIGHTNESS
 static byte valueMap[256];
 
 BOP::BOP(scheduler::Timer* timerIn, OutputPins* pinsIn)

@@ -9,6 +9,9 @@
 
 #include <Arduino.h>
 
+#define _ENABLE_
+
+
 namespace scheduler {
 
 void Timer::Callback::setup() {
@@ -199,10 +202,12 @@ static Timer1 timer1Instance;
 Timer& Timer::timer1 = timer1Instance;
 Timer1& Timer1::INSTANCE = timer1Instance;
 
+#ifdef _ENABLE_
 ISR(TIMER1_COMPA_vect)
 {
 	timer1Instance.loop();
 }
+#endif
 
 //-----------------------------------------------------------------------
 // Timer2 is a singleton implementation for Timer1 only.  The AVR
@@ -235,7 +240,7 @@ void Timer2::initInternal() {
     TCCR2B = 0;     // same for TCCR1B
 
     // set compare match register to desired timer count:
-    OCR2A = 32000;
+    OCR2A = 255;
     // turn on CTC mode:
     TCCR2B |= (1 << WGM12);
     // Set CS10 and CS12 bits for 1024 prescaler:
@@ -278,10 +283,11 @@ static Timer2 Timer2Instance;
 Timer& Timer::timer2 = Timer2Instance;
 Timer2& Timer2::INSTANCE = Timer2Instance;
 
+#ifdef _ENABLE_
 ISR(TIMER2_COMPA_vect)
 {
 	Timer2Instance.loop();
 }
-
+#endif
 
 } /* namespace Tests */

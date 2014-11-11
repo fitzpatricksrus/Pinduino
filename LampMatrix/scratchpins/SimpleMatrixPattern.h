@@ -14,37 +14,31 @@
 
 namespace pins {
 
-class SMatrixPattern : public MatrixPattern {
+class SimpleMatrixPattern : public MatrixPattern {
 public:
-	SMatrixPattern(byte rows, byte cols, bool** values);
-	virtual ~SMatrixPattern();
+	SimpleMatrixPattern(byte rows, byte cols, bool** values);
+	virtual ~SimpleMatrixPattern();
 
 	virtual byte getRowCount() const;
 	virtual byte getColCount() const;
 	virtual bool* operator[](byte col) const;
-	virtual void getColumnPattern(byte col, PinPattern& pattern) const;
 
 	byte rows;
 	byte cols;
 	bool** values;
 };
 
-inline byte SMatrixPattern::getRowCount() const {
+inline byte SimpleMatrixPattern::getRowCount() const {
 	return rows;
 }
 
-inline byte SMatrixPattern::getColCount() const {
+inline byte SimpleMatrixPattern::getColCount() const {
 	return cols;
 }
 
-inline bool* SMatrixPattern::operator[](byte col) const {
+inline bool* SimpleMatrixPattern::operator[](byte col) const {
 	return values[col];
 }
-
-inline void SMatrixPattern::getColumnPattern(byte col, PinPattern& pattern) const {
-	pattern = SimplePinPattern(rows, values[col]);
-}
-
 
 } // namespace pins
 

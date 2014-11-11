@@ -9,8 +9,8 @@
 
 namespace pins {
 
-SimpleMatrixPins::SimpleMatrixPins(scheduler::Timer* timerIn, OutputPins* pinsIn)
-: timer(timerIn), pattern(0), currentColumn(0), pins(pinsIn)
+SimpleMatrixPins::SimpleMatrixPins(OutputPins* pinsIn)
+: pattern(0), currentColumn(0), currentColumnPattern(0, 0), pins(pinsIn)
 {
 }
 
@@ -19,11 +19,10 @@ SimpleMatrixPins::~SimpleMatrixPins() {
 
 void SimpleMatrixPins::initPins() {
 	currentColumn = 0;
+	currentColumnPattern.setPinValues(pattern->getRowCount(), (*pattern)[currentColumn]);
 	for (byte i = 0; i < pattern->getColCount(); i++) {
 		pins[i].initPins();
 	}
-	timer->addCallback(this);
-	timer->enableCallbacks();
 }
 
 void SimpleMatrixPins::setPattern(MatrixPattern* patternIn) {
@@ -32,20 +31,22 @@ void SimpleMatrixPins::setPattern(MatrixPattern* patternIn) {
 
 void SimpleMatrixPins::latch() {
 	// latch in the current row.
-	for (byte i = 0; i < pattern->getColCount(); i++) {
-//		pins[currentColumn].setPinPattern();
-	}
+	currentColumnPattern.setPinValues(pattern->getRowCount(), (*pattern)[currentColumn]);
+	pins[currentColumn].setPinPattern(&currentColumnPattern);
+	pins[currentColumn].latch();
 }
 
-void SimpleMatrixPins::setup() {
+byte SimpleMatrixPins::getCurrentColumn() {
+	return currentColumn;
+}
+
+void SimpleMatrixPins::setCurrentColumn(byte column) {
+	currentColumn = column;
 }
 
 void SimpleMatrixPins::loop() {
 	latch();
-	currentColumn++;
-	if (currentColumn > pattern->getColCount()) {
-		currentColumn = 0;
-	}
+	currentColumn = (currentColumn + 1) % pattern->getColCount();
 }
 
 } /* namespace pins */
