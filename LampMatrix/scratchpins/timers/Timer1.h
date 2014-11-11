@@ -52,18 +52,18 @@ public:
 	Timer1();
 	virtual ~Timer1();
 	virtual void init();
-	virtual void setTicks(unsigned int ticks);
 	virtual void setPrescalar(Prescalar p);
 
 	// Pins 9 and 10: controlled by timer1
 	// Pins 11 and 12: controlled by timer1 on Mega
-	virtual void togglePinA(bool toggleOn);
-	virtual void togglePinB(bool toggleOn);
 
 	void loopA(); // used by ISR
 	void loopB(); // used by ISR
 
+	static Timer1& INSTANCE;
+
 protected:
+	virtual void togglePin(bool callbackA, bool toggleOn);
 	virtual void setCallbackTicks(bool callbackA, unsigned int ticks);
 	virtual void enableCallback(bool callbackA);
 	virtual void disableCallback(bool callbackA);
@@ -71,8 +71,6 @@ protected:
 
 	static const byte prescalarValueMask;
 	static const byte prescalarValues[];
-
-	static Timer1& INSTANCE;
 };
 
 } // namespace timers

@@ -40,7 +40,8 @@ void Timer2::init() {
     TCCR2B = 0;     // same for TCCR1B
 
     // set compare match register to desired timer count:
-    OCR2A = 32000;
+    OCR2A = 255;
+    OCR2B = 255;
     // turn on CTC mode:
     TCCR2B |= (1 << WGM22);
     // Set CS10 and CS12 bits for 1024 prescaler:
@@ -71,7 +72,7 @@ void Timer2::setPrescalar(Prescalar p) {
 	TCCR2B = (TCCR2B & prescalarValueMask) | prescalarValues[p];
 }
 
-void Timer1::setCallbackTicks(bool callbackA, unsigned int desiredTicks) {
+void Timer2::setCallbackTicks(bool callbackA, unsigned int desiredTicks) {
 	if (callbackA) {
 		OCR1A = desiredTicks;
 	} else {
@@ -79,12 +80,16 @@ void Timer1::setCallbackTicks(bool callbackA, unsigned int desiredTicks) {
 	}
 }
 
+void Timer2::togglePin(bool callbackA, bool toggleOn) {
+	//hey jf - implement this
+}
+
 void Timer2::loopA() {
-	callbackA->loop();
+	if (callbackA) callbackA->loop();
 }
 
 void Timer2::loopB() {
-	callbackB->loop();
+	if (callbackB) callbackB->loop();
 }
 
 static Timer2 timer1Instance;

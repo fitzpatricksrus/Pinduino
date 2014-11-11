@@ -51,4 +51,15 @@ void Timer::setTicks(Callback* callbackIn, unsigned int ticks) {
 		// would be nice to throw an exception here
 	}
 }
+
+void Timer::toggleHardwarePin(Callback* function, bool toggleOn) {
+	if (callbackA == function) {
+		togglePin((bool)true, toggleOn);
+	} else if (callbackB == function) {
+		togglePin((bool)false, toggleOn);
+	} else {
+		// would be nice to throw an exception here
+	}
+}
+
 } /* namespace Tests */

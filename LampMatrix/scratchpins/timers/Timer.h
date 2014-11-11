@@ -38,9 +38,11 @@ public:
 	void addCallback(Callback* function);
 	void removeCallback(Callback* function);
 	virtual void setTicks(Callback* function, unsigned int ticks);
+	virtual void toggleHardwarePin(Callback* function, bool toggleOn);
 
 protected:
 	Timer();
+	virtual void togglePin(bool callbackA, bool toggleOn) = 0;
 	virtual void setCallbackTicks(bool callbackA, unsigned int ticks) = 0;
 	virtual void enableCallback(bool callbackA) = 0;
 	virtual void disableCallback(bool callbackA) = 0;
