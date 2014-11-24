@@ -6,15 +6,21 @@
  */
 
 #include "BAMOutputPins.h"
+/*
+ * BAMOutputPins.cpp
+ *
+ *  Created on: Nov 5, 2014
+ *      Author: Dad
+ */
 
 #include "../scheduler/Timer.h"
 #include "../Tests/Debug.h"
 
-static const byte mask[] = { 0b00000001,0b00000010,0b00000100,0b00001000,0b00010000,0b00100000,0b01000000,0b10000000 };
+#define DONT_USE_LINEAR_BRIGHTNESS
 static byte valueMap[256];
 
 BAMOutputPins::BAMOutputPins(scheduler::Timer* timerIn, OutputPins* pinsIn)
-: AnalogOutputPins(), pins(pinsIn), values(0), bitInCycle(0), timer(timerIn)
+: AnalogOutputPins(), pins(pinsIn), values(0), BAM(timerIn, this)
 {
 	values = new byte[pins->getPinCount()];
 	for (byte i = 0; i < pins->getPinCount(); i++) {
@@ -57,48 +63,45 @@ void BAMOutputPins::latch() {
 
 void BAMOutputPins::setEnabled(bool on) {
 	if (on) {
-		timer->addCallback(this);
+		for (int i = 0; i < pins->getPinCount(); i++) {
+			values[i] = 0;
+			pins->setPin(i, 0);
+		}
+		for (int i = 0; i < 256; i++) {
+#ifdef USE_LINEAR_BRIGHTNESS
+			valueMap[i] = i;
+#else
+			if (i > 128) {
+	    		valueMap[i] = map(i, 128, 256, 64, 256);
+	    	} else if (i > 16){
+	    		valueMap[i] = map(i, 16, 128, 8, 64);
+	    	} else {
+	    		valueMap[i] = map(i, 0, 16, 0, 8);
+	    	}
+#endif
+		}
+		BAM.enableCallbacks();
 	} else {
-		timer->removeCallback(this);
+		BAM.disableCallbacks();
 	}
 }
 
-void BAMOutputPins::setup() {
-	//reset the timer
-	bitInCycle = 0;
-	for (int i = 0; i < pins->getPinCount(); i++) {
-		values[i] = 0;
-		pins->setPin(i, 0);
-	}
-	for (int i = 0; i < 256; i++) {
-		valueMap[i] = i;
-/*		if (i > 128) {
-    		valueMap[i] = map(i, 128, 256, 64, 256);
-    	} else if (i > 16){
-    		valueMap[i] = map(i, 16, 128, 8, 64);
-    	} else {
-    		valueMap[i] = map(i, 0, 16, 0, 8);
-    	} */
-	}
-}
-
-void BAMOutputPins::loop() {
+void BAMOutputPins::loop(byte bit, byte mask) {
 #ifdef USE_MODULATED_VALUES
 	for (int i = 0; i < pins->getPinCount(); i++) {
-		pins->setPin(i, modulatedValues[bitInCycle][i]);
+		pins->setPin(i, modulatedValues[bit][i]);
 	}
 #else
 	for (int i = 0; i < pins->getPinCount(); i++) {
 		byte value = values[i];
+#ifndef USE_LINEAR_BRIGHTNESS
 		value = valueMap[value];
-		bool isOn = ((value & mask[bitInCycle]) != 0);
+#endif
+		bool isOn = ((value & mask) != 0);
 		pins->setPin(i, isOn);
 	}
 #endif
 	pins->latch();
-	unsigned int rval = mask[bitInCycle];
-	bitInCycle = (bitInCycle + 1) & 0b00000111;
-	timer->setTicks(rval);
 }
 
 #ifdef USE_MODULATED_VALUES
@@ -109,9 +112,10 @@ void BAMOutputPins::buildModulationValues() {
 		for (byte pin = 0; pin < pins->getPinCount(); pin++) {
 	    	byte value = values[pin];
 	    	value = valueMap[value];
-	        bool isOn = ((value & mask[cycle]) != 0);
+	        bool isOn = ((value & (1 << cycle)) != 0);
 	        modulatedValues[cycle][pin] = isOn;
 		}
 	}
 }
 #endif
+

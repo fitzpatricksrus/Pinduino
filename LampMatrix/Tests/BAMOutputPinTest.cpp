@@ -20,7 +20,7 @@ static byte pins[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
 
 static scheduler::Timer2* timer = &scheduler::Timer2::INSTANCE;
 static DirectOutputPins dpins(8, pins);
-static BOP dopins(timer, &dpins);
+static BAMOutputPins dopins(timer, &dpins);
 //static SPIOutputPins spins(8);
 //static BAMOutputPins spipins(timer, &spins);
 

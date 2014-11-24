@@ -11,10 +11,11 @@
 #include "AnalogOutputPins.h"
 #include "OutputPins.h"
 #include "../scheduler/timer.h"
+#include "../scheduler/BAMTimer.h"
 
 #define DONT_USE_MODULATED_VALUES
 
-class BAMOutputPins: public AnalogOutputPins, private scheduler::Timer::Callback {
+class BAMOutputPins: public AnalogOutputPins, private scheduler::BAMTimer::Callback {
 public:
 	BAMOutputPins(scheduler::Timer* timer, OutputPins* pins);
 	virtual ~BAMOutputPins();
@@ -25,17 +26,16 @@ public:
 	virtual void setEnabled(bool on);
 
 private:
-	virtual void setup();
-	virtual void loop();
+	virtual void loop(byte bit, byte mask);
 
 	OutputPins* pins;			//the actual hardward pins
 	byte* values;				//the pwm value
-	byte bitInCycle;
-	scheduler::Timer* timer;
+	scheduler::BAMTimer BAM;
 #ifdef USE_MODULATED_VALUES
 	void buildModulationValues();
 	bool* modulatedValues[8];	//8xN booleans
 #endif
 };
+
 
 #endif /* BAMOUTPUTPINS_H_ */
