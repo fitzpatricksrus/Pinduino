@@ -27,10 +27,10 @@ public:
 	virtual Alarm& start() = 0;
 	virtual Alarm& stop() = 0;
 	virtual Alarm& setFrequency(double frequencyHz) = 0;
-	virtual Alarm& setPeriod(unsigned int periodUs);
+	virtual Alarm& setPeriod(unsigned long periodUs) = 0;
 
-protected:
 	void doCallback();
+protected:
 	Callback* callback;
 };
 

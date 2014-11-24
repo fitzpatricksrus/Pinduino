@@ -10,7 +10,7 @@
 #include "../scheduler/Timer.h"
 #include "../Tests/Debug.h"
 
-static const byte mask[] = { B00000001,B00000010,B00000100,B00001000,B00010000,B00100000,B01000000,B10000000 };
+static const byte mask[] = { 0b00000001,0b00000010,0b00000100,0b00001000,0b00010000,0b00100000,0b01000000,0b10000000 };
 static byte valueMap[256];
 
 BAMOutputPins::BAMOutputPins(scheduler::Timer* timerIn, OutputPins* pinsIn)

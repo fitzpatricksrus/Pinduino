@@ -8,8 +8,8 @@
 #include "Timer.h"
 
 #include <Arduino.h>
-
-#define _ENABLE_
+#include "../scratchpins/timers/TimerVectors.h"
+#define _ENABLE_X
 
 
 namespace scheduler {
@@ -169,11 +169,14 @@ void Timer1::initInternal() {
 
 }
 
+static void Timer1ACallback();
 void Timer1::enableCallbacksInternal() {
+	timers::TimerVectors::timer1aVector.attachInterrupt(&Timer1ACallback);
 	TIMSK1 = TIMSK1 | (1 << OCIE1A);
 }
 
 void Timer1::disableCallbacksInternal() {
+	timers::TimerVectors::timer1aVector.detachInterrupt();
     TIMSK1 = TIMSK1 & ~(1 << OCIE1A);
 }
 
@@ -202,6 +205,9 @@ static Timer1 timer1Instance;
 Timer& Timer::timer1 = timer1Instance;
 Timer1& Timer1::INSTANCE = timer1Instance;
 
+static void Timer1ACallback() {
+	timer1Instance.loop();
+}
 #ifdef _ENABLE_
 ISR(TIMER1_COMPA_vect)
 {
@@ -251,11 +257,14 @@ void Timer2::initInternal() {
 
 }
 
+static void Timer2ACallback();
 void Timer2::enableCallbacksInternal() {
+	timers::TimerVectors::timer2aVector.attachInterrupt(&Timer2ACallback);
 	TIMSK2 = TIMSK2 | (1 << OCIE2A);
 }
 
 void Timer2::disableCallbacksInternal() {
+	timers::TimerVectors::timer2aVector.detachInterrupt();
     TIMSK2 = TIMSK2 & ~(1 << OCIE2A);
 }
 
@@ -282,6 +291,10 @@ void Timer2::loop() {
 static Timer2 Timer2Instance;
 Timer& Timer::timer2 = Timer2Instance;
 Timer2& Timer2::INSTANCE = Timer2Instance;
+
+static void Timer2ACallback() {
+	Timer2Instance.loop();
+}
 
 #ifdef _ENABLE_
 ISR(TIMER2_COMPA_vect)

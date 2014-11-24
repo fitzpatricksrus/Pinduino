@@ -30,7 +30,7 @@ Alarm& Alarm::detachInterrupt() {
 	return *this;
 }
 
-Alarm& Alarm::setPeriod(unsigned int periodMs) {
+Alarm& Alarm::setPeriod(unsigned long periodMs) {
 	// Convert period in microseconds to frequency in Hz
 	double frequency = 1000000.0 / periodMs;
 	setFrequency(frequency);
