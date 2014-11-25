@@ -12,7 +12,8 @@ For more details on FlexiTimer2 see:
 
 */
 
-#include <FlexiTimer2.h>
+#include "FlexiTimer2.h"
+#include <Arduino.h>
 
 // Switch on LED on and off each half second
 
