@@ -39,17 +39,8 @@ void UnoAlarm::setFrequency(double frequencyHz) {
 	if (ticks > scalars[0].scalar) {
 		ticks = scalars[0].scalar;
 	}
-	cli();
 	setScalar(scalars[0].mask, scalars[f].mask);
 	setTicks(ticks);
-	sei();
-}
-
-void UnoAlarm::setPeriod(unsigned long periodUs) {
-	// Set the period of the timer (in microseconds)
-	// Convert period in microseconds to frequency in Hz
-	double frequency = 1000000.0 / periodUs;
-	setFrequency(frequency);
 }
 
 class UnoAlarm1 : public UnoAlarm {

@@ -16,8 +16,8 @@ public:
 
 	TimerVectors();
 
-	TimerVectors& attachInterrupt(ISR callback);
-	TimerVectors& detachInterrupt(void);
+	void attachInterrupt(ISR callback);
+	void detachInterrupt();
 
 	void doCallback();
 

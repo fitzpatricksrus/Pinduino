@@ -27,7 +27,7 @@ public:
 	virtual void start() = 0;
 	virtual void stop() = 0;
 	virtual void setFrequency(double frequencyHz) = 0;
-	virtual void setPeriod(unsigned long periodUs) = 0;
+	virtual void setPeriod(unsigned long periodUs);
 
 	void doCallback();
 protected:

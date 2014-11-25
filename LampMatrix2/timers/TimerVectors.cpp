@@ -15,14 +15,12 @@ TimerVectors::TimerVectors()
 {
 }
 
-TimerVectors& TimerVectors::attachInterrupt(ISR callbackIn) {
+void TimerVectors::attachInterrupt(ISR callbackIn) {
 	callback = callbackIn;
-	return *this;
 }
 
-TimerVectors& TimerVectors::detachInterrupt() {
+void TimerVectors::detachInterrupt() {
 	callback = 0;
-	return *this;
 }
 
 void TimerVectors::doCallback() {

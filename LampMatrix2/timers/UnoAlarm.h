@@ -17,10 +17,10 @@ public:
 	virtual ~UnoAlarm();
 //	virtual void attachInterrupt(Callback* callback);
 //	virtual void detachInterrupt();
-//	virtual void start();
-//	virtual void stop();
+//	virtual void start() = 0;
+//	virtual void stop() = 0;
 	virtual void setFrequency(double frequencyHz);
-	virtual void setPeriod(unsigned long periodUs);
+//	virtual void setPeriod(unsigned long periodUs);
 
 //	static Alarm& alarm0a;
 //	static Alarm& alarm0b;
