@@ -1,86 +1,11 @@
-// #include "FlexiTimer2.h"
-
-// #include "MatrixColumnPattern.h"
-
-//#define RUN_MatrixPinsTest
-
-#include "Tests/Debug.h"
-#include "Tests/TestClass.h"
-#include "Tests/DirectOutputPinsTest.h"
-#include "Tests/SPIOutputPinsTest.h"
-//#include "Tests/SPILampMatrixTest.h"
-#include "Tests/BAMOutputPinTest.h"
-#include "scheduler/Tests/TimerTest.h"
-
-//Tests::TestClass* thisTest = &Tests::DirectOutputPinsTest::TEST;
-//Tests::TestClass* thisTest = &Tests::SPIOutputPinsTest::TEST;
-//Tests::TestClass* thisTest = &scheduler::tests::TimerTest::TEST;
-Tests::TestClass* thisTest = &Tests::BAMOutputPinTest::TEST;
-
-static unsigned long count = 0;
-static unsigned long lastLoop = 0;
-void setup() {
-	Serial.begin(57600);
-	debugScope("main::setup");
-	thisTest->setup();
+//The setup function is called once at startup of the sketch
+void setup()
+{
+// Add your initialization code here
 }
 
-void loop() {
-	// This test works well at 10K Hz
-	thisTest->loop();
-	count++;
-	if (millis() - lastLoop > 1000) {
-//		Serial << F("Count: ") << count << F("  free memory: ") << availableRam() << endl;
-		Serial.println(count);
-//		Serial.println((int)availableMemory());
-//		Serial.println((int)availableRam());
-//		Serial.println();
-		count = 0;
-		lastLoop = millis();
-	}
+// The loop function is called in an endless loop
+void loop()
+{
+//Add your repeated code here
 }
-
-/*
-#ifdef RUN_MatrixPinsTest
-#include "DirectOutputPins.h"
-#include "MatrixPins.h"
-#include "Arduino.h"
-#include "Matrix8x8.h"
-
-static const Time TICKS_PER_COLUMN = 8;
-
-static uint8_t ROW_PIN_NUMBERS[] = { 46,48,47,49,50,51,52,53,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45 };
-static DirectOutputPins ROW_PINS(24, ROW_PIN_NUMBERS);
-static uint8_t COL_PIN_NUMBERS[] = { 2,3,4,5,6,7,8,9 };
-static DirectOutputPins COL_PINS(8, COL_PIN_NUMBERS);
-static MatrixPins LAMP_MATRIX(&COL_PINS, &ROW_PINS, TICKS_PER_COLUMN);
-
-long count = 0;
-Time start;
-long matrix = 0;
-
-void setupx() {
-//    Logging::DEFAULT_LOG.init(Logging::LOG_LEVEL_ERROR, 115200);
-    LAMP_MATRIX.initialize();
-    LAMP_MATRIX.setPattern(Matrix8by8::getPattern(0));
-    Serial.begin(9600);
-    start = millis();
-}
-
-void loopx() {
-	count++;
-	LAMP_MATRIX.refresh(micros());
-    Time duration = millis() - start;
-    if (duration > 1000) {
-    	matrix++;
-    	String msg("rate: ");
-    	int pattern = matrix % 5;
-    	msg = msg + count + " matrix: " + pattern;
-		LAMP_MATRIX.setPattern(Matrix8by8::getPattern(pattern));
-    	Serial.println(msg);
-    	count = 0;
-    	start = millis();
-    }
-}
-#endif
-*/
