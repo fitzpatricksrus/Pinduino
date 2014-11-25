@@ -5,7 +5,7 @@
  *      Author: Dad
  */
 
-#include "../pins/SPIOutputPins.h"
+#include "SPIOutputPins.h"
 
 #include "../utils/SPI.h"
 

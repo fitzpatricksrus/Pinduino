@@ -5,7 +5,7 @@
  *      Author: Dad
  */
 
-#include "../pins/AnalogOutputPins.h"
+#include "AnalogOutputPins.h"
 
 namespace pins {
 

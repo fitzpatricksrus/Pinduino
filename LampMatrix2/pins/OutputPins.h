@@ -10,7 +10,7 @@
 
 #include <Arduino.h>
 
-#include "../pins/PinPattern.h"
+#include "PinPattern.h"
 
 namespace pins {
 

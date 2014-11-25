@@ -10,8 +10,8 @@
 
 #include <Arduino.h>
 
-#include "../pins/MatrixPattern.h"
-#include "../pins/SimplePinPattern.h"
+#include "MatrixPattern.h"
+#include "SimplePinPattern.h"
 
 namespace pins {
 

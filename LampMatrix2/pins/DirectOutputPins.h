@@ -10,7 +10,7 @@
 
 #include <Arduino.h>
 
-#include "../pins/OutputPins.h"
+#include "OutputPins.h"
 
 namespace pins {
 

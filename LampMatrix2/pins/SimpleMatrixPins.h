@@ -8,10 +8,10 @@
 #ifndef PINS_SIMPLEMATRIXPINS_H_
 #define PINS_SIMPLEMATRIXPINS_H_
 
-#include "../pins/MatrixPattern.h"
-#include "../pins/MatrixPins.h"
-#include "../pins/OutputPins.h"
-#include "../pins/SimplePinPattern.h"
+#include "MatrixPattern.h"
+#include "MatrixPins.h"
+#include "OutputPins.h"
+#include "SimplePinPattern.h"
 #include "../timers/Timer.h"
 
 namespace pins {

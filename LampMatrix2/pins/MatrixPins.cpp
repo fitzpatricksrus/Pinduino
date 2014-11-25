@@ -5,7 +5,7 @@
  *      Author: Dad
  */
 
-#include "../pins/MatrixPins.h"
+#include "MatrixPins.h"
 
 namespace pins {
 

@@ -4,7 +4,7 @@
  *  Created on: Sep 24, 2014
  *      Author: Dad
  */
-#include "../pins/OutputPins.h"
+#include "OutputPins.h"
 
 namespace pins {
 

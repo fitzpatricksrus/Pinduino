@@ -12,8 +12,8 @@
 #ifndef DueTimer_h
 #define DueTimer_h
 
+#include "Alarm.h"
 #include "Arduino.h"
-#include "../../timers/Alarm.h"
 #include <inttypes.h>
 
 /*

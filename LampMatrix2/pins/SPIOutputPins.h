@@ -8,7 +8,7 @@
 #ifndef PINS_SPIOUTPUTPINS_H_
 #define PINS_SPIOUTPUTPINS_H_
 
-#include "../pins/OutputPins.h"
+#include "OutputPins.h"
 
 namespace pins {
 

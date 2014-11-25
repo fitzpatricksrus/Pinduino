@@ -8,7 +8,7 @@
 #ifndef PINS_MATRIXPINS_H_
 #define PINS_MATRIXPINS_H_
 
-#include "../pins/MatrixPattern.h"
+#include "MatrixPattern.h"
 
 namespace pins {
 

@@ -8,7 +8,7 @@
 #ifndef SIMPLEPINPATTERN_H_
 #define SIMPLEPINPATTERN_H_
 
-#include "../pins/PinPattern.h"
+#include "PinPattern.h"
 
 namespace pins {
 
@@ -17,7 +17,6 @@ public:
 	SimplePinPattern(byte count, bool* values);
 	SimplePinPattern(const SimplePinPattern& source);
 	virtual ~SimplePinPattern();
-	virtual PinPattern& operator=(const PinPattern& other);
 
 	virtual byte getPinCount() const;
 	virtual bool getPinValue(byte ndx) const;
@@ -43,15 +42,6 @@ inline SimplePinPattern::SimplePinPattern(const SimplePinPattern& source)
 }
 
 inline SimplePinPattern::~SimplePinPattern() {
-}
-
-inline PinPattern& SimplePinPattern::operator=(const PinPattern& other) {
-	if (this != &other) {
-		count = other.getPinCount();
-		values = other.getPinValues();
-	}
-
-	return *this;
 }
 
 inline byte SimplePinPattern::getPinCount() const {

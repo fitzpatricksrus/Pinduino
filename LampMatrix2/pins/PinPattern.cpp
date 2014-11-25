@@ -5,7 +5,7 @@
  *      Author: jfitzpatrick
  */
 
-#include "../pins/PinPattern.h"
+#include "PinPattern.h"
 
 namespace pins {
 
