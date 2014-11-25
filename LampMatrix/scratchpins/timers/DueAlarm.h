@@ -22,7 +22,7 @@
 
 	Note that:
 		+ Timers: 0,2,3,4,5 WILL NOT WORK, and will
-				  neither be accessible by Timer0,...
+				neither be accessible by Timer0,...
 */
 // #define USING_SERVO_LIB	true
 
@@ -33,33 +33,10 @@
 
 #define NUM_TIMERS  9
 
-class DueAlarm : public Alarm
-{
-protected:
+namespace timers {
 
-	// Represents the timer id (index for the array of Timer structs)
-	const unsigned short timer;
-
-	// Stores the object timer frequency
-	// (allows to access current timer period and frequency):
-	static double _frequency[NUM_TIMERS];
-
-	// Picks the best clock to lower the error
-	static uint8_t bestClock(double frequency, uint32_t& retRC);
-
-  // Make Interrupt handlers friends, so they can use callbacks
-  friend void TC0_Handler(void);
-  friend void TC1_Handler(void);
-  friend void TC2_Handler(void);
-  friend void TC3_Handler(void);
-  friend void TC4_Handler(void);
-  friend void TC5_Handler(void);
-  friend void TC6_Handler(void);
-  friend void TC7_Handler(void);
-  friend void TC8_Handler(void);
-
-	static void (*callbacks[NUM_TIMERS])();
-
+class DueAlarm : public Alarm {
+public:
 	struct Timer
 	{
 		Tc *tc;
@@ -67,40 +44,49 @@ protected:
 		IRQn_Type irq;
 	};
 
-	// Store timer configuration (static, as it's fixed for every object)
-	static const Timer Timers[NUM_TIMERS];
-
-public:
-
-	static DueAlarm getAvailable(void);
-
 	DueAlarm(unsigned short _timer);
-	DueAlarm& attachInterrupt(void (*isr)());
-	DueAlarm& detachInterrupt(void);
-	DueAlarm& start(long microseconds = -1);
-	DueAlarm& stop(void);
-	DueAlarm& setFrequency(double frequency);
-	DueAlarm& setPeriod(unsigned long microseconds);
+	void start();
+	void stop();
+	void setFrequency(double frequency);
+	void setPeriod(unsigned long microseconds);
 
-	double getFrequency(void) const;
-	long getPeriod(void) const;
+	double getFrequency() const;
+	long getPeriod() const;
+
+	static DueAlarm& timer1;
+	// Fix for compatibility with Servo library
+	#ifndef USING_SERVO_LIB
+	static DueAlarm& timer0;	// incompatible with Servo library
+	static DueAlarm& timer2;	// incompatible with Servo library
+	static DueAlarm& timer3;	// incompatible with Servo library
+	static DueAlarm& timer4;	// incompatible with Servo library
+	static DueAlarm& timer5;	// incompatible with Servo library
+	#endif
+	static DueAlarm& timer6;
+	static DueAlarm& timer7;
+	static DueAlarm& timer8;
+
+
+protected:
+	static uint8_t bestClock(double frequency, uint32_t& retRC);
+	double frequency;
+	// Represents the timer id (index for the array of Timer structs)
+	const unsigned short timer;
+
+	// Make Interrupt handlers friends, so they can use callbacks
+	friend void TC0_Handler();
+	friend void TC1_Handler();
+	friend void TC2_Handler();
+	friend void TC3_Handler();
+	friend void TC4_Handler();
+	friend void TC5_Handler();
+	friend void TC6_Handler();
+	friend void TC7_Handler();
+	friend void TC8_Handler();
 };
 
-// Just to call Timer.getAvailable instead of Timer::getAvailable() :
-extern DueAlarm Timer;
 
-extern DueAlarm Timer1;
-// Fix for compatibility with Servo library
-#ifndef USING_SERVO_LIB
-	extern DueAlarm Timer0;
-	extern DueAlarm Timer2;
-	extern DueAlarm Timer3;
-	extern DueAlarm Timer4;
-	extern DueAlarm Timer5;
-#endif
-extern DueAlarm Timer6;
-extern DueAlarm Timer7;
-extern DueAlarm Timer8;
+} // namespace timers
 
 #endif
 

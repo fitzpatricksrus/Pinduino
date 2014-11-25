@@ -23,7 +23,7 @@ UnoAlarm::UnoAlarm(const PrescalarDef* scalarsIn, bool isTimerAIn)
 UnoAlarm::~UnoAlarm() {
 }
 
-Alarm& UnoAlarm::setFrequency(double frequencyHz) {
+void UnoAlarm::setFrequency(double frequencyHz) {
 	int f = 1;
 	// if we need a frequency >= system frequency, use scalar of 1
 	do {
@@ -42,34 +42,30 @@ Alarm& UnoAlarm::setFrequency(double frequencyHz) {
 	setScalar(scalars[0].mask, scalars[f].mask);
 	setTicks(ticks);
 	sei();
-	return *this;
 }
 
-Alarm& UnoAlarm::setPeriod(unsigned long periodUs) {
+void UnoAlarm::setPeriod(unsigned long periodUs) {
 	// Set the period of the timer (in microseconds)
 	// Convert period in microseconds to frequency in Hz
 	double frequency = 1000000.0 / periodUs;
 	setFrequency(frequency);
-	return *this;
 }
 
 class UnoAlarm1 : public UnoAlarm {
 public:
 	UnoAlarm1(const PrescalarDef scalarsIn[], bool isTimerAIn)
 		: UnoAlarm(scalarsIn, isTimerAIn) {}
-	virtual Alarm& start();
-	virtual Alarm& stop();
+	virtual void start();
+	virtual void stop();
 	virtual void setTicks(int ticks);
 	virtual void setScalar(byte andMask, byte orMask);
 };
 
-Alarm& UnoAlarm1::start() {
+void UnoAlarm1::start() {
 	TIMSK1 = TIMSK1 | (1 << ((isTimerA) ? OCIE1A : OCIE1B));
-	return *this;
 }
-Alarm& UnoAlarm1::stop() {
+void UnoAlarm1::stop() {
 	TIMSK1 = TIMSK1 & ~(1 << (isTimerA ? OCIE1A : OCIE1B));
-	return *this;
 }
 void UnoAlarm1::setTicks(int ticks) {
 	if (isTimerA) {
@@ -86,19 +82,17 @@ class UnoAlarm2 : public UnoAlarm {
 public:
 	UnoAlarm2(const PrescalarDef scalarsIn[], bool isTimerAIn)
 	: UnoAlarm(scalarsIn, isTimerAIn) {}
-	virtual Alarm& start();
-	virtual Alarm& stop();
+	virtual void start();
+	virtual void stop();
 	virtual void setTicks(int ticks);
 	virtual void setScalar(byte andMask, byte orMask);
 };
 
-Alarm& UnoAlarm2::start() {
+void UnoAlarm2::start() {
 	TIMSK2 = TIMSK2 | (1 << (isTimerA ? OCIE2A : OCIE2B));
-	return *this;
 }
-Alarm& UnoAlarm2::stop() {
+void UnoAlarm2::stop() {
 	TIMSK2 = TIMSK2 & ~(1 << (isTimerA ? OCIE2A : OCIE2B));
-	return *this;
 }
 void UnoAlarm2::setTicks(int ticks) {
 	if (isTimerA) {

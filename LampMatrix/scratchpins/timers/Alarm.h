@@ -22,12 +22,12 @@ public:
 	Alarm();
 	virtual ~Alarm();
 
-	virtual Alarm& attachInterrupt(Callback* callback);
-	virtual Alarm& detachInterrupt();
-	virtual Alarm& start() = 0;
-	virtual Alarm& stop() = 0;
-	virtual Alarm& setFrequency(double frequencyHz) = 0;
-	virtual Alarm& setPeriod(unsigned long periodUs) = 0;
+	virtual void attachInterrupt(Callback* callback);
+	virtual void detachInterrupt();
+	virtual void start() = 0;
+	virtual void stop() = 0;
+	virtual void setFrequency(double frequencyHz) = 0;
+	virtual void setPeriod(unsigned long periodUs) = 0;
 
 	void doCallback();
 protected:
