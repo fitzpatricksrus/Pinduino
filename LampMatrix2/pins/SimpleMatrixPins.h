@@ -12,6 +12,7 @@
 #include "MatrixPins.h"
 #include "OutputPins.h"
 #include "SimplePinPattern.h"
+#include "ColumnPinPattern.h"
 
 namespace pins {
 
@@ -29,8 +30,8 @@ public:
 
 private:
 	MatrixPattern* pattern;
-	byte currentColumn;
 	SimplePinPattern currentColumnPattern;
+	ColumnPinPattern columnSelectorPattern;
 	OutputPins* rowPins;
 	OutputPins* colPins;
 };
