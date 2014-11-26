@@ -12,13 +12,12 @@
 #include "MatrixPins.h"
 #include "OutputPins.h"
 #include "SimplePinPattern.h"
-#include "../timers/Timer.h"
 
 namespace pins {
 
-class SimpleMatrixPins: public MatrixPins, timers::Timer::Callback {
+class SimpleMatrixPins: public MatrixPins {
 public:
-	SimpleMatrixPins(OutputPins* pins);
+	SimpleMatrixPins(OutputPins* colPins, OutputPins* rowPins);
 	virtual ~SimpleMatrixPins();
 	virtual void initPins();
     virtual void setPattern(MatrixPattern* pattern);
@@ -32,7 +31,8 @@ private:
 	MatrixPattern* pattern;
 	byte currentColumn;
 	SimplePinPattern currentColumnPattern;
-	OutputPins* pins;
+	OutputPins* rowPins;
+	OutputPins* colPins;
 };
 
 } /* namespace pins */

@@ -29,6 +29,14 @@ public:
 	bool** values;
 };
 
+inline SimpleMatrixPattern::SimpleMatrixPattern(byte rowsIn, byte colsIn, bool** valuesIn)
+: rows(rowsIn), cols(colsIn), values(valuesIn)
+{
+}
+
+inline SimpleMatrixPattern::~SimpleMatrixPattern() {
+}
+
 inline byte SimpleMatrixPattern::getRowCount() const {
 	return rows;
 }
@@ -38,7 +46,7 @@ inline byte SimpleMatrixPattern::getColCount() const {
 }
 
 inline bool* SimpleMatrixPattern::operator[](byte col) const {
-	return values[col];
+	return values[cols];
 }
 
 } // namespace pins
