@@ -3,8 +3,6 @@
 #include "Tests/Debug.h"
 #include "SPI.h"
 
-static byte SLAVE_PIN[3] = {10, 9, 8};
-
 class MAX7221_COMMAND {
 public:
 	enum {
@@ -27,6 +25,15 @@ public:
 	};
 };
 
+
+static const byte COL_COUNT = 24;
+static const byte ROW_COUNT = 8;
+
+bool life[COL_COUNT][ROW_COUNT];
+bool plife[COL_COUNT][ROW_COUNT];
+
+static byte SLAVE_PIN[3] = {10, 9, 8};
+
 void send7221Command(byte device, byte command, int value)
 {
    digitalWrite(SLAVE_PIN[device],LOW); //chip select is active low
@@ -36,24 +43,17 @@ void send7221Command(byte device, byte command, int value)
    digitalWrite(SLAVE_PIN[device],HIGH); //release chip, signal end transfer
 }
 
-static const byte COL_COUNT = 24;
-static const byte ROW_COUNT = 8;
-
-bool life[COL_COUNT][ROW_COUNT];
-bool plife[COL_COUNT][ROW_COUNT];
-
 void MAXSetup() {
-	pinMode(9, OUTPUT);
-	pinMode(8, OUTPUT);
 	SPI.begin();
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i <= (COL_COUNT / 3); i++) {
+		pinMode(SLAVE_PIN[i], OUTPUT);
 		send7221Command(i, MAX7221_COMMAND::test, false);
 		send7221Command(i, MAX7221_COMMAND::intensity, 0x01);
 		send7221Command(i, MAX7221_COMMAND::decode, false);
 		send7221Command(i, MAX7221_COMMAND::scanLimit, 7);
 		send7221Command(i, MAX7221_COMMAND::enable, true);
 	}
-    randomSeed(analogRead(0));
+    randomSeed(analogRead(1));
 	for (int col = 0; col < COL_COUNT; col++) {
 		for (int row = 0; row < ROW_COUNT; row++) {
 			life[col][row] = random(2) != 0;
@@ -144,7 +144,7 @@ void MAXLoop() {
 			}
 		}
 	}
-	delay(100);
+	delay(150);
 }
 
 void setup() {
