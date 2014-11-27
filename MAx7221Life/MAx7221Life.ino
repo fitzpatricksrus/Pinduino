@@ -3,7 +3,7 @@
 #include "Tests/Debug.h"
 #include "SPI.h"
 
-static byte SLAVE_PIN = 10;
+static byte SLAVE_PIN[3] = {10, 9, 8};
 
 class MAX7221_COMMAND {
 public:
@@ -27,37 +27,54 @@ public:
 	};
 };
 
-void send7221Command(int command, int value)
+void send7221Command(byte device, byte command, int value)
 {
-   digitalWrite(SLAVE_PIN,LOW); //chip select is active low
+   digitalWrite(SLAVE_PIN[device],LOW); //chip select is active low
    //2-byte data transfer to the 7221
    SPI.transfer(command);
    SPI.transfer(value);
-   digitalWrite(SLAVE_PIN,HIGH); //release chip, signal end transfer
+   digitalWrite(SLAVE_PIN[device],HIGH); //release chip, signal end transfer
 }
 
-bool life[8][8];
-bool plife[8][8];
+static const byte COL_COUNT = 24;
+static const byte ROW_COUNT = 8;
+
+bool life[COL_COUNT][ROW_COUNT];
+bool plife[COL_COUNT][ROW_COUNT];
 
 void MAXSetup() {
+	pinMode(9, OUTPUT);
+	pinMode(8, OUTPUT);
 	SPI.begin();
-	send7221Command(MAX7221_COMMAND::test, false);
-	send7221Command(MAX7221_COMMAND::intensity, 0x01);
-	send7221Command(MAX7221_COMMAND::decode, false);
-	send7221Command(MAX7221_COMMAND::scanLimit, 7);
-	send7221Command(MAX7221_COMMAND::enable, true);
+	for (int i = 0; i < 3; i++) {
+		send7221Command(i, MAX7221_COMMAND::test, false);
+		send7221Command(i, MAX7221_COMMAND::intensity, 0x01);
+		send7221Command(i, MAX7221_COMMAND::decode, false);
+		send7221Command(i, MAX7221_COMMAND::scanLimit, 7);
+		send7221Command(i, MAX7221_COMMAND::enable, true);
+	}
     randomSeed(analogRead(0));
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			life[i][j] = random(2) != 0;
+	for (int col = 0; col < COL_COUNT; col++) {
+		for (int row = 0; row < ROW_COUNT; row++) {
+			life[col][row] = random(2) != 0;
 		}
 	}
 }
 
-int p(int value) {
+int pCol(int value) {
 	if (value < 0) {
-		return 7;
-	} else if (value > 7) {
+		return COL_COUNT - 1;
+	} else if (value >= COL_COUNT) {
+		return 0;
+	} else {
+		return value;
+	}
+}
+
+int pRow(int value) {
+	if (value < 0) {
+		return ROW_COUNT - 1;
+	} else if (value >= ROW_COUNT) {
 		return 0;
 	} else {
 		return value;
@@ -69,7 +86,7 @@ int countAround(int x, int y) {
 	for (int dx = -1; dx <= 1; dx++) {
 		for (int dy = -1; dy <= 1; dy++) {
 			if (dx != 0 || dy != 0) {
-				cnt = cnt + ((plife[p(x+dx)][p(y+dy)]) ? 1 : 0);
+				cnt = cnt + ((plife[pCol(x+dx)][pRow(y+dy)]) ? 1 : 0);
 			}
 		}
 	}
@@ -86,44 +103,44 @@ Any dead cell with exactly three live neighbours becomes a live cell, as if by r
 static int unchangedCount = 0;
 
 void MAXLoop() {
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			plife[i][j] = life[i][j];
+	for (int col = 0; col < COL_COUNT; col++) {
+		for (int row = 0; row < ROW_COUNT; row++) {
+			plife[col][row] = life[col][row];
 		}
 	}
 
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			int cnt = countAround(i, j);
+	for (int col = 0; col < COL_COUNT; col++) {
+		for (int row = 0; row < ROW_COUNT; row++) {
+			int cnt = countAround(col, row);
 			if (cnt < 2) {
-				life[i][j] = false;
+				life[col][row] = false;
 			} else if (cnt == 2) {
 				// leave alone
 			} else if (cnt == 3) {
-				life[i][j] = true;
+				life[col][row] = true;
 			} else {
-				life[i][j] = false;
+				life[col][row] = false;
 			}
 		}
 	}
 
 	unchangedCount++;
-	for (int row = 0; row < 8; row++) {
+	for (int col = 0; col < COL_COUNT; col++) {
 		byte colValue = 0;
-		for (int col = 0; col < 8; col++) {
-			if (life[row][col]) {
-				colValue = colValue | (1 << col);
+		for (int row = 0; row < ROW_COUNT; row++) {
+			if (life[col][row]) {
+				colValue = colValue | (1 << row);
 			}
-			if (life[row][col] != plife[row][col]) {
+			if (life[col][row] != plife[col][row]) {
 				unchangedCount = 0;
 			}
 		}
-		send7221Command(MAX7221_COMMAND::digit0+row, colValue);
+		send7221Command(col / 8, MAX7221_COMMAND::digit0+(col % 8), colValue);
 	}
 	if (unchangedCount > 6) {
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++) {
-				life[i][j] = random(2) != 0;
+		for (int col = 0; col < COL_COUNT; col++) {
+			for (int row = 0; row < ROW_COUNT; row++) {
+				life[col][row] = random(2) != 0;
 			}
 		}
 	}
