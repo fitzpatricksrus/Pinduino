@@ -4,25 +4,38 @@
 //to set pins LOW was incorrect.  This code fixes that.
 #include <Arduino.h>
 #include "SPI.h"//Serial Peripheral Interface Library
+#include "TLC5940.h"
 
-byte ch = 0, chbit = 0, spibit = 0, spibyte = 0; // variables used by tlc sub routine
-int SINData; //variable used to shift data to the TLC
-byte transferbyte[48]; // bytes that are sent out to the tlc5940 via SPI
+//static byte ch = 0, chbit = 0, spibit = 0, spibyte = 0; // variables used by tlc sub routine
+//static int SINData; //variable used to shift data to the TLC
+//static byte transferbyte[48]; // bytes that are sent out to the tlc5940 via SPI
 // 24 because 16 channels @ 12bits gives 192bits, 192/8 = 24 bytes
-byte DCvalue[32];  //0-63, 6 bit DOT Correction Bytes
-int i, j, k, l, m, n; //misc variables
-int green, oldgreen = 2048; //for random animation
-int red, oldred = 2048; //for random animation
-int blue, oldblue = 2048; //for random animation
-int comeback = 0;
-int pick_color = 0; //for random animation
+//static byte DCvalue[32];  //0-63, 6 bit DOT Correction Bytes
+//static int i, j, k, l, m, n; //misc variables
+static int green, oldgreen = 2048; //for random animation
+static int red, oldred = 2048; //for random animation
+static int blue, oldblue = 2048; //for random animation
+static int comeback = 0;
+static int pick_color = 0; //for random animation
 
 static const int NUM_CHANNELS = 32;
 
 //*******************************************************************************************
 //*******************************************************************************************
 void setup() { //   MAIN SETUP   MAIN SETUP   MAIN SETUP   MAIN SETUP   MAIN SETUP
+	pinMode(A0, OUTPUT); digitalWrite(A0, LOW);
+	pinMode(A1, OUTPUT); digitalWrite(A1, LOW);
+	pinMode(A2, OUTPUT); digitalWrite(A2, LOW);
+	pinMode(A3, OUTPUT); digitalWrite(A3, LOW);
+	pinMode(A4, OUTPUT); digitalWrite(A4, LOW);
+	pinMode(A5, OUTPUT); digitalWrite(A5, LOW);
+	pinMode(A6, OUTPUT); digitalWrite(A6, LOW);
+	pinMode(A7, OUTPUT); digitalWrite(A7, LOW);
+	pinMode(7, OUTPUT); digitalWrite(7, LOW);
+	pinMode(8, OUTPUT); digitalWrite(8, LOW);
 
+	TLC5940::setup();
+/*
 	pinMode(2, OUTPUT);  //XLAT
 	pinMode(3, OUTPUT);  //OSC2B GSCLK
 	pinMode(4, OUTPUT);  //VPRG
@@ -76,7 +89,7 @@ void setup() { //   MAIN SETUP   MAIN SETUP   MAIN SETUP   MAIN SETUP   MAIN SET
 	//4095 is 100% ON
 	pinMode(5, OUTPUT); //BLANK  We set this pin up here, so it remains in a high impedance
 	// state throughout the setup, otherwise the LEDs go crazy!  even if you write this HIGH
-
+*/
 } // END OF SETUP END OF SETUP END OF SETUP END OF SETUP END OF SETUP END OF SETUP END OF SETUP
 //*******************************************************************************************
 void loop() { //   MAIN LOOP   MAIN LOOP   MAIN LOOP   MAIN LOOP   MAIN LOOP   MAIN LOOP
@@ -85,13 +98,16 @@ void loop() { //   MAIN LOOP   MAIN LOOP   MAIN LOOP   MAIN LOOP   MAIN LOOP   M
 	//all_GREEN(4095);
 	//all_BLUE(4095);
 	//lamp_test();
+	//lamp_test2();
 	//random_animation();
-	random_animation2();
-
+	//random_animation2();
+	random_animation3();
+	//random_animation4();
 } //      loop close      loop close      loop close      loop close
 //*******************************************************************************************
 // INTERRUPTS   INTERRUPTS   INTERRUPTS   INTERRUPTS   INTERRUPTS   INTERRUPTS   INTERRUPTS
 //ISR(TIMER1_OVF_vect){}// Over Limit Flag Interrupt  you need this even if you don't use it
+/*
 ISR(TIMER1_COMPB_vect) {
 }  // Compare B - Not Used
 ISR(TIMER1_COMPA_vect) { // Interrupt to count 4096 Pulses on GSLCK
@@ -108,42 +124,116 @@ ISR(TIMER1_COMPA_vect) { // Interrupt to count 4096 Pulses on GSLCK
 	// The TLC needs 12 bits for each channel, so 12bits times 32 channels gives 384 bits
 	// 384/8=48 bytes, 0-47
 } //INTERRUPTS END  INTERRUPTS END  INTERRUPTS END  INTERRUPTS END  INTERRUPTS END  INTERRUPTS END
+*/
 //*******************************************************************************************
-void lamp_test() {  //           lamp_test
-	for (l = 0; l < NUM_CHANNELS; l++) {
-		for (k = 0; k < 4096; k++) {
+static void lamp_test() {  //           lamp_test
+	for (int l = 0; l < NUM_CHANNELS; l++) {
+		for (int k = 0; k < 4096; k++) {
 			tlc(l, k);
 			delayMicroseconds(250);
 		}
-		for (k = 4095; k >= 0; k--) {
+		for (int k = 4095; k >= 0; k--) {
 			tlc(l, k);
 			delayMicroseconds(250);
 		}
 	}  //l
 }  //lamp_test
 
-void all_RED(int duty) {  //      all red
-	for (k = 0; k < duty; k = k + 1)
-		for (l = 1; l <= 36; l = l + 3)
+static void lamp_test2() {
+	all_RED(4095);
+	all_GREEN(4095);
+	all_BLUE(4095);
+}
+
+static void all_RED(int duty) {  //      all red
+	all_LIGHTS(duty, 1);
+}  //allred
+static void all_BLUE(int duty) {  //      all blue
+	all_LIGHTS(duty, 2);
+}  //allred
+static void all_GREEN(int duty) {  //      all GREEN
+	all_LIGHTS(duty, 0);
+}  //allred
+
+static void all_LIGHTS(int duty, byte color) {  //      all blue
+	for (int k = 0; k < duty; k = k + 1)
+		for (int l = color; l <= 36; l = l + 3)
+			tlc(l, k);
+	for (int k = duty - 1; k > 0; k = k - 1)
+		for (int l = color; l <= 36; l = l + 3)
 			tlc(l, k);
 
 }  //allred
-void all_BLUE(int duty) {  //      all blue
-	for (k = 0; k < duty; k = k + 1)
-		for (l = 2; l <= 36; l = l + 3)
-			tlc(l, k);
 
-}  //allred
-void all_GREEN(int duty) {  //      all GREEN
-	for (k = 0; k < duty; k = k + 1)
-		for (l = 0; l <= 36; l = l + 3)
-			tlc(l, k);
-}  //allred
+
 //*******************************************************************************************
 
-int rgb[3] = { 0,0,0 };
+static void random_animation3() {
+  int swipe_Delay = 15000;
+  for (uint16_t j=0; j < 384; j++) {     // 3 cycles of all 384 colors in the wheel
+	for (byte i=0; i < 24; i += 3) {
+		  uint16_t WheelPos = (j + i) % 384;
+		  byte r, g, b;
+		  switch(WheelPos / 128)
+		  {
+		    case 0:
+		      r = 127 - WheelPos % 128;   //Red down
+		      g = WheelPos % 128;      // Green up
+		      b = 0;                  //blue off
+		      break;
+		    case 1:
+		      g = 127 - WheelPos % 128;  //green down
+		      b = WheelPos % 128;      //blue up
+		      r = 0;                  //red off
+		      break;
+		    case 2:
+		      b = 127 - WheelPos % 128;  //blue down
+		      r = WheelPos % 128;      //red up
+		      g = 0;                  //green off
+		      break;
+		  }
+		  tlc(i, r);
+		  tlc(i+1, g);
+		  tlc(i+2, b);
+	}
+	delayMicroseconds(swipe_Delay);
+  }
+}
 
-void random_animation2() {
+static void random_animation4() {
+  int swipe_Delay = 15000;
+  for (uint16_t j=0; j < 384; j++) {     // 3 cycles of all 384 colors in the wheel
+	for (byte i=0; i < 24; i += 3) {
+		  uint16_t WheelPos = (j + i) % 384;
+		  byte r, g, b;
+		  switch(WheelPos / 128)
+		  {
+		    case 0:
+		      r = 127 - WheelPos % 128;   //Red down
+		      g = WheelPos % 128;      // Green up
+		      b = 0;                  //blue off
+		      break;
+		    case 1:
+		      g = 127 - WheelPos % 128;  //green down
+		      b = WheelPos % 128;      //blue up
+		      r = 0;                  //red off
+		      break;
+		    case 2:
+		      b = 127 - WheelPos % 128;  //blue down
+		      r = WheelPos % 128;      //red up
+		      g = 0;                  //green off
+		      break;
+		  }
+		  tlc(i, r);
+		  tlc(i+1, g);
+		  tlc(i+2, b);
+	}
+	delayMicroseconds(swipe_Delay);
+  }
+}
+
+static int rgb[3] = { 0,0,0 };
+static void random_animation2() {
 	int speed_swipe = 1;  //random(1, 200);
 	int swipe_Delay = 60;
 
@@ -156,16 +246,16 @@ void random_animation2() {
 	}
 
 	if (value > rgb[color]) {
-		for (k = rgb[color]; k <= value; k = k + speed_swipe) {
-			for (l = 0; l < NUM_CHANNELS; l = l + 3) {
+		for (int k = rgb[color]; k <= value; k = k + speed_swipe) {
+			for (int l = 0; l < NUM_CHANNELS; l = l + 3) {
 				tlc(l+color, k);  //R
 			}
 			delayMicroseconds(swipe_Delay); // was commented out.
 		}       //for
 	}       //>oldred
 	else if (value < rgb[color]) {
-		for (k = rgb[color]; k >= value; k = k - speed_swipe) {
-			for (l = 0; l < NUM_CHANNELS; l = l + 3) {
+		for (int k = rgb[color]; k >= value; k = k - speed_swipe) {
+			for (int l = 0; l < NUM_CHANNELS; l = l + 3) {
 				tlc(l+color, k);       //R
 			}
 			delayMicroseconds(swipe_Delay);
@@ -174,7 +264,7 @@ void random_animation2() {
 	rgb[color] = value;
 }
 
-void random_animation() { //  random animation  random animation  random animation
+static void random_animation() { //  random animation  random animation  random animation
 
 	pick_color++;
 	int speed_swipe = 1;  //random(1, 200);
@@ -206,16 +296,16 @@ void random_animation() { //  random animation  random animation  random animati
 //	delay(100);
 
 	if (comeback == 0)
-		for (l = 1; l <= 28; l = l + 3) {
+		for (int l = 1; l <= 28; l = l + 3) {
 			if (pick_color == 1) {
 				if (red > oldred) {
-					for (k = oldred; k <= red; k = k + speed_swipe) {
+					for (int k = oldred; k <= red; k = k + speed_swipe) {
 						tlc(l, k);  //R
 						delayMicroseconds(swipe_Delay); // was commented out.
 					}       //for
 				}       //>oldred
 				else if (red < oldred) {
-					for (k = oldred; k >= red; k = k - speed_swipe) {
+					for (int k = oldred; k >= red; k = k - speed_swipe) {
 						tlc(l, k);       //R
 						delayMicroseconds(swipe_Delay);
 					}       //for
@@ -224,13 +314,13 @@ void random_animation() { //  random animation  random animation  random animati
 
 			if (pick_color == 2) {
 				if (blue > oldblue) {
-					for (k = oldblue; k <= blue; k = k + speed_swipe) {
+					for (int k = oldblue; k <= blue; k = k + speed_swipe) {
 						tlc(l + 1, k);       //B
 						delayMicroseconds(swipe_Delay);
 					}       //for
 				}       //>oldblue
 				else if (blue < oldblue) {
-					for (k = oldblue; k >= blue; k = k - speed_swipe) {
+					for (int k = oldblue; k >= blue; k = k - speed_swipe) {
 						tlc(l + 1, k);       //B
 						delayMicroseconds(swipe_Delay);
 					}       //for
@@ -239,13 +329,13 @@ void random_animation() { //  random animation  random animation  random animati
 
 			if (pick_color == 3) {
 				if (green > oldgreen) {
-					for (k = oldgreen; k <= green; k = k + speed_swipe) {
+					for (int k = oldgreen; k <= green; k = k + speed_swipe) {
 						tlc(l + 2, k);       //G
 						delayMicroseconds(swipe_Delay);
 					}       //for
 				}       //>oldgreen
 				else if (green < oldgreen) {
-					for (k = oldgreen; k >= green; k = k - speed_swipe) {
+					for (int k = oldgreen; k >= green; k = k - speed_swipe) {
 						tlc(l + 2, k);       //G
 						delayMicroseconds(swipe_Delay);
 					}       //for
@@ -254,16 +344,16 @@ void random_animation() { //  random animation  random animation  random animati
 			comeback = 1;
 		}       //l channel
 	else
-		for (l = 28; l >= 1; l = l - 3) {       //         2nd sweep
+		for (int l = 28; l >= 1; l = l - 3) {       //         2nd sweep
 			if (pick_color == 1) {
 				if (red > oldred) {
-					for (k = oldred; k <= red; k = k + speed_swipe) {
+					for (int k = oldred; k <= red; k = k + speed_swipe) {
 						tlc(l, k);       //R
 						delayMicroseconds(swipe_Delay);
 					}       //for
 				}       //>oldred
 				else if (red < oldred) {
-					for (k = oldred; k >= red; k = k - speed_swipe) {
+					for (int k = oldred; k >= red; k = k - speed_swipe) {
 						tlc(l, k);       //R
 						delayMicroseconds(swipe_Delay);
 					}       //for
@@ -272,13 +362,13 @@ void random_animation() { //  random animation  random animation  random animati
 
 			if (pick_color == 2) {
 				if (blue > oldblue) {
-					for (k = oldblue; k <= blue; k = k + speed_swipe) {
+					for (int k = oldblue; k <= blue; k = k + speed_swipe) {
 						tlc(l + 1, k);       //B
 						delayMicroseconds(swipe_Delay);
 					}       //for
 				}       //>oldblue
 				else if (blue < oldblue) {
-					for (k = oldblue; k >= blue; k = k - speed_swipe) {
+					for (int k = oldblue; k >= blue; k = k - speed_swipe) {
 						tlc(l + 1, k);       //B
 						delayMicroseconds(swipe_Delay);
 					}       //for
@@ -287,13 +377,13 @@ void random_animation() { //  random animation  random animation  random animati
 
 			if (pick_color == 3) {
 				if (green > oldgreen) {
-					for (k = oldgreen; k <= green; k = k + speed_swipe) {
+					for (int k = oldgreen; k <= green; k = k + speed_swipe) {
 						tlc(l + 2, k);       //G
 						delayMicroseconds(swipe_Delay);
 					}       //for
 				}       //>oldgreen
 				else if (green < oldgreen) {
-					for (k = oldgreen; k >= green; k = k - speed_swipe) {
+					for (int k = oldgreen; k >= green; k = k - speed_swipe) {
 						tlc(l + 2, k);       //G
 						delayMicroseconds(swipe_Delay);
 					}       //for
@@ -310,10 +400,12 @@ void random_animation() { //  random animation  random animation  random animati
 
 //  random animation end  random animation end  random animation end  random animation end
 //*******************************************************************************************
-void tlc(int channel, int value) { // TLC to UPDATE TLC to UPDATE TLC to UPDATE TLC to UPDATE
-// This routine needs to happen as fast as possible!!!
+static void tlc(int channel, int value) { // TLC to UPDATE TLC to UPDATE TLC to UPDATE TLC to UPDATE
+	TLC5940::setPixel(channel, value);
+/*
+	// This routine needs to happen as fast as possible!!!
 	delayMicroseconds(1);  //to control speed if necessary
-//Limit check
+	//Limit check
 	if (value > 4095) {
 		value = 4095;
 	}
@@ -345,10 +437,11 @@ void tlc(int channel, int value) { // TLC to UPDATE TLC to UPDATE TLC to UPDATE 
 		} else {
 			bitClear(transferbyte[spibyte], spibit);
 		}
-	}   //0-12 bit loop
+	}   //0-12 bit loop */
 } //  END OF TLC WRITE  END OF TLC WRITE  END OF TLC WRITE  END OF TLC WRITE  END OF TLC WRITE
 //*******************************************************************************************
-void DotCorrection() { //  DOT Correction  DOT Correction  DOT Correction  DOT Correction
+/*
+static void DotCorrection() { //  DOT Correction  DOT Correction  DOT Correction  DOT Correction
 	PORTD |= 1 << 4;  //VPRG to DC Mode HIGH
 	spibyte = 0;  //reset our variables
 	spibit = 0;
@@ -374,4 +467,4 @@ void DotCorrection() { //  DOT Correction  DOT Correction  DOT Correction  DOT C
 	PORTD &= ~(1 << 4);  //VPRG is good to go into normal mode LOW
 } //  end of DOT Correction  end of DOT Correction  end of DOT Correction  end of DOT Correction
 //*******************************************************************************************
-
+*/
