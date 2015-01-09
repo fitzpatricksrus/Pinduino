@@ -14,14 +14,22 @@
 
 class TLC5940 {
 public:
+	typedef void (*Callback)();
+
 	TLC5940();
 	virtual ~TLC5940();
 
-	static void setup();
-	static void setPixel(byte channel, int value);
+	void setup();
+	static void setCallback(Callback callback);
+	static void setPixel(byte channel, int value, byte* storage);
+	void setPixel(byte channel, int value);
+	void setPixels(byte* pixelStorage);
+
+	static TLC5940& instance;
+
 
 private:
-	static void DotCorrection();
+	void DotCorrection();
 };
 
 #endif /* TLC5940_H_ */

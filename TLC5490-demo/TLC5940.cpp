@@ -8,43 +8,58 @@
 #include "TLC5940.h"
 #include "SPI.h"
 
-static byte transferbyte[48]; // bytes that are sent out to the tlc5940 via SPI
+static const byte XLAT_PIN = 2;  //XLAT
+static const byte GSCLK_PIN = 3;  //OSC2B GSCLK
+static const byte VPRG_PIN = 4;  //VPRG
+static const byte BLANK_PIN = 5;  //VPRG
+
+
+static byte pixelStorage[48]; // bytes that are sent out to the tlc5940 via SPI
+static byte* transferbyte = pixelStorage;
 static byte DCvalue[32];  //0-63, 6 bit DOT Correction Bytes
+static TLC5940::Callback callback = 0;
 
 #ifdef ENABLE_MY_TLC
 //ISR(TIMER1_OVF_vect){}// Over Limit Flag Interrupt  you need this even if you don't use it
-ISR(TIMER1_COMPB_vect) {
-}  // Compare B - Not Used
+//ISR(TIMER1_COMPB_vect) {
+//}  // Compare B - Not Used
 ISR(TIMER1_COMPA_vect) { // Interrupt to count 4096 Pulses on GSLCK
-	PORTD |= 1 << 5; // write blank HIGH to reset the 4096 counter in the TLC
-	PORTD |= 1 << 2; // write XLAT HIGH to latch in data from the last data stream
-	PORTD &= ~(1 << 2);  //XLAT can go low now
-	PORTD &= ~(1 << 5);  //Blank goes LOW to start the next cycle
+	PORTD |= 1 << BLANK_PIN; // write blank HIGH to reset the 4096 counter in the TLC
+	PORTD |= 1 << XLAT_PIN; // write XLAT HIGH to latch in data from the last data stream
+	PORTD &= ~(1 << XLAT_PIN);  //XLAT can go low now
+	PORTD &= ~(1 << BLANK_PIN);  //Blank goes LOW to start the next cycle
 	SPI.end();  //end the SPI so we can write to the clock pin
-	PORTB |= 1 << 5;  // SPI Clock pin to give it the extra count
-	PORTB &= ~(1 << 5);  // The data sheet says you need this for some reason?
+	PORTB |= 1 << BLANK_PIN;  // SPI Clock pin to give it the extra count
+	PORTB &= ~(1 << BLANK_PIN);  // The data sheet says you need this for some reason?
 	SPI.begin();  // start the SPI back up
 	for (int SINData = 47; SINData >= 0; SINData--)  // send the data out!
 		SPI.transfer(transferbyte[SINData]); // The SPI port only understands bytes-8 bits wide
 	// The TLC needs 12 bits for each channel, so 12bits times 32 channels gives 384 bits
 	// 384/8=48 bytes, 0-47
+	if (callback != 0) {
+		(*callback)();
+	}
 }
 #endif
 
+static TLC5940 instance_instance;
+TLC5940& TLC5940::instance = instance_instance;
+
+void TLC5940::setCallback(Callback callbackIn) {
+	callback = callbackIn;
+}
 
 TLC5940::TLC5940() {
-	// TODO Auto-generated constructor stub
-
+	callback = 0;
 }
 
 TLC5940::~TLC5940() {
-	// TODO Auto-generated destructor stub
 }
 
 void TLC5940::setup() {
-	pinMode(2, OUTPUT);  //XLAT
-	pinMode(3, OUTPUT);  //OSC2B GSCLK
-	pinMode(4, OUTPUT);  //VPRG
+	pinMode(XLAT_PIN, OUTPUT);  //XLAT
+	pinMode(GSCLK_PIN, OUTPUT);  //OSC2B GSCLK
+	pinMode(VPRG_PIN, OUTPUT);  //VPRG
 	pinMode(11, OUTPUT);  //MOSI DATA
 	pinMode(13, OUTPUT);  //SPI Clock
 
@@ -58,8 +73,6 @@ void TLC5940::setup() {
 
 	for (byte i = 0; i < 32; i++) //set Dot Correction data to max (63 decimal for 6 bit)
 		DCvalue[i] = 63;
-
-//	Serial.begin(115200);  //debugging?
 
 	//set up DOT Correction
 	DotCorrection();  // sub routine helps
@@ -93,13 +106,12 @@ void TLC5940::setup() {
 		setPixel(i, 0); // This is how you update the LEDs, tlc is a subroutine with two inputs
 	// tlc(Channel, Value)  Channel in this case is 0-32 and value is 0-4095 duty cycle
 	//4095 is 100% ON
-	pinMode(5, OUTPUT); //BLANK  We set this pin up here, so it remains in a high impedance
+	pinMode(BLANK_PIN, OUTPUT); //BLANK  We set this pin up here, so it remains in a high impedance
 	// state throughout the setup, otherwise the LEDs go crazy!  even if you write this HIGH
 }
 
-void TLC5940::setPixel(byte channel, int value) {
+void TLC5940::setPixel(byte channel, int value, byte* storage) {
 	// This routine needs to happen as fast as possible!!!
-//		delayMicroseconds(1);  //to control speed if necessary
 	//Limit check
 		if (value > 4095) {
 			value = 4095;
@@ -128,15 +140,27 @@ void TLC5940::setPixel(byte channel, int value) {
 				spibit = 0;   //reset the bit count in the byte
 			}
 			if (bitRead(value, chbit)) {  //check the value for 1's and 0's
-				bitSet(transferbyte[spibyte], spibit); //transferbyte is what is written to the TLC
+				bitSet(storage[spibyte], spibit);
 			} else {
-				bitClear(transferbyte[spibyte], spibit);
+				bitClear(storage[spibyte], spibit);
 			}
 		}   //0-12 bit loop
 }
 
+void TLC5940::setPixel(byte channel, int value) {
+	setPixel(channel, value, transferbyte);
+}
+
+void TLC5940::setPixels(byte* pixelStorageIn) {
+	if (pixelStorageIn != 0) {
+		transferbyte = pixelStorageIn;
+	} else {
+		transferbyte = pixelStorage;
+	}
+}
+
 void TLC5940::DotCorrection() {
-	PORTD |= 1 << 4;  //VPRG to DC Mode HIGH
+	PORTD |= 1 << VPRG_PIN;  //VPRG to DC Mode HIGH
 	byte spibyte = 0;  //reset our variables
 	byte spibit = 0;
 	for (byte ch = 0; ch < 32; ch++) {  // 6 bit a piece x 32 Outputs
@@ -156,8 +180,8 @@ void TLC5940::DotCorrection() {
 	for (int j = spibyte; j >= 0; j--) {
 		SPI.transfer(transferbyte[j]);
 	}
-	PORTD |= 1 << 2;  //XLAT the data in
-	PORTD &= ~(1 << 2);  //XLAT data is in now
-	PORTD &= ~(1 << 4);  //VPRG is good to go into normal mode LOW
+	PORTD |= 1 << XLAT_PIN;  //XLAT the data in
+	PORTD &= ~(1 << XLAT_PIN);  //XLAT data is in now
+	PORTD &= ~(1 << VPRG_PIN);  //VPRG is good to go into normal mode LOW
 }
 
