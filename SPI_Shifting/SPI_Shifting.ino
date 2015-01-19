@@ -12,7 +12,8 @@
 
 #define USE_SPI
 #ifdef USE_SPI
-#include "SPI.h"
+
+#include <SPI.h>
 
 #endif
 
