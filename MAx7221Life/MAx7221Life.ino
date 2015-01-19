@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 #include "Tests/Debug.h"
-#include "SPI.h"
+#include <SPI.h>
 
 class MAX7221_COMMAND {
 public:
