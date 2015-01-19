@@ -1,5 +1,5 @@
 #include "LPD8806.h"
-#include "SPI.h" // Comment out this line if using Trinket or Gemma
+#include <SPI.h>
 #ifdef __AVR_ATtiny85__
  #include <avr/power.h>
 #endif
@@ -48,7 +48,6 @@ static uint8_t BRT = 127;
 static uint16_t WAIT_TIME = 50;
 
 void loop() {
-#if 1
   // Fill the entire strip with...
 #if 1
   colorWipe(strip.Color(BRT,   0,   0), WAIT_TIME);  // Red
@@ -80,7 +79,7 @@ void loop() {
 }
 
 void rainbow(uint16_t wait) {
-  int i, j;
+  uint16_t i, j;
 
   for (j=0; j < 384; j++) {     // 3 cycles of all 384 colors in the wheel
     for (i=0; i < strip.numPixels(); i++) {
@@ -89,7 +88,6 @@ void rainbow(uint16_t wait) {
     strip.show();   // write all the pixels out
     delay(wait);
   }
-#endif
 }
 
 // Slightly different, this one makes the rainbow wheel equally distributed
@@ -112,7 +110,7 @@ void rainbowCycle(uint16_t wait) {
 
 // Fill the dots progressively along the strip.
 void colorWipe(uint32_t c, uint16_t wait) {
-  int i;
+	uint16_t i;
 
   for (i=0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, c);
@@ -123,7 +121,7 @@ void colorWipe(uint32_t c, uint16_t wait) {
 
 // Chase one dot down the full strip.
 void colorChase(uint32_t c, uint16_t wait) {
-  int i;
+	uint16_t i;
 
   // Start by turning all pixels off:
   for(i=0; i<strip.numPixels(); i++) strip.setPixelColor(i, 0);
@@ -143,14 +141,14 @@ void colorChase(uint32_t c, uint16_t wait) {
 void theaterChase(uint32_t c, uint16_t wait) {
   for (int j=0; j<10; j++) {  //do 10 cycles of chasing
     for (int q=0; q < 3; q++) {
-      for (int i=0; i < strip.numPixels(); i=i+3) {
+      for (uint16_t i=0; i < strip.numPixels(); i=i+3) {
         strip.setPixelColor(i+q, c);    //turn every third pixel on
       }
       strip.show();
 
       delay(wait);
 
-      for (int i=0; i < strip.numPixels(); i=i+3) {
+      for (uint16_t i=0; i < strip.numPixels(); i=i+3) {
         strip.setPixelColor(i+q, 0);        //turn every third pixel off
       }
     }
@@ -161,14 +159,14 @@ void theaterChase(uint32_t c, uint16_t wait) {
 void theaterChaseRainbow(uint16_t wait) {
   for (int j=0; j < 384; j++) {     // cycle all 384 colors in the wheel
     for (int q=0; q < 3; q++) {
-        for (int i=0; i < strip.numPixels(); i=i+3) {
+        for (uint16_t i=0; i < strip.numPixels(); i=i+3) {
           strip.setPixelColor(i+q, Wheel( (i+j) % 384));    //turn every third pixel on
         }
         strip.show();
 
         delay(wait);
 
-        for (int i=0; i < strip.numPixels(); i=i+3) {
+        for (uint16_t i=0; i < strip.numPixels(); i=i+3) {
           strip.setPixelColor(i+q, 0);        //turn every third pixel off
         }
     }

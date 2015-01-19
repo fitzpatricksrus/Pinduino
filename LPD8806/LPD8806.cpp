@@ -148,7 +148,9 @@ void LPD8806::updatePins(uint8_t dpin, uint8_t cpin) {
   datapinmask = digitalPinToBitMask(dpin);
 
   // If previously begun, enable 'soft' SPI outputs now
-  if(begun == true) startBitbang();
+  if (begun == true) {
+	  startBitbang();
+  }
 
   hardwareSPI = false;
 }
