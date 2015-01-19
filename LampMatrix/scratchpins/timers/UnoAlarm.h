@@ -15,6 +15,10 @@ namespace timers {
 class UnoAlarm: public Alarm {
 public:
 	virtual ~UnoAlarm();
+//	virtual void attachInterrupt(Callback* callback);
+//	virtual void detachInterrupt();
+//	virtual void start();
+//	virtual void stop();
 	virtual void setFrequency(double frequencyHz);
 	virtual void setPeriod(unsigned long periodUs);
 
