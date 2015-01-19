@@ -146,3 +146,9 @@ void loop() {
 	loop4();
 }
 
+
+
+/*
+ * BAM Output pins for each column
+ * counter for column switching
+ */

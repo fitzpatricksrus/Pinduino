@@ -9,7 +9,7 @@
 
 #include <Arduino.h>
 #include <Binary.h>
-#include "SPI.h"
+#include <SPI.h>
 
 /*
     uint8_t valueCount;
