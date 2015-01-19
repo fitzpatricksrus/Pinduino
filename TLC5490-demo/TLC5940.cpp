@@ -6,13 +6,15 @@
  */
 
 #include "TLC5940.h"
-#include "SPI.h"
+#include <SPI.h>
 
 static const byte XLAT_PIN = 2;  //XLAT
 static const byte GSCLK_PIN = 3;  //OSC2B GSCLK
 static const byte VPRG_PIN = 4;  //VPRG
 static const byte BLANK_PIN = 5;  //VPRG
 
+#define pinOn(port, pin) port |= 1 << pin
+#define pinOff(port, pin) port &= ~(1 << pin)
 
 static byte pixelStorage[48]; // bytes that are sent out to the tlc5940 via SPI
 static byte* transferbyte = pixelStorage;
@@ -24,13 +26,13 @@ static TLC5940::Callback callback = 0;
 //ISR(TIMER1_COMPB_vect) {
 //}  // Compare B - Not Used
 ISR(TIMER1_COMPA_vect) { // Interrupt to count 4096 Pulses on GSLCK
-	PORTD |= 1 << BLANK_PIN; // write blank HIGH to reset the 4096 counter in the TLC
-	PORTD |= 1 << XLAT_PIN; // write XLAT HIGH to latch in data from the last data stream
-	PORTD &= ~(1 << XLAT_PIN);  //XLAT can go low now
-	PORTD &= ~(1 << BLANK_PIN);  //Blank goes LOW to start the next cycle
+	pinOn(PORTD, BLANK_PIN); // |= 1 << BLANK_PIN; // write blank HIGH to reset the 4096 counter in the TLC
+	pinOn(PORTD, XLAT_PIN); // |= 1 << XLAT_PIN; // write XLAT HIGH to latch in data from the last data stream
+	pinOff(PORTD, XLAT_PIN); // &= ~(1 << XLAT_PIN);  //XLAT can go low now
+	pinOff(PORTD, BLANK_PIN); // &= ~(1 << BLANK_PIN);  //Blank goes LOW to start the next cycle
 	SPI.end();  //end the SPI so we can write to the clock pin
-	PORTB |= 1 << BLANK_PIN;  // SPI Clock pin to give it the extra count
-	PORTB &= ~(1 << BLANK_PIN);  // The data sheet says you need this for some reason?
+//	pinOn(PORTB, BLANK_PIN); // |= 1 << BLANK_PIN;  // SPI Clock pin to give it the extra count
+//	pinOff(PORTB, BLANK_PIN); // &= ~(1 << BLANK_PIN);  // The data sheet says you need this for some reason?
 	SPI.begin();  // start the SPI back up
 	for (int SINData = 47; SINData >= 0; SINData--)  // send the data out!
 		SPI.transfer(transferbyte[SINData]); // The SPI port only understands bytes-8 bits wide
@@ -160,7 +162,8 @@ void TLC5940::setPixels(byte* pixelStorageIn) {
 }
 
 void TLC5940::DotCorrection() {
-	PORTD |= 1 << VPRG_PIN;  //VPRG to DC Mode HIGH
+	pinOn(PORTD, VPRG_PIN);
+//	PORTD |= 1 << VPRG_PIN;  //VPRG to DC Mode HIGH
 	byte spibyte = 0;  //reset our variables
 	byte spibit = 0;
 	for (byte ch = 0; ch < 32; ch++) {  // 6 bit a piece x 32 Outputs
@@ -180,8 +183,11 @@ void TLC5940::DotCorrection() {
 	for (int j = spibyte; j >= 0; j--) {
 		SPI.transfer(transferbyte[j]);
 	}
-	PORTD |= 1 << XLAT_PIN;  //XLAT the data in
-	PORTD &= ~(1 << XLAT_PIN);  //XLAT data is in now
-	PORTD &= ~(1 << VPRG_PIN);  //VPRG is good to go into normal mode LOW
+	pinOn(PORTD, XLAT_PIN);
+//	PORTD |= 1 << XLAT_PIN;  //XLAT the data in
+	pinOff(PORTD, XLAT_PIN);
+//	PORTD &= ~(1 << XLAT_PIN);  //XLAT data is in now
+	pinOff(PORTD, VPRG_PIN);
+//	PORTD &= ~(1 << VPRG_PIN);  //VPRG is good to go into normal mode LOW
 }
 

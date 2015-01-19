@@ -3,7 +3,8 @@
 //V7 Update - I did not test this yet, but the bitwise operation
 //to set pins LOW was incorrect.  This code fixes that.
 #include <Arduino.h>
-#include "SPI.h"//Serial Peripheral Interface Library
+//#include "SPI.h"//Serial Peripheral Interface Library
+#include "../../libraries/SPI/SPI.h"
 #include "TLC5940.h"
 
 static int green, oldgreen = 2048; //for random animation
@@ -14,21 +15,43 @@ static int pick_color = 0; //for random animation
 
 static const int NUM_CHANNELS = 32;
 
+//#define columnOn(x) pinMode(x, OUTPUT); digitalWrite(x, LOW)
+//#define columnOff(x) pinMode(x, INPUT)
+//#define columnWrite(x, v) { if (v) { columnOn(x); } else { columnOff(x); } }
+static void enableColumn(byte x) {
+	digitalWrite(A0, (x & 01) ? HIGH : LOW);
+	digitalWrite(A1, (x & 02) ? HIGH : LOW);
+	digitalWrite(A2, (x & 04) ? HIGH : LOW);
+}
+
+
 //*******************************************************************************************
+
+static int dc[8] = {
+		0, 16, 56, 192, 512, 1024, 2048, 4095
+};
+static byte pixelStorage[8][48]; // bytes that are sent out to the tlc5940 via SPI
 void setup() { //   MAIN SETUP   MAIN SETUP   MAIN SETUP   MAIN SETUP   MAIN SETUP
-	pinMode(A0, OUTPUT); digitalWrite(A0, HIGH);
-	pinMode(A1, OUTPUT); digitalWrite(A1, HIGH);
-	pinMode(A2, OUTPUT); digitalWrite(A2, HIGH);
-	pinMode(A3, OUTPUT); digitalWrite(A3, HIGH);
-	pinMode(A4, OUTPUT); digitalWrite(A4, HIGH);
-	pinMode(A5, OUTPUT); digitalWrite(A5, HIGH);
-	pinMode(A6, OUTPUT); digitalWrite(A6, HIGH);
-	pinMode(A7, OUTPUT); digitalWrite(A7, HIGH);
-	pinMode(7, OUTPUT); digitalWrite(7, HIGH);
-	pinMode(8, OUTPUT); digitalWrite(8, HIGH);
+	pinMode(A0, OUTPUT);
+	pinMode(A1, OUTPUT);
+	pinMode(A2, OUTPUT);
+	pinMode(A3, OUTPUT);
+	pinMode(A4, OUTPUT);
+	pinMode(A5, OUTPUT);
+	pinMode(7, OUTPUT);
+	pinMode(8, OUTPUT);
+	enableColumn(0);
 
 	TLC5940::instance.setup();
-	OCR1B = 31;  //to get our 2048us Interrupt
+
+	for (byte color = 0; color < 8; color++) {
+		for (byte l = 0; l <= 24; l += 3) {
+			TLC5940::setPixel(l, dc[(color+l)%8], &pixelStorage[color][0]);
+		}
+	}
+
+
+//	Serial.begin(57600);
 
 } // END OF SETUP END OF SETUP END OF SETUP END OF SETUP END OF SETUP END OF SETUP END OF SETUP
 
@@ -39,33 +62,14 @@ void loop() { //   MAIN LOOP   MAIN LOOP   MAIN LOOP   MAIN LOOP   MAIN LOOP   M
 	//all_GREEN(4095);
 	//all_BLUE(4095);
 //	lamp_test();
-	TLC5940::setCallback(nextRow);
-	lamp_test2();
+//	lamp_test2();
 //	lamp_test3();
+	lamp_test4();
 	//random_animation();
 	//random_animation2();
 	//random_animation3();
 	//random_animation4();
 } //      loop close      loop close      loop close      loop close
-
-//*******************************************************************************************
-// INTERRUPTS   INTERRUPTS   INTERRUPTS   INTERRUPTS   INTERRUPTS   INTERRUPTS   INTERRUPTS
-//ISR(TIMER1_OVF_vect){}// Over Limit Flag Interrupt  you need this even if you don't use it
-static byte pixelStorage[8][48]; // bytes that are sent out to the tlc5940 via SPI
-static byte col = 0;
-void nextRow() {
-	TLC5940::instance.setPixels(pixelStorage[col]);
-	byte color = (col / 3);
-/*	digitalWrite(A0, color == 0 ? LOW : HIGH);
-	digitalWrite(A1, color == 1 ? LOW : HIGH);
-	digitalWrite(A2, color == 2 ? LOW : HIGH);
-	digitalWrite(A3, color == 3 ? LOW : HIGH);
-	digitalWrite(A4, color == 4 ? LOW : HIGH);
-	digitalWrite(A5, color == 5 ? LOW : HIGH);
-	digitalWrite(A6, color == 6 ? LOW : HIGH);
-	digitalWrite(A7, color == 7 ? LOW : HIGH); */
-//	col = (col + 1) % 24;
-}  // cycle through columns
 
 //*******************************************************************************************
 static void lamp_test() {  //           lamp_test
@@ -88,13 +92,49 @@ static void lamp_test2() {
 }
 
 static void lamp_test3() {
-	if (col < 0) {
-		for (byte i = 0; i < 8; i++) {
-			TLC5940::instance.setPixels(pixelStorage[i]);
-			all_RED(4095);
+	const byte step = 5;
+	for (int l = 0; l <= 36; l = l + 1) {
+		tlc(l, 0);
+	}
+
+	for (int i = 0; i < 8; i++) {
+		enableColumn(i);
+		for (int l = 0; l <= 24; l = l + 1) {
+			tlc(l, 0);
+		}
+		for (int l = 0; l < 24; l = l + 1) {
+			for (int duty = 0; duty < 4096; duty += step) {
+				tlc(l, duty);
+//				delayMicroseconds(100);
+			}
+			for (int duty = 0; duty < 4096; duty += step) {
+				tlc(l, 4095 - duty);
+//				delayMicroseconds(100);
+			}
+			tlc(l, 0);
 		}
 	}
-	col = 0;
+}
+static byte col = 0;
+void nextRow() {
+//	long time = millis();
+	long time = micros() >> 11;
+//	long time = col++;
+	int col = time % 8;
+
+	TLC5940::instance.setPixels(&pixelStorage[col][0]);
+	enableColumn(col);
+}  // cycle through columns
+
+static void lamp_test4() {
+	for (byte color = 0; color < 8; color++) {
+		for (byte l = 0; l <= 24; l += 3) {
+			TLC5940::setPixel(l, dc[(color+l)%8], &pixelStorage[color][0]);
+//			TLC5940::instance.setPixel(l, (int)color*512);
+		}
+	}
+//	TLC5940::instance.setPixels(&pixelStorage[0][0]);
+	TLC5940::setCallback(nextRow);
 }
 
 static void all_RED(int duty) {  //      all red
