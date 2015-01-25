@@ -32,23 +32,24 @@ public:
 	};
 };
 
-static void send7221Command(byte command, byte value)
+Max7221::Max7221(byte selectPinIn)
+: selectPin(selectPinIn)
 {
-   //2-byte data transfer to the 7221
-   SPI.transfer(command);
-   SPI.transfer(value);
 }
 
+Max7221::~Max7221() {
+}
 
-Max7221::Max7221() {
+void Max7221::init() {
+	SPI.begin();
+	pinMode(selectPin, OUTPUT);
+	pinMode(11, OUTPUT);
+	pinMode(13, OUTPUT);
 	send7221Command(MAX7221_COMMAND::test, false);
 	send7221Command(MAX7221_COMMAND::intensity, 0x01);
 	send7221Command(MAX7221_COMMAND::decode, false);
 	send7221Command(MAX7221_COMMAND::scanLimit, 7);
 	send7221Command(MAX7221_COMMAND::enable, true);
-}
-
-Max7221::~Max7221() {
 }
 
 void Max7221::setIntensity(byte value0_15) {
@@ -70,3 +71,13 @@ void Max7221::setTest(bool on) {
 void Max7221::setColumn(byte column, byte values) {
 	send7221Command(MAX7221_COMMAND::digit0+(column % 8), values);
 }
+
+void Max7221::send7221Command(byte command, byte value)
+{
+   //2-byte data transfer to the 7221
+	digitalWrite(selectPin, LOW);
+	SPI.transfer(command);
+	SPI.transfer(value);
+	digitalWrite(selectPin, HIGH);
+}
+

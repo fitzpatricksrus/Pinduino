@@ -2,57 +2,43 @@
 
 #include "Tests/Debug.h"
 #include <SPI.h>
+#include "Max7221.h"
 
 class MAX7221_COMMAND {
 public:
 	enum {
-		noop =      B00000000,
-		digit0 =    B00000001,
-		digit1 =    B00000010,
-		digit2 =    B00000011,
-		digit3 =    B00000100,
-		digit4 =    B00000101,
-		digit5 =    B00000110,
-		digit6 =    B00000111,
-		digit7 =    B00001000,
-		decode =    B00001001,
-		intensity = B00001010,
-		scanLimit = B00001011,
-		enable =    B00001100,
-		unused1 =   B00001101,
-		unused2 =   B00001110,
-		test =      B00001111
+		noop =      0b00000000,
+		digit0 =    0b00000001,
+		digit1 =    0b00000010,
+		digit2 =    0b00000011,
+		digit3 =    0b00000100,
+		digit4 =    0b00000101,
+		digit5 =    0b00000110,
+		digit6 =    0b00000111,
+		digit7 =    0b00001000,
+		decode =    0b00001001,
+		intensity = 0b00001010,
+		scanLimit = 0b00001011,
+		enable =    0b00001100,
+		unused1 =   0b00001101,
+		unused2 =   0b00001110,
+		test =      0b00001111
 	};
 };
 
 
-static const byte COL_COUNT = 24;
+static const byte COL_COUNT = 8; //24;
 static const byte ROW_COUNT = 8;
 
-bool life[COL_COUNT][ROW_COUNT];
-bool plife[COL_COUNT][ROW_COUNT];
+static bool life[COL_COUNT][ROW_COUNT];
+static bool plife[COL_COUNT][ROW_COUNT];
 
 static byte SLAVE_PIN[3] = {10, 9, 8};
 
-void send7221Command(byte device, byte command, int value)
-{
-   digitalWrite(SLAVE_PIN[device],LOW); //chip select is active low
-   //2-byte data transfer to the 7221
-   SPI.transfer(command);
-   SPI.transfer(value);
-   digitalWrite(SLAVE_PIN[device],HIGH); //release chip, signal end transfer
-}
+static Max7221 maxchip(10);
 
 void MAXSetup() {
-	SPI.begin();
-	for (int i = 0; i <= (COL_COUNT / 3); i++) {
-		pinMode(SLAVE_PIN[i], OUTPUT);
-		send7221Command(i, MAX7221_COMMAND::test, false);
-		send7221Command(i, MAX7221_COMMAND::intensity, 0x01);
-		send7221Command(i, MAX7221_COMMAND::decode, false);
-		send7221Command(i, MAX7221_COMMAND::scanLimit, 7);
-		send7221Command(i, MAX7221_COMMAND::enable, true);
-	}
+	maxchip.init();
     randomSeed(analogRead(1));
 	for (int col = 0; col < COL_COUNT; col++) {
 		for (int row = 0; row < ROW_COUNT; row++) {
@@ -135,7 +121,7 @@ void MAXLoop() {
 				unchangedCount = 0;
 			}
 		}
-		send7221Command(col / 8, MAX7221_COMMAND::digit0+(col % 8), colValue);
+		maxchip.setColumn(col, colValue);
 	}
 	if (unchangedCount > 6) {
 		for (int col = 0; col < COL_COUNT; col++) {
