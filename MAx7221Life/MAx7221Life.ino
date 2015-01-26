@@ -10,7 +10,7 @@ static bool life[COL_COUNT][ROW_COUNT];
 static bool plife[COL_COUNT][ROW_COUNT];
 static bool p2life[COL_COUNT][ROW_COUNT];
 
-static Max7221 maxchip(10);
+static Max7221 maxchip(4);
 
 void MAXSetup() {
 	maxchip.init();
