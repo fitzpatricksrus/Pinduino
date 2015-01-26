@@ -1,6 +1,5 @@
 #include <Arduino.h>
 
-#include "Tests/Debug.h"
 #include <SPI.h>
 #include <Max7221.h>
 
@@ -9,6 +8,7 @@ static const byte ROW_COUNT = 8;
 
 static bool life[COL_COUNT][ROW_COUNT];
 static bool plife[COL_COUNT][ROW_COUNT];
+static bool p2life[COL_COUNT][ROW_COUNT];
 
 static Max7221 maxchip(10);
 
@@ -66,6 +66,7 @@ static int unchangedCount = 0;
 void MAXLoop() {
 	for (int col = 0; col < COL_COUNT; col++) {
 		for (int row = 0; row < ROW_COUNT; row++) {
+			p2life[col][row] = plife[col][row];
 			plife[col][row] = life[col][row];
 		}
 	}
@@ -92,7 +93,10 @@ void MAXLoop() {
 			if (life[col][row]) {
 				colValue = colValue | (1 << row);
 			}
-			if (life[col][row] != plife[col][row]) {
+/*			if (life[col][row] != plife[col][row]) {
+				unchangedCount = 0;
+			} */
+			if ((life[col][row] != plife[col][row]) && (life[col][row] != p2life[col][row])) {
 				unchangedCount = 0;
 			}
 		}
