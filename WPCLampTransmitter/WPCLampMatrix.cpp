@@ -6,9 +6,13 @@
  */
 
 #include "WPCLampMatrix.h"
-//#include <Debug.h>
 
-static long const lowDelay = 20;
+//#define _DEBUG_
+#ifdef _DEBUG_
+#include <Debug.h>
+#endif
+
+static long const lowDelay = 50;
 
 /*
  * The WPC lamp matrix is driven by a row select pin, a column select pin, and
@@ -43,26 +47,33 @@ void WPCLampMatrix::init() {
 }
 
 void WPCLampMatrix::setColumn(byte column, byte values) {
+#ifdef _DEBUG_
+	Serial << "COL ";
+#endif
 	writeDataPins(~(1 << column));
-///	Serial << "COL ";
 	digitalWrite(colSelectPin, LOW);
 	delayMicroseconds(lowDelay);
 	digitalWrite(colSelectPin, HIGH);
 	delayMicroseconds(lowDelay);
-//	Serial << "    ROWs  ";
-
+#ifdef _DEBUG_
+	Serial << "    ROWs  ";
+#endif
 	writeDataPins(~values);
 	digitalWrite(rowSelectPin, LOW);
 	delayMicroseconds(lowDelay);
 	digitalWrite(rowSelectPin, HIGH);
 	delayMicroseconds(lowDelay);
-//	Serial << endl;
+#ifdef _DEBUG_
+	Serial << endl;
+#endif
 }
 
 void WPCLampMatrix::writeDataPins(byte value) {
 	for (byte i = 0; i < 8; i++) {
 		digitalWrite(firstDataPin + i, value & 1);
-//		Serial << (value & 1);
+#ifdef _DEBUG_
+		Serial << (value & 1);
+#endif
 		value = value >> 1;
 	}
 }
