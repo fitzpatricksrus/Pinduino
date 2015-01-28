@@ -15,17 +15,15 @@ static const byte firstDataPin = 2;
 static const byte rowSelectPin = 10;
 static const byte colSelectPin = 11;
 static WPCLampMatrix xmitMatrix(colSelectPin, rowSelectPin, firstDataPin);
-static const byte csPin = 10;
-static LampMatrix7221 displayMatrix(csPin);
 
 void MAXSetup() {
+	xmitMatrix.init();
     randomSeed(analogRead(1));
 	for (int col = 0; col < COL_COUNT; col++) {
 		for (int row = 0; row < ROW_COUNT; row++) {
 			life[col][row] = random(2) != 0;
 		}
 	}
-	xmitMatrix.init();
 }
 
 int pCol(int value) {
@@ -117,7 +115,7 @@ void MAXLoop() {
 			}
 		}
 	}
-	delay(150);
+	delayMicroseconds(100000L);
 }
 
 static byte col = 0;
@@ -125,7 +123,7 @@ static byte row = 0;
 
 void nextDot() {
 	xmitMatrix.setColumn(col, 1 << row);
-	delayMicroseconds(2000);
+//	delayMicroseconds(200000);
 
 	row++;
 	if (row >= 8) {
@@ -138,12 +136,36 @@ void nextDot() {
 	}
 }
 
+void colTest() {
+	xmitMatrix.setColumn(col, -1);
+	delayMicroseconds(200000);
+	xmitMatrix.setColumn(col, 0);
+	delayMicroseconds(200000);
+	col++;
+	if (col >= 8) {
+		col = 0;
+	}
+}
+
+void col1Test() {
+	xmitMatrix.setColumn(0, 1 << row);
+	delayMicroseconds(2000);
+	row++;
+	if (row >= 8) {
+		row = 0;
+	}
+}
+
 void setup() {
-//	Serial.begin(57600);
+#ifdef _DEBUG_
+	Serial.begin(57600);
+#endif
 	MAXSetup();
 }
 
 void loop() {
 	MAXLoop();
 //	nextDot();
+//	colTest();
+//	col1Test();
 }
