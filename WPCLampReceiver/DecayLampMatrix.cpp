@@ -16,39 +16,34 @@ DecayLampMatrix::~DecayLampMatrix() {
 }
 
 void DecayLampMatrix::init() {
-	driverMatrix->init();
 	for (byte i = 0; i < 8; i++) {
-		for (byte j = 0; j < 8; j++) {
+		for (int j = 0; j < 8; j++) {
 			decayValue[i][j] = 0;
 		}
 	}
+	driverMatrix->init();
 }
 
 void DecayLampMatrix::setColumn(byte column, byte values) {
-	for (byte i = 0; i < 8; i++) {
+	for (int i = 0; i < 8; i++) {
 		if (values & (1 << i)) {
 			decayValue[column][i] = decayRate;
 		}
 	}
-}
-
-static byte pack(int values[]) {
-	byte result = 0;
-	for (int i = 0; i < 8; i++) {
-		result = result << 1;
-		if (values[i] > 0) {
-			result |= 1;
-		}
-	}
-	return result;
+	tick();
 }
 
 void DecayLampMatrix::tick() {
 	for (byte i = 0; i < 8; i++) {
-		for (byte j = 0; j < 8; j++) {
+		byte value = 0;
+		for (int j = 0; j < 8; j++) {
+			value = value << 1;
+			if (decayValue[i][j] > 0) {
+				value |= 1;
+			}
 			decayValue[i][j] = max(decayValue[i][j] - 1, 0);
 		}
-		driverMatrix->setColumn(i, pack(decayValue[i]));
+		driverMatrix->setColumn(i, value);
 	}
 }
 

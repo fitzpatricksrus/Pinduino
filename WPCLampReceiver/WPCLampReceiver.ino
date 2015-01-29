@@ -31,8 +31,8 @@ static const byte rowSelectPin = A1;
 static const byte colSelectPin = A2;
 static byte lastSelectedColumn = 0;
 
-LampMatrix7221 driverMatrix(SS);
-DecayLampMatrix matrix(&driverMatrix, 2000);
+LampMatrix7221 matrix2(SS);
+DecayLampMatrix matrix(&matrix2, 3);
 
 void setup() {
 #ifdef _DEBUG_
