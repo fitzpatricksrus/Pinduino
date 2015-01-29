@@ -123,7 +123,7 @@ static byte row = 0;
 
 void nextDot() {
 	xmitMatrix.setColumn(col, 1 << row);
-//	delayMicroseconds(200000);
+	delayMicroseconds(200000);
 
 	row++;
 	if (row >= 8) {
@@ -164,8 +164,8 @@ void setup() {
 }
 
 void loop() {
-	MAXLoop();
-//	nextDot();
+//	MAXLoop();
+	nextDot();
 //	colTest();
 //	col1Test();
 }
