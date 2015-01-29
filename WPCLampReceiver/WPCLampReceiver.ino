@@ -12,6 +12,8 @@
 #include <Arduino.h>
 
 #include <Max7221.h>
+#include "LampMatrix7221.h"
+#include "DecayLampMatrix.h"
 
 //#define _DEBUG_
 #ifdef _DEBUG_
@@ -29,81 +31,24 @@ static const byte rowSelectPin = A1;
 static const byte colSelectPin = A2;
 static byte lastSelectedColumn = 0;
 
-Max7221 matrix(SS);
+LampMatrix7221 driverMatrix(SS);
+DecayLampMatrix matrix(&driverMatrix, 2000);
 
 void setup() {
 #ifdef _DEBUG_
 	Serial.begin(57600);
 #endif
-	pinMode(rowSelectPin, INPUT);
-	pinMode(colSelectPin, INPUT);
+	pinMode(rowSelectPin, INPUT_PULLUP);
+	pinMode(colSelectPin, INPUT_PULLUP);
 	for (byte i = 0; i < 8; i++) {
-		pinMode(firstDataPin + i, INPUT);
+		pinMode(firstDataPin + i, INPUT_PULLUP);
 	}
 	matrix.init();
 }
 
-static byte bitMask[] = { 1, 2, 4, 8, 16, 32, 64, 128 };
-void loopY() {
-	if (digitalRead(colSelectPin) == LOW) {
-#ifdef _FAST_READ_
-		byte value = ~PIND;
-		for (int i = 0; i < 8; i++) {
-			if (value & bitMask[i]) {
-				lastSelectedColumn = i;
-#ifdef _DEBUG_
-				Serial << "col " << lastSelectedColumn << endl;
-#endif
-			}
-		}
-
-#else
-		byte newColumn = lastSelectedColumn;
-		for (int i = 0; i < 8; i++) {
-			if (digitalRead(firstDataPin + i) == LOW) {
-				newColumn = i;
-			}
-		}
-		if (newColumn != lastSelectedColumn) {
-			lastSelectedColumn = newColumn;
-#ifdef _DEBUG_
-			Serial << "col " << lastSelectedColumn << endl;
-#endif
-		}
-#endif
-	} else if (digitalRead(rowSelectPin) == LOW) {
-#ifdef _FAST_READ_
-		byte value = ~PIND;
-#else
-		byte value = 0;
-		for (int i = 0; i < 8; i++) {
-			value = value << 1;
-			if (digitalRead(firstDataPin + i) == LOW) {
-				value |= 1;
-			}
-		}
-#endif
-		matrix.setColumn(lastSelectedColumn, value);
-#ifdef _DEBUG_
-		Serial << lastSelectedColumn << " " << _BIN(value) << endl;
-#endif
-	}
-}
-
+#ifndef _FAST_READ_
 void loop() {
 	if (digitalRead(colSelectPin) == LOW) {
-#ifdef _FAST_READ_
-		byte value = ~PIND;
-		for (int i = 0; i < 8; i++) {
-			if (value & bitMask[i]) {
-				lastSelectedColumn = i;
-#ifdef _DEBUG_
-				Serial << "col " << lastSelectedColumn << endl;
-#endif
-			}
-		}
-
-#else
 		byte newColumn = lastSelectedColumn;
 		for (int i = 0; i < 8; i++) {
 			if (digitalRead(firstDataPin + i) == LOW) {
@@ -116,11 +61,7 @@ void loop() {
 			Serial << "col " << lastSelectedColumn << endl;
 #endif
 		}
-#endif
 	} else if (digitalRead(rowSelectPin) == LOW) {
-#ifdef _FAST_READ_
-		byte value = ~PIND;
-#else
 		byte value = 0;
 		for (int i = 0; i < 8; i++) {
 			value = value << 1;
@@ -128,7 +69,6 @@ void loop() {
 				value |= 1;
 			}
 		}
-#endif
 //		for (byte i = 0; i < 8; i++) {
 //			matrix.setColumn(i, (i == lastSelectedColumn) ? value : 0);
 //		}
@@ -138,23 +78,30 @@ void loop() {
 #endif
 	}
 }
+#endif
 
-void loopX() {
 #ifdef _FAST_READ_
-		int data = ~PIND;
-#else
-		int data = 0;
+static byte bitMask[] = { 1, 2, 4, 8, 16, 32, 64, 128 };
+void loop() {
+	if (digitalRead(colSelectPin) == LOW) {
+		byte value = ~PIND;
 		for (int i = 0; i < 8; i++) {
-			data = data << 1;
-			if (digitalRead(firstDataPin + i) == LOW) {
-				data |= 1;
+			if (value & bitMask[i]) {
+				lastSelectedColumn = i;
+#ifdef _DEBUG_
+				Serial << "col " << lastSelectedColumn << endl;
+#endif
 			}
 		}
-#endif
+	} else if (digitalRead(rowSelectPin) == LOW) {
+		byte value = ~PIND;
+//		for (byte i = 0; i < 8; i++) {
+//			matrix.setColumn(i, (i == lastSelectedColumn) ? value : 0);
+//		}
+		matrix.setColumn(lastSelectedColumn, value);
 #ifdef _DEBUG_
-	if (col == 0) {
-		Serial << col << " " << row << " " << _BIN(data) << endl;
-	}
+		Serial << lastSelectedColumn << " " << _BIN(value) << endl;
 #endif
-	delay(100);
+	}
 }
+#endif //_FAST_READ_
