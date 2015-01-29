@@ -32,7 +32,7 @@ static const byte colSelectPin = A2;
 static byte lastSelectedColumn = 0;
 
 LampMatrix7221 matrix2(SS);
-DecayLampMatrix matrix(&matrix2, 3);
+DecayLampMatrix matrix(&matrix2, 8);
 
 void setup() {
 #ifdef _DEBUG_
