@@ -11,9 +11,9 @@ static bool life[COL_COUNT][ROW_COUNT];
 static bool plife[COL_COUNT][ROW_COUNT];
 static bool p2life[COL_COUNT][ROW_COUNT];
 
-static const byte firstDataPin = 2;
-static const byte rowSelectPin = 10;
-static const byte colSelectPin = 11;
+static const byte firstDataPin = 4;
+static const byte rowSelectPin = 2;
+static const byte colSelectPin = 3;
 static WPCLampMatrix xmitMatrix(colSelectPin, rowSelectPin, firstDataPin);
 
 void MAXSetup() {
@@ -123,7 +123,7 @@ static byte row = 0;
 
 void nextDot() {
 	xmitMatrix.setColumn(col, 1 << row);
-	delayMicroseconds(200000);
+	delayMicroseconds(20000);
 
 	row++;
 	if (row >= 8) {
@@ -132,6 +132,21 @@ void nextDot() {
 		col++;
 		if (col >= 8) {
 			col = 0;
+		}
+	}
+}
+
+void nextDot2() {
+	xmitMatrix.setColumn(col, 1 << row);
+	delayMicroseconds(2500);
+
+	col++;
+	if (col >= 8) {
+		col = 0;
+		xmitMatrix.setColumn(col, 0);
+		row++;
+		if (row >= 8) {
+			row = 0;
 		}
 	}
 }
@@ -163,9 +178,14 @@ void setup() {
 	MAXSetup();
 }
 
+static void handleFallingEdge() {
+
+}
+
 void loop() {
 //	MAXLoop();
-	nextDot();
+	nextDot2();
 //	colTest();
 //	col1Test();
+//	attachInterrupt(2, handleFallingEdge, FALLING);
 }
