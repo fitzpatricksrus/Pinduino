@@ -47,28 +47,39 @@ void WPCLampMatrix::init() {
 }
 
 void WPCLampMatrix::setColumn(byte column, byte values) {
+	setColumn(column);
+	setRows(values);
+}
+
+void WPCLampMatrix::setColumn(byte column) {
 #ifdef _DEBUG_
 	Serial << "COL ";
 #endif
 	writeDataPins(~(1 << column));
+//	writeDataPins(0);
 	digitalWrite(colSelectPin, LOW);
-	delayMicroseconds(lowDelay);
-	digitalWrite(colSelectPin, HIGH);
-	writeDataPins(-1);
 //	delayMicroseconds(lowDelay);
+	digitalWrite(colSelectPin, HIGH);
+//	writeDataPins(-1);
+//	delayMicroseconds(lowDelay);
+}
+
+void WPCLampMatrix::setRows(byte values) {
 #ifdef _DEBUG_
 	Serial << "    ROWs  ";
 #endif
+//	writeDataPins(0);
 	writeDataPins(~values);
 	digitalWrite(rowSelectPin, LOW);
-	delayMicroseconds(lowDelay);
+//	delayMicroseconds(lowDelay);
 	digitalWrite(rowSelectPin, HIGH);
-	writeDataPins(-1);
+//	writeDataPins(-1);
 //	delayMicroseconds(lowDelay);
 #ifdef _DEBUG_
 	Serial << endl;
 #endif
 }
+
 
 void WPCLampMatrix::writeDataPins(byte value) {
 	for (byte i = 0; i < 8; i++) {

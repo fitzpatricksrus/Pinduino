@@ -27,6 +27,8 @@ public:
 
 	virtual void init();
 	virtual void setColumn(byte column, byte values);
+	virtual void setColumn(byte column);
+	virtual void setRows(byte rows);
 
 private:
 	void writeDataPins(byte value);

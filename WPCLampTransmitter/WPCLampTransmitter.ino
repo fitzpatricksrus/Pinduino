@@ -2,7 +2,11 @@
 
 #include "LampMatrix7221.h"
 #include "WPCLampMatrix.h"
-//#include <debug.h>
+
+#define _DEBUG_
+#ifdef _DEBUG_
+#include <debug.h>
+#endif
 
 static const byte COL_COUNT = 8; //24;
 static const byte ROW_COUNT = 8;
@@ -12,8 +16,8 @@ static bool plife[COL_COUNT][ROW_COUNT];
 static bool p2life[COL_COUNT][ROW_COUNT];
 
 static const byte firstDataPin = 4;
-static const byte rowSelectPin = 2;
-static const byte colSelectPin = 3;
+static const byte rowSelectPin = 3;
+static const byte colSelectPin = 2;
 static WPCLampMatrix xmitMatrix(colSelectPin, rowSelectPin, firstDataPin);
 
 void MAXSetup() {
@@ -115,7 +119,7 @@ void MAXLoop() {
 			}
 		}
 	}
-	delayMicroseconds(100000L);
+	delay(500);
 }
 
 static byte col = 0;
@@ -123,8 +127,9 @@ static byte row = 0;
 
 void nextDot() {
 	xmitMatrix.setColumn(col, 1 << row);
-	delayMicroseconds(20000);
+//	delayMicroseconds(2000000);
 
+//	delay(200);
 	row++;
 	if (row >= 8) {
 		row = 0;
@@ -136,9 +141,26 @@ void nextDot() {
 	}
 }
 
+void nextDotA() {
+	xmitMatrix.setRows(1 << row);
+//	delayMicroseconds(2000000);
+
+//	delay(100);
+	row++;
+	if (row >= 8) {
+		row = 0;
+		col++;
+		if (col >= 8) {
+			col = 0;
+		}
+		xmitMatrix.setRows(0);
+		xmitMatrix.setColumn(col);
+	}
+}
+
 void nextDot2() {
 	xmitMatrix.setColumn(col, 1 << row);
-	delayMicroseconds(2500);
+	delay(80);
 
 	col++;
 	if (col >= 8) {
@@ -152,10 +174,9 @@ void nextDot2() {
 }
 
 void colTest() {
-	xmitMatrix.setColumn(col, -1);
-	delayMicroseconds(200000);
-	xmitMatrix.setColumn(col, 0);
-	delayMicroseconds(200000);
+	xmitMatrix.setColumn(col);
+	xmitMatrix.setRows(-1);
+	delay(500);
 	col++;
 	if (col >= 8) {
 		col = 0;
@@ -165,6 +186,16 @@ void colTest() {
 void col1Test() {
 	xmitMatrix.setColumn(0, 1 << row);
 	delayMicroseconds(2000);
+	row++;
+	if (row >= 8) {
+		row = 0;
+	}
+}
+
+void rowTest() {
+	xmitMatrix.setColumn(0);
+	xmitMatrix.setRows(1 << row);
+	delay(500);
 	row++;
 	if (row >= 8) {
 		row = 0;
@@ -184,7 +215,10 @@ static void handleFallingEdge() {
 
 void loop() {
 //	MAXLoop();
-	nextDot2();
+//	nextDot();
+	nextDotA();
+//	nextDot2();
+//	rowTest();
 //	colTest();
 //	col1Test();
 //	attachInterrupt(2, handleFallingEdge, FALLING);
