@@ -129,7 +129,7 @@ void nextDot() {
 	xmitMatrix.setColumn(col, 1 << row);
 //	delayMicroseconds(2000000);
 
-//	delay(200);
+	delay(800);
 	row++;
 	if (row >= 8) {
 		row = 0;
@@ -145,7 +145,7 @@ void nextDotA() {
 	xmitMatrix.setRows(1 << row);
 //	delayMicroseconds(2000000);
 
-//	delay(100);
+	delay(150);
 	row++;
 	if (row >= 8) {
 		row = 0;
@@ -184,8 +184,8 @@ void colTest() {
 }
 
 void col1Test() {
-	xmitMatrix.setColumn(0, 1 << row);
-	delayMicroseconds(2000);
+	xmitMatrix.setColumn(3, 1 << row);
+	delay(500);
 	row++;
 	if (row >= 8) {
 		row = 0;
@@ -209,14 +209,10 @@ void setup() {
 	MAXSetup();
 }
 
-static void handleFallingEdge() {
-
-}
-
 void loop() {
 //	MAXLoop();
-//	nextDot();
-	nextDotA();
+	nextDot();
+//	nextDotA();
 //	nextDot2();
 //	rowTest();
 //	colTest();
