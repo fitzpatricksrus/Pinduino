@@ -7,8 +7,8 @@
 //#define BUFFERED_DATA_PASSTHROUGH
 
 // PORTC
-static const byte ROW_OUT = 30;
-static const byte COL_OUT = 31;
+static const byte COL_OUT = 22;
+static const byte ROW_OUT = 31;
 static const byte TRIAC_OUT = 32;
 static const byte SOL1_OUT = 33;
 static const byte SOL2_OUT = 34;
@@ -23,29 +23,23 @@ static const byte CLK_DATA_IN = 40;	//PG1
 static const byte EN_DATA_IN = 41;	//PG0
 
 // input identifier pulses
-static const byte ROW_SEL_IN = A10;
+static const byte ROW_SEL_IN = A15;
 static volatile bool rowSelectCount = 0;
-static const byte COL_SEL_IN = A15;
+static const byte COL_SEL_IN = A14;
 static volatile bool colSelectCount = 0;
 
 
 typedef enum DataBusMaster { MPU, MICRO_CONTROLLER } DataBusMaster;
 
-static int dummy = 0;
-
-static void delay() {
-	for (int i = 0; i < 7; i++) {
-		dummy += i;
-	}
-}
-
 static inline void toggle(byte pin) {
 	digitalWrite(pin, LOW);
-//	delay();
 	digitalWrite(pin, HIGH);
 }
 
+static byte currentMaster = -1;
 static inline void setDataBusMaster(byte master) {
+	if (currentMaster == master) return;
+	currentMaster = master;
 	if (master == MPU) {
 		// arduino pins are in read mode
 		DDRL = 0;
@@ -59,7 +53,6 @@ static inline void setDataBusMaster(byte master) {
 		// arduino pins are in write mode
 		DDRL = -1;
 	}
-	delay();
 }
 
 static inline byte readDataBus() {
@@ -103,8 +96,8 @@ static void handleColInterrupt() {
 }
 #endif
 
-
 #ifdef DIRECT_DATA_PASSTHROUGH
+#if 0
 static void handleRowInterrupt() {
 	// move data onto data bus from input latch
 //	latchImport();
@@ -120,6 +113,7 @@ static void handleRowInterrupt() {
 	// signal to external client that row data is in output latch
 //	signalExport(ROW_OUT);
 	toggle(ROW_OUT);
+	rows++;
 }
 
 static void handleColInterrupt() {
@@ -136,7 +130,38 @@ static void handleColInterrupt() {
 		// signal to external client that row data is in output latch
 	//	signalExport(ROW_OUT);
 		toggle(COL_OUT);
+		cols++;
 }
+#else
+static void handleRowInterrupt() {
+	// move data onto data bus from input latch
+	latchImport();
+
+	// ensure MPU input is on the data bus
+	setDataBusMaster(MPU);
+
+	// clock data from data bus into output latch
+	latchExport();
+
+	// signal to external client that row data is in output latch
+	signalExport(ROW_OUT);
+	rowSelectCount++;
+}
+
+static void handleColInterrupt() {
+		latchImport();
+
+		// ensure MPU input is on the data bus
+		setDataBusMaster(MPU);
+
+		// clock data from data bus into output latch
+		latchExport();
+
+		// signal to external client that row data is in output latch
+		signalExport(COL_OUT);
+		colSelectCount++;
+}
+#endif
 #endif
 
 #ifdef DIRECT_DATA_PASSTHROUGH2
@@ -221,9 +246,10 @@ static void handleColInterrupt() {
 
 void setup() {
 	// set control pins to OUTPUT mode
-	for (byte i = ROW_OUT; i <= EN_DATA_IN; i++) {
+	for (byte i = 22; i <= 53; i++) {
 		digitalWrite(i, HIGH);
 		pinMode(i, OUTPUT);
+		digitalWrite(i, HIGH);
 	}
 	for (byte i = 42; i <= 49; i++) {
 		pinMode(i, INPUT);
@@ -246,13 +272,14 @@ void setup() {
 	Serial.begin(57600);
 }
 
+static long t = 0;
 void loop() {
-	if (rowSelectCount) {
-		Serial.println("row");
-		rowSelectCount = false;
-	}
-	if (colSelectCount) {
-		Serial.println("col");
-		colSelectCount = false;
+	if (millis() - t > 1000) {
+		Serial.print(rowSelectCount);
+		Serial.print(", ");
+		Serial.println(colSelectCount);
+		t = millis();
+		rowSelectCount = 0;
+		colSelectCount = 0;
 	}
 }
