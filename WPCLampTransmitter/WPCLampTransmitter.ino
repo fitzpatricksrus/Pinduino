@@ -129,7 +129,7 @@ void nextDot() {
 	xmitMatrix.setColumn(col, 1 << row);
 //	delayMicroseconds(2000000);
 
-	delay(800);
+	delay(200);
 	row++;
 	if (row >= 8) {
 		row = 0;
