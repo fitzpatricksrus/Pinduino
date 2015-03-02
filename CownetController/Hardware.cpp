@@ -8,10 +8,93 @@
 #include "Hardware.h"
 #include <PinChangeInt.h>
 
-Hardware::Hardware() {
+static Hardware defaultHardwareInstance;
+Hardware& Hardware::INSTANCE = defaultHardwareInstance;
+
+static byte inputPins[9] = {
+	A14,	//COL
+	A15,	//ROW
+	A13,	//TRIAC
+	A12,	//SOL1
+	A11,	//SOL2
+	A10,	//SOL3
+	A9,		//SOL4
+	A8,		//ZERO_CROSS
+	A7,		//BLANK
+};
+static byte outputPins[7] = {
+	22,		//COL
+	31,		//ROW
+	0,		//TRIAC
+	0,		//SOL1
+	0,		//SOL2
+	0,		//SOL3
+	0,		//SOL4
+};
+// control bus
+static const byte CLK_DATA_OUT = 38;	//PD7
+static const byte CLK_DATA_IN = 40;		//PG1
+
+static inline void pulsePin(byte pin) {
+	digitalWrite(pin, LOW);
+	digitalWrite(pin, HIGH);
+}
+
+Hardware::Hardware()
+: controller(NULL)
+{
 }
 
 Hardware::~Hardware() {
+}
+typedef enum HardwareSignal { COL, ROW, TRIAC, SOL1, SOL2, SOL3, SOL4, ZERO_CROSS, BLANKING } HardwareSignal;
+
+static void handleRowInterrupt() {
+	Hardware::INSTANCE.getController()->handleInterrupt()
+}
+static void handleColIterrupt() {
+}
+static void handleTriacInterrupt() {
+}
+static void handleSol1Interrupt() {
+}
+static void handleSol2Interrupt() {
+}
+static void handleSol3Interrupt() {
+}
+static void handleSol4Interrupt() {
+}
+static void handleZeroCrossInterrupt() {
+}
+
+void Hardware::attachController(HardwareController* controllerIn) {
+	controller = controllerIn;
+	attachPinChangeInterrupt(inputPins[ROW],handleRowInterrupt,RISING);
+	attachPinChangeInterrupt(inputPIns[COL],handleColInterrupt,RISING);
+}
+
+void Hardware::latchDataInput() {
+	pulsePin(CLK_DATA_IN);
+}
+
+void Hardware::latchDataOutput() {
+	pulsePin(CLK_DATA_OUT);
+}
+
+byte Hardware::readData() {
+	return PINL;
+}
+
+void Hardware::writeData(byte data) {
+	PORTC = data;
+}
+
+void Hardware::pulse(HardwareSignal pin) {
+	pulsePin(outputPins[pin]);
+}
+
+bool Hardware::getBlanking() const {
+	return digitalRead(inputPins[BLANKING]);
 }
 
 // ------------------------------------------------------------------------------
@@ -100,94 +183,5 @@ static Hardware::HardwareController defaultHardwareControllerInstance;
 Hardware::HardwareController& Hardware::defaultController = defaultHardwareControllerInstance;
 
 // ------------------------------------------------------------------------------
-
-class DefaultHardware : public Hardware {
-public:
-	DefaultHardware();
-	virtual ~DefaultHardware();
-
-	virtual void attachController(HardwareController* controller);
-
-	virtual void latchDataInput();
-	virtual void latchDataOutput();
-	virtual byte readData();
-	virtual void writeData(byte data);
-	virtual void pulse(HardwareSignal pin);
-	virtual bool getBlanking() const;
-
-	HardwareController* controller;
-};
-
-static DefaultHardware defaultHardwareInstance;
-Hardware& Hardware::defaultHardware = defaultHardwareInstance;
-static byte inputPins[9] = {
-	A14,	//COL
-	A15,	//ROW
-	A13,	//TRIAC
-	A12,	//SOL1
-	A11,	//SOL2
-	A10,	//SOL3
-	A9,		//SOL4
-	A8,		//ZERO_CROSS
-	A7,		//BLANK
-};
-static byte outputPins[7] = {
-	22,		//COL
-	31,		//ROW
-	0,		//TRIAC
-	0,		//SOL1
-	0,		//SOL2
-	0,		//SOL3
-	0,		//SOL4
-};
-// control bus
-static const byte CLK_DATA_OUT = 38;	//PD7
-//static const byte EN_DATA_OUT = 39;	//PG2
-static const byte CLK_DATA_IN = 40;		//PG1
-//static const byte EN_DATA_IN = 41;	//PG0
-
-static inline void pulsePin(byte pin) {
-	digitalWrite(pin, LOW);
-	digitalWrite(pin, HIGH);
-}
-
-DefaultHardware::DefaultHardware() {
-	controller = &Hardware::defaultController;
-}
-
-DefaultHardware::~DefaultHardware() {
-}
-
-void DefaultHardware::attachController(HardwareController* controllerIn) {
-	controller = controllerIn;
-}
-
-void DefaultHardware::latchDataInput() {
-	pulsePin(CLK_DATA_IN);
-}
-
-void DefaultHardware::latchDataOutput() {
-	pulsePin(CLK_DATA_OUT);
-}
-
-byte DefaultHardware::readData() {
-	return PINL;
-}
-
-void DefaultHardware::writeData(byte data) {
-	PORTC = data;
-}
-
-void DefaultHardware::pulse(HardwareSignal pin) {
-	pulsePin(outputPins[pin]);
-}
-
-bool DefaultHardware::getBlanking() const {
-	return digitalRead(inputPins[BLANKING]);
-}
-
-
-//attachPinChangeInterrupt(ROW_SEL_IN,handleRowInterrupt,RISING);
-//attachPinChangeInterrupt(COL_SEL_IN,handleColInterrupt,RISING);
 
 

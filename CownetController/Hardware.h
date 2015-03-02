@@ -33,17 +33,21 @@ public:
 		virtual void handleBlanking(Hardware& hardware);
 	};
 
-	virtual void attachController(HardwareController* controller) = 0;
+	virtual void attachController(HardwareController* controller);
+	virtual HardwareController* getController() const;
 
-	virtual void latchDataInput() = 0;
-	virtual void latchDataOutput()= 0;
-	virtual byte readData() = 0;
-	virtual void writeData(byte data) = 0;
-	virtual void pulse(HardwareSignal pin) = 0;
-	virtual bool getBlanking() const = 0;
+	virtual void latchDataInput();
+	virtual void latchDataOutput();
+	virtual byte readData();
+	virtual void writeData(byte data);
+	virtual void pulse(HardwareSignal pin);
+	virtual bool getBlanking() const;
 
-	static HardwareController& defaultController;
-	static Hardware& defaultHardware;
+	static HardwareController& passThroughController;
+	static Hardware& INSTANCE;
+
+private:
+	HardwareController* controller;
 };
 
 #endif /* HARDWARE_H_ */
