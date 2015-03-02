@@ -50,27 +50,40 @@ Hardware::~Hardware() {
 typedef enum HardwareSignal { COL, ROW, TRIAC, SOL1, SOL2, SOL3, SOL4, ZERO_CROSS, BLANKING } HardwareSignal;
 
 static void handleRowInterrupt() {
-	Hardware::INSTANCE.getController()->handleInterrupt()
+	Hardware::INSTANCE.getController()->handleRowInterrupt()
 }
 static void handleColIterrupt() {
+	Hardware::INSTANCE.getController()->handleColInterrupt()
 }
 static void handleTriacInterrupt() {
+	Hardware::INSTANCE.getController()->handleTriacInterrupt()
 }
 static void handleSol1Interrupt() {
+	Hardware::INSTANCE.getController()->handleSol1Interrupt()
 }
 static void handleSol2Interrupt() {
+	Hardware::INSTANCE.getController()->handleSol2Interrupt()
 }
 static void handleSol3Interrupt() {
+	Hardware::INSTANCE.getController()->handleSol3Interrupt()
 }
 static void handleSol4Interrupt() {
+	Hardware::INSTANCE.getController()->handleSol4Interrupt()
 }
 static void handleZeroCrossInterrupt() {
+	Hardware::INSTANCE.getController()->handleZeroCrossInterrupt()
 }
 
 void Hardware::attachController(HardwareController* controllerIn) {
 	controller = controllerIn;
 	attachPinChangeInterrupt(inputPins[ROW],handleRowInterrupt,RISING);
 	attachPinChangeInterrupt(inputPIns[COL],handleColInterrupt,RISING);
+	attachPinChangeInterrupt(inputPIns[TRIAC],handleColInterrupt,RISING);
+	attachPinChangeInterrupt(inputPIns[SOL1],handleColInterrupt,RISING);
+	attachPinChangeInterrupt(inputPIns[SOL2],handleColInterrupt,RISING);
+	attachPinChangeInterrupt(inputPIns[SOL3],handleColInterrupt,RISING);
+	attachPinChangeInterrupt(inputPIns[SOL4],handleColInterrupt,RISING);
+	attachPinChangeInterrupt(inputPIns[ZERO_CROSS],handleColInterrupt,RISING);
 }
 
 void Hardware::latchDataInput() {
@@ -102,40 +115,6 @@ Hardware::HardwareController::HardwareController() {
 }
 
 Hardware::HardwareController::~HardwareController() {
-}
-
-void Hardware::HardwareController::handleInterrupt(Hardware& hardware, HardwareSignal signal) {
-	switch (signal) {
-	case ROW:
-		handleRowInterrupt(hardware);
-		break;
-	case COL:
-		handleColInterrupt(hardware);
-		break;
-	case TRIAC:
-		handleTriacInterrupt(hardware);
-		break;
-	case SOL1:
-		handleSol1Interrupt(hardware);
-		break;
-	case SOL2:
-		handleSol2Interrupt(hardware);
-		break;
-	case SOL3:
-		handleSol3Interrupt(hardware);
-		break;
-	case SOL4:
-		handleSol4Interrupt(hardware);
-		break;
-	case ZERO_CROSS:
-		handleZeroCrossInterrupt(hardware);
-		break;
-	case BLANKING:
-		handleBlanking(hardware);
-		break;
-	default:
-		break;
-	};
 }
 
 static inline void echoData(Hardware& hardware, Hardware::HardwareSignal signal) {

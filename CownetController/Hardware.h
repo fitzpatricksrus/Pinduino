@@ -15,13 +15,15 @@ public:
 	Hardware();
 	virtual ~Hardware();
 
-	typedef enum HardwareSignal { COL, ROW, TRIAC, SOL1, SOL2, SOL3, SOL4, ZERO_CROSS, BLANKING } HardwareSignal;
+	typedef enum HardwareSignal { 
+		COL, ROW, TRIAC, 
+		SOL1, SOL2, SOL3, SOL4, 
+		ZERO_CROSS, BLANKING } HardwareSignal;
 
 	class HardwareController {
 	public:
 		HardwareController();
 		virtual ~HardwareController();
-		virtual void handleInterrupt(Hardware& hardware, HardwareSignal signal);
 		virtual void handleRowInterrupt(Hardware& hardware);
 		virtual void handleColInterrupt(Hardware& hardware);
 		virtual void handleTriacInterrupt(Hardware& hardware);
