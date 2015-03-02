@@ -45,7 +45,6 @@ public:
 	virtual void pulse(HardwareSignal pin);
 	virtual bool getBlanking() const;
 
-	static HardwareController& passThroughController;
 	static Hardware& INSTANCE;
 
 private:

@@ -10,8 +10,10 @@
 
 static Hardware defaultHardwareInstance;
 Hardware& Hardware::INSTANCE = defaultHardwareInstance;
+static Hardware::HardwareController defaultHardwareControllerInstance;
 
-static byte inputPins[9] = {
+static const byte INPUT_PIN_COUNT = 9;
+static byte inputPins[INPUT_PIN_COUNT] = {
 	A14,	//COL
 	A15,	//ROW
 	A13,	//TRIAC
@@ -22,7 +24,8 @@ static byte inputPins[9] = {
 	A8,		//ZERO_CROSS
 	A7,		//BLANK
 };
-static byte outputPins[7] = {
+static const byte OUTPUT_PIN_COUNT = 7;
+static byte outputPins[OUTPUT_PIN_COUNT] = {
 	22,		//COL
 	31,		//ROW
 	0,		//TRIAC
@@ -75,15 +78,29 @@ static void handleZeroCrossInterrupt() {
 }
 
 void Hardware::attachController(HardwareController* controllerIn) {
+	if (controller == NULL) {
+		// first time initialization
+		for (byte i = 0; i < INPUT_PIN_COUNT; i++) {
+			pinMode(inputPins[i], INPUT);
+		}
+		for (byte i = 0; i < OUTPUT_PIN_COUNT; i++) {
+			pinMode(outputPins[i], OUTPUT);
+		}
+		attachPinChangeInterrupt(inputPins[ROW],handleRowInterrupt,RISING);
+		attachPinChangeInterrupt(inputPIns[COL],handleColInterrupt,RISING);
+		attachPinChangeInterrupt(inputPIns[TRIAC],handleColInterrupt,RISING);
+		attachPinChangeInterrupt(inputPIns[SOL1],handleColInterrupt,RISING);
+		attachPinChangeInterrupt(inputPIns[SOL2],handleColInterrupt,RISING);
+		attachPinChangeInterrupt(inputPIns[SOL3],handleColInterrupt,RISING);
+		attachPinChangeInterrupt(inputPIns[SOL4],handleColInterrupt,RISING);
+		attachPinChangeInterrupt(inputPIns[ZERO_CROSS],handleColInterrupt,RISING);
+	}
+	
 	controller = controllerIn;
-	attachPinChangeInterrupt(inputPins[ROW],handleRowInterrupt,RISING);
-	attachPinChangeInterrupt(inputPIns[COL],handleColInterrupt,RISING);
-	attachPinChangeInterrupt(inputPIns[TRIAC],handleColInterrupt,RISING);
-	attachPinChangeInterrupt(inputPIns[SOL1],handleColInterrupt,RISING);
-	attachPinChangeInterrupt(inputPIns[SOL2],handleColInterrupt,RISING);
-	attachPinChangeInterrupt(inputPIns[SOL3],handleColInterrupt,RISING);
-	attachPinChangeInterrupt(inputPIns[SOL4],handleColInterrupt,RISING);
-	attachPinChangeInterrupt(inputPIns[ZERO_CROSS],handleColInterrupt,RISING);
+}
+
+HardwareController* Hardware::getController() const {
+	return (controller) ? controller : &defaultHardwareControllerInstance;
 }
 
 void Hardware::latchDataInput() {
@@ -157,9 +174,6 @@ void Hardware::HardwareController::handleZeroCrossInterrupt(Hardware& hardware) 
 
 void Hardware::HardwareController::handleBlanking(Hardware& hardware) {
 }
-
-static Hardware::HardwareController defaultHardwareControllerInstance;
-Hardware::HardwareController& Hardware::defaultController = defaultHardwareControllerInstance;
 
 // ------------------------------------------------------------------------------
 
