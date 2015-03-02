@@ -1,14 +1,17 @@
 #include <Arduino.h>
 #include <PinChangeInt.h>
+#include <Debug.h>
 
 //#define JUST_ROW_COL_SIGNAL
-#define DIRECT_DATA_PASSTHROUGH
-//#define DIRECT_DATA_PASSTHROUGH2
+//#define DIRECT_DATA_PASSTHROUGH
+#define DIRECT_DATA_PASSTHROUGH2
+//#define DIRECT_DRIVE
+//#define ASYNC_DATA_PASSTHROUGH
 //#define BUFFERED_DATA_PASSTHROUGH
 
 // PORTC
-static const byte COL_OUT = 22;
-static const byte ROW_OUT = 31;
+static const byte COL_OUT = 50; //22;
+static const byte ROW_OUT = 51; //31;
 static const byte TRIAC_OUT = 32;
 static const byte SOL1_OUT = 33;
 static const byte SOL2_OUT = 34;
@@ -17,58 +20,37 @@ static const byte SOL4_OUT = 36;
 static const byte EN_ARDUINO_OUT = 37;
 
 // control bus
-static const byte CLK_DATA_OUT = 38;	//PD7
-static const byte EN_DATA_OUT = 39;	//PG2
-static const byte CLK_DATA_IN = 40;	//PG1
-static const byte EN_DATA_IN = 41;	//PG0
+static const byte CLK_DATA_OUT = 38;	//PORTC 37..30
+static const byte CLK_DATA_IN = 40;		//PORTL 49..42
 
 // input identifier pulses
 static const byte ROW_SEL_IN = A15;
-static volatile bool rowSelectCount = 0;
+static volatile long rowSelectCount = 0;
 static const byte COL_SEL_IN = A14;
-static volatile bool colSelectCount = 0;
+static volatile long colSelectCount = 0;
+static volatile long matrixUpdateCount = 0;
 
-
-typedef enum DataBusMaster { MPU, MICRO_CONTROLLER } DataBusMaster;
+static volatile long dummy = 0;
+static inline void delay() {
+/*	for (int i = 0; i < 2; i++) {
+		dummy = i << i;
+	} */
+}
 
 static inline void toggle(byte pin) {
 	digitalWrite(pin, LOW);
+	delay();
 	digitalWrite(pin, HIGH);
 }
 
-static byte currentMaster = -1;
-static inline void setDataBusMaster(byte master) {
-	if (currentMaster == master) return;
-	currentMaster = master;
-	if (master == MPU) {
-		// arduino pins are in read mode
-		DDRL = 0;
-		// input latch output to data bus
-		digitalWrite(EN_ARDUINO_OUT, HIGH);
-		digitalWrite(EN_DATA_IN, LOW);
-	} else {
-		// input latch in high impedance
-		digitalWrite(EN_DATA_IN, HIGH);
-		digitalWrite(EN_ARDUINO_OUT, LOW);
-		// arduino pins are in write mode
-		DDRL = -1;
-	}
-}
-
 static inline byte readDataBus() {
-	// make sure we're set to read the data bus
-	setDataBusMaster(MPU);
-	
 	// read all of port L
 	return PINL;
 }
 
 static inline void writeDataBus(byte value) {
-	// make sure everything is set to let controller write data bus
-	setDataBusMaster(MICRO_CONTROLLER);
-	
 	// write the entire data bus port
-	PORTL = value;
+	PORTC = value;
 }
 
 static inline void latchImport() {
@@ -94,6 +76,11 @@ static void handleRowInterrupt() {
 static void handleColInterrupt() {
 	signalExport(COL_OUT);
 }
+
+static inline void updateMatrix() {
+	matrixUpdateCount++;
+}
+
 #endif
 
 #ifdef DIRECT_DATA_PASSTHROUGH
@@ -132,6 +119,11 @@ static void handleColInterrupt() {
 		toggle(COL_OUT);
 		cols++;
 }
+
+static inline void updateMatrix() {
+	matrixUpdateCount++;
+}
+
 #else
 static void handleRowInterrupt() {
 	// move data onto data bus from input latch
@@ -139,9 +131,11 @@ static void handleRowInterrupt() {
 
 	// ensure MPU input is on the data bus
 	setDataBusMaster(MPU);
+	delay();
 
 	// clock data from data bus into output latch
 	latchExport();
+	delay();
 
 	// signal to external client that row data is in output latch
 	signalExport(ROW_OUT);
@@ -153,14 +147,20 @@ static void handleColInterrupt() {
 
 		// ensure MPU input is on the data bus
 		setDataBusMaster(MPU);
+		delay();
 
 		// clock data from data bus into output latch
 		latchExport();
+		delay();
 
 		// signal to external client that row data is in output latch
 		signalExport(COL_OUT);
 		colSelectCount++;
 }
+static inline void updateMatrix() {
+	matrixUpdateCount++;
+}
+
 #endif
 #endif
 
@@ -170,22 +170,14 @@ static void handleInterrupt() {
 	// move data onto data bus from input latch
 	latchImport();
 
-	// ensure MPU input is on the data bus
-	setDataBusMaster(MPU);
-
 	// read data on data bus
 	byte data = readDataBus();
-
-	// take control of bus
-	setDataBusMaster(MICRO_CONTROLLER);
 
 	// write the data just read
 	writeDataBus(data);
 
 	// clock data from data bus into output latch
 	latchExport();
-
-	// signal to external client that column data is in output latch
 }
 
 static void handleRowInterrupt() {
@@ -193,6 +185,7 @@ static void handleRowInterrupt() {
 
 	// signal to external client that row data is in output latch
 	signalExport(ROW_OUT);
+	rowSelectCount++;
 }
 
 static void handleColInterrupt() {
@@ -200,7 +193,118 @@ static void handleColInterrupt() {
 
 	// signal to external client that column data is in output latch
 	signalExport(COL_OUT);
+	colSelectCount++;
 }
+
+static inline void updateMatrix() {
+	matrixUpdateCount++;
+}
+#endif
+
+#ifdef ASYNC_DATA_PASSTHROUGH
+
+/*
+ * this version moves a lot of the processing out of the interrupt service routine and essentially
+ * queues it for consumption outside that routine.
+ */
+
+#include "CircularBuffer.h"
+static const byte bufferSize = 50;
+static int bufferStorage[bufferSize];
+static volatile CircularBuffer<int> buffer(bufferStorage, bufferSize);
+// the buffer values are of the form [byte col, byte row].  If the high byte
+// is 0xFF then the buffer is empty.
+
+static byte currentInputColumn = 0;
+static void handleColInterrupt() {
+	// move data onto data bus from input latch
+	latchImport();
+
+	// read data on data bus
+	currentInputColumn = readDataBus();
+
+	colSelectCount++;
+}
+
+static void handleRowInterrupt() {
+	// move data onto data bus from input latch
+	latchImport();
+
+	// read data on data bus and push it into the buffer
+	buffer.push(word(currentInputColumn, readDataBus()));
+
+	rowSelectCount++;
+}
+
+static inline void updateMatrix() {
+	while (buffer.isNotEmpty()) {
+		int value = buffer.pop();
+		byte col = highByte(value);
+		byte row = lowByte(value);
+
+		if (col == 0) {
+			writeDataBus(col);
+			signalExport(COL_OUT);
+			writeDataBus(row);
+			signalExport(ROW_OUT);
+		} else {
+			writeDataBus(row);
+			signalExport(ROW_OUT);
+			writeDataBus(col);
+			signalExport(COL_OUT);
+		}
+	}
+
+
+	matrixUpdateCount++;
+}
+#endif
+
+
+#ifdef DIRECT_DRIVE
+
+static byte matrixLamps[] = {
+		0b01111110,
+		0b10111101,
+		0b11011011,
+		0b11100111,
+		0b11100111,
+		0b11011011,
+		0b10111101,
+		0b01010101
+};
+
+static byte currentColumn = -1;
+
+static void handleRowInterrupt() {
+	rowSelectCount++;
+}
+
+static void handleColInterrupt() {
+	colSelectCount++;
+}
+
+static inline void updateMatrix() {
+	matrixUpdateCount++;
+
+	// turn all (current) columns off
+	writeDataBus(-1);
+	latchExport();
+	signalExport(COL_OUT);
+
+	// update the rows for new column
+	writeDataBus(matrixLamps[currentColumn]);
+	latchExport();
+	signalExport(ROW_OUT);
+
+	// turn on new column
+	writeDataBus(~(1 << currentColumn));
+	latchExport();
+	signalExport(COL_OUT);
+
+    currentColumn = (currentColumn + 1) % 8;
+}
+
 #endif
 
 #ifdef BUFFERED_DATA_PASSTHROUGH
@@ -214,35 +318,96 @@ comes high.
 */
 
 
-static byte pendingRows;		// the current row values
-static byte matrixLamps[8];
+static byte pendingRowBits;
+static bool pendingRows = false;
+
+static byte matrixLamps[8] = { 0,0,0,0,0,0,0,0 };
+static byte currentColBit = 0;
+
+static byte bitToIndex(byte bit) {
+	for (byte i = 0; i < 8; i++) {
+		if (bit & 1) {
+			return i;
+		} else {
+			bit = bit >> 1;
+		}
+	}
+	return 0;
+/*
+	switch (bit) {
+	case 0b00000001:
+		return 0;
+	case 0b00000010:
+		return 1;
+	case 0b00000100:
+		return 2;
+	case 0b00001000:
+		return 3;
+	case 0b00010000:
+		return 4;
+	case 0b00100000:
+		return 5;
+	case 0b01000000:
+		return 6;
+	case 0b10000000:
+		return 7;
+	default:
+		return -1;
+	} */
+}
 
 static void handleRowInterrupt() {
 	// move data onto data bus from input latch
+	rowSelectCount++;
 	latchImport();
-	setDataBusMaster(MPU);
-	// stash the row of data somewhere until a column is turned on.
-	// this works because rows are only updated when all columns
-	// are off on WPC.
-	pendingRows = readDataBus();
+	if (currentColBit == 0) {
+		// all the columns are off, so we don't know where this
+		// row will eventually go.  Stash it somewhere until
+		// a column gets turned on.
+		pendingRowBits = readDataBus();
+		pendingRows = true;
+	} else {
+		matrixLamps[bitToIndex(currentColBit)] = readDataBus();
+		pendingRows = false;	//if there were pending updates, we just stomped on them.
+	}
 }
 
 static void handleColInterrupt() {
 	// move data onto data bus from input latch
+	colSelectCount++;
 	latchImport();
-	setDataBusMaster(MPU);
-	byte column = readDataBus();
-	for (byte i = 0; i < 8; i++) {
-		if (column & 1) {
-			matrixLamps[i] = pendingRows;
-			return;
-		} else {
-			column = column >> 1;
-		}
+	currentColBit = readDataBus();
+	byte currentColNdx = bitToIndex(currentColBit);
+
+	if (pendingRows) {
+		matrixLamps[currentColNdx] = pendingRowBits;
+		pendingRows = false;
 	}
 }
 
+static byte currentRefreshCol = 0;
+static inline void updateMatrix() {
+
+	writeDataBus(-1);
+	latchExport();
+	signalExport(COL_OUT);
+
+	writeDataBus(matrixLamps[currentRefreshCol]);
+	latchExport();
+	signalExport(ROW_OUT);
+
+	writeDataBus(1 << currentRefreshCol);
+	latchExport();
+	signalExport(COL_OUT);
+
+	currentRefreshCol = (currentRefreshCol + 1) % 8;
+	matrixUpdateCount++;
+//	delay(2);
+}
+
 #endif
+
+
 
 void setup() {
 	// set control pins to OUTPUT mode
@@ -259,12 +424,8 @@ void setup() {
 	pinMode(ROW_SEL_IN, INPUT);
 	pinMode(COL_SEL_IN, INPUT);
 
-	// allow input data latch to write to data bus
-	setDataBusMaster(MPU);
-
-	//TODO you should write to the output latch to clear crud before you enable it.
-	// allow output latch to write to output lines
-	digitalWrite(EN_DATA_OUT, LOW);
+	DDRL = 0; // data INPUT
+	DDRC = -1; // data OUTPUT
 
 	attachPinChangeInterrupt(ROW_SEL_IN,handleRowInterrupt,RISING);
 	attachPinChangeInterrupt(COL_SEL_IN,handleColInterrupt,RISING);
@@ -274,12 +435,29 @@ void setup() {
 
 static long t = 0;
 void loop() {
+	updateMatrix();
 	if (millis() - t > 1000) {
 		Serial.print(rowSelectCount);
 		Serial.print(", ");
-		Serial.println(colSelectCount);
+		Serial.print(colSelectCount);
+		Serial.print(", ");
+		Serial.println(matrixUpdateCount);
 		t = millis();
 		rowSelectCount = 0;
 		colSelectCount = 0;
+		matrixUpdateCount = 0;
+
+#ifdef BUFFERED_DATA_PASSTHROUGH
+		for (byte i = 0; i < 8; i++) {
+			Serial << _BIN(matrixLamps[i]) << ", ";
+		}
+		Serial << endl;
+#endif
+#ifdef DIRECT_DRIVE
+		for (byte i = 0; i < 8; i++) {
+			Serial << _BIN(matrixLamps[i]) << ", ";
+		}
+		Serial << endl;
+#endif
 	}
 }
