@@ -10,8 +10,10 @@
 
 static Hardware defaultHardwareInstance;
 Hardware& Hardware::INSTANCE = defaultHardwareInstance;
+static Hardware::HardwareController defaultHardwareControllerInstance;
 
-static byte inputPins[9] = {
+static const byte INPUT_PIN_COUNT = 9;
+static byte inputPins[INPUT_PIN_COUNT] = {
 	A14,	//COL
 	A15,	//ROW
 	A13,	//TRIAC
@@ -22,7 +24,8 @@ static byte inputPins[9] = {
 	A8,		//ZERO_CROSS
 	A7,		//BLANK
 };
-static byte outputPins[7] = {
+static const byte OUTPUT_PIN_COUNT = 7;
+static byte outputPins[OUTPUT_PIN_COUNT] = {
 	22,		//COL
 	31,		//ROW
 	0,		//TRIAC
@@ -50,27 +53,54 @@ Hardware::~Hardware() {
 typedef enum HardwareSignal { COL, ROW, TRIAC, SOL1, SOL2, SOL3, SOL4, ZERO_CROSS, BLANKING } HardwareSignal;
 
 static void handleRowInterrupt() {
-	Hardware::INSTANCE.getController()->handleInterrupt()
+	Hardware::INSTANCE.getController()->handleRowInterrupt(Hardware::INSTANCE);
 }
-static void handleColIterrupt() {
+static void handleColInterrupt() {
+	Hardware::INSTANCE.getController()->handleColInterrupt(Hardware::INSTANCE);
 }
 static void handleTriacInterrupt() {
+	Hardware::INSTANCE.getController()->handleTriacInterrupt(Hardware::INSTANCE);
 }
 static void handleSol1Interrupt() {
+	Hardware::INSTANCE.getController()->handleSol1Interrupt(Hardware::INSTANCE);
 }
 static void handleSol2Interrupt() {
+	Hardware::INSTANCE.getController()->handleSol2Interrupt(Hardware::INSTANCE);
 }
 static void handleSol3Interrupt() {
+	Hardware::INSTANCE.getController()->handleSol3Interrupt(Hardware::INSTANCE);
 }
 static void handleSol4Interrupt() {
+	Hardware::INSTANCE.getController()->handleSol4Interrupt(Hardware::INSTANCE);
 }
 static void handleZeroCrossInterrupt() {
+	Hardware::INSTANCE.getController()->handleZeroCrossInterrupt(Hardware::INSTANCE);
 }
 
 void Hardware::attachController(HardwareController* controllerIn) {
+	if (controller == NULL) {
+		// first time initialization
+		for (byte i = 0; i < INPUT_PIN_COUNT; i++) {
+			pinMode(inputPins[i], INPUT);
+		}
+		for (byte i = 0; i < OUTPUT_PIN_COUNT; i++) {
+			pinMode(outputPins[i], OUTPUT);
+		}
+		attachPinChangeInterrupt(inputPins[ROW],handleRowInterrupt,RISING);
+		attachPinChangeInterrupt(inputPins[COL],handleColInterrupt,RISING);
+		attachPinChangeInterrupt(inputPins[TRIAC],handleTriacInterrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL1],handleSol1Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL2],handleSol2Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL3],handleSol3Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL4],handleSol4Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[ZERO_CROSS],handleZeroCrossInterrupt,RISING);
+	}
+	
 	controller = controllerIn;
-	attachPinChangeInterrupt(inputPins[ROW],handleRowInterrupt,RISING);
-	attachPinChangeInterrupt(inputPIns[COL],handleColInterrupt,RISING);
+}
+
+Hardware::HardwareController* Hardware::getController() const {
+	return (controller) ? controller : &defaultHardwareControllerInstance;
 }
 
 void Hardware::latchDataInput() {
@@ -102,40 +132,6 @@ Hardware::HardwareController::HardwareController() {
 }
 
 Hardware::HardwareController::~HardwareController() {
-}
-
-void Hardware::HardwareController::handleInterrupt(Hardware& hardware, HardwareSignal signal) {
-	switch (signal) {
-	case ROW:
-		handleRowInterrupt(hardware);
-		break;
-	case COL:
-		handleColInterrupt(hardware);
-		break;
-	case TRIAC:
-		handleTriacInterrupt(hardware);
-		break;
-	case SOL1:
-		handleSol1Interrupt(hardware);
-		break;
-	case SOL2:
-		handleSol2Interrupt(hardware);
-		break;
-	case SOL3:
-		handleSol3Interrupt(hardware);
-		break;
-	case SOL4:
-		handleSol4Interrupt(hardware);
-		break;
-	case ZERO_CROSS:
-		handleZeroCrossInterrupt(hardware);
-		break;
-	case BLANKING:
-		handleBlanking(hardware);
-		break;
-	default:
-		break;
-	};
 }
 
 static inline void echoData(Hardware& hardware, Hardware::HardwareSignal signal) {
@@ -178,9 +174,6 @@ void Hardware::HardwareController::handleZeroCrossInterrupt(Hardware& hardware) 
 
 void Hardware::HardwareController::handleBlanking(Hardware& hardware) {
 }
-
-static Hardware::HardwareController defaultHardwareControllerInstance;
-Hardware::HardwareController& Hardware::defaultController = defaultHardwareControllerInstance;
 
 // ------------------------------------------------------------------------------
 

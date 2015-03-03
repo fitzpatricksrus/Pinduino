@@ -1,11 +1,10 @@
-//The setup function is called once at startup of the sketch
+#include "Hardware.h"
+
 void setup()
 {
-// Add your initialization code here
+	Hardware::INSTANCE.attachController(NULL); //set up passthrough
 }
 
-// The loop function is called in an endless loop
 void loop()
 {
-//Add your repeated code here
 }
