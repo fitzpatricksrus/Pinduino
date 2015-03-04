@@ -33,6 +33,8 @@ public:
 		virtual void handleSol4Interrupt(Hardware& hardware);
 		virtual void handleZeroCrossInterrupt(Hardware& hardware);
 		virtual void handleBlanking(Hardware& hardware);
+		
+		
 	};
 
 	virtual void attachController(HardwareController* controller);
