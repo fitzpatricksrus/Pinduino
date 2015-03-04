@@ -53,28 +53,28 @@ Hardware::~Hardware() {
 typedef enum HardwareSignal { COL, ROW, TRIAC, SOL1, SOL2, SOL3, SOL4, ZERO_CROSS, BLANKING } HardwareSignal;
 
 static void handleRowInterrupt() {
-	Hardware::INSTANCE.getController()->handleRowInterrupt()
+	Hardware::INSTANCE.getController()->handleRowInterrupt(Hardware::INSTANCE);
 }
-static void handleColIterrupt() {
-	Hardware::INSTANCE.getController()->handleColInterrupt()
+static void handleColInterrupt() {
+	Hardware::INSTANCE.getController()->handleColInterrupt(Hardware::INSTANCE);
 }
 static void handleTriacInterrupt() {
-	Hardware::INSTANCE.getController()->handleTriacInterrupt()
+	Hardware::INSTANCE.getController()->handleTriacInterrupt(Hardware::INSTANCE);
 }
 static void handleSol1Interrupt() {
-	Hardware::INSTANCE.getController()->handleSol1Interrupt()
+	Hardware::INSTANCE.getController()->handleSol1Interrupt(Hardware::INSTANCE);
 }
 static void handleSol2Interrupt() {
-	Hardware::INSTANCE.getController()->handleSol2Interrupt()
+	Hardware::INSTANCE.getController()->handleSol2Interrupt(Hardware::INSTANCE);
 }
 static void handleSol3Interrupt() {
-	Hardware::INSTANCE.getController()->handleSol3Interrupt()
+	Hardware::INSTANCE.getController()->handleSol3Interrupt(Hardware::INSTANCE);
 }
 static void handleSol4Interrupt() {
-	Hardware::INSTANCE.getController()->handleSol4Interrupt()
+	Hardware::INSTANCE.getController()->handleSol4Interrupt(Hardware::INSTANCE);
 }
 static void handleZeroCrossInterrupt() {
-	Hardware::INSTANCE.getController()->handleZeroCrossInterrupt()
+	Hardware::INSTANCE.getController()->handleZeroCrossInterrupt(Hardware::INSTANCE);
 }
 
 void Hardware::attachController(HardwareController* controllerIn) {
@@ -87,19 +87,19 @@ void Hardware::attachController(HardwareController* controllerIn) {
 			pinMode(outputPins[i], OUTPUT);
 		}
 		attachPinChangeInterrupt(inputPins[ROW],handleRowInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[COL],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[TRIAC],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[SOL1],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[SOL2],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[SOL3],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[SOL4],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[ZERO_CROSS],handleColInterrupt,RISING);
+		attachPinChangeInterrupt(inputPins[COL],handleColInterrupt,RISING);
+		attachPinChangeInterrupt(inputPins[TRIAC],handleTriacInterrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL1],handleSol1Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL2],handleSol2Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL3],handleSol3Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL4],handleSol4Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[ZERO_CROSS],handleZeroCrossInterrupt,RISING);
 	}
 	
 	controller = controllerIn;
 }
 
-HardwareController* Hardware::getController() const {
+Hardware::HardwareController* Hardware::getController() const {
 	return (controller) ? controller : &defaultHardwareControllerInstance;
 }
 

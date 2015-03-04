@@ -2,7 +2,7 @@
 
 void setup()
 {
-	Hardware::INSTANCE.addController(NULL); //set up passthrough
+	Hardware::INSTANCE.attachController(NULL); //set up passthrough
 }
 
 void loop()
