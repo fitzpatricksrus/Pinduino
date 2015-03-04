@@ -10,6 +10,9 @@
 
 static WPCHardware defaultHardwareInstance;
 WPCHardware& WPCHardware::INSTANCE = defaultHardwareInstance;
+static WPCHardware::WPCHardwareController passthroughControllerInstance;
+WPCHardware::WPCHardwareController& PASSTHROUGH_CONTROLLER_INSTANCE = passthroughControllerInstance;
+static WPCHardware::WPCHardwareController nullHardwareController;
 
 static const byte INPUT_PIN_COUNT = 9;
 static byte inputPins[INPUT_PIN_COUNT] = {
@@ -32,8 +35,8 @@ static byte outputPins[OUTPUT_PIN_COUNT] = {
 	-1,		//SOL2
 	-1,		//SOL3
 	-1,		//SOL4
-	-1,	//ZERO_CROSS
-	-1	//BLANK
+	-1,		//ZERO_CROSS
+	-1		//BLANK
 };
 // control bus
 static const byte CLK_DATA_OUT = 38;	//PD7
@@ -47,7 +50,7 @@ static inline void pulsePin(byte pin) {
 }
 
 WPCHardware::WPCHardware()
-: controller(NULL)
+: controller(&nullHardwareController)
 {
 }
 
@@ -106,7 +109,7 @@ void WPCHardware::attachController(WPCHardwareController* controllerIn) {
 }
 
 WPCHardwareController* WPCHardware::getController() const {
-	return (controller) ? controller : &defaultHardwareControllerInstance;
+	return (controller) ? controller : &nullHardwareController;
 }
 
 void WPCHardware::latchDataInput() {
@@ -140,39 +143,25 @@ WPCHardware::WPCHardwareController::WPCHardwareController() {
 WPCHardware::WPCHardwareController::~WPCHardwareController() {
 }
 
-static inline void echoData(WPCHardware& hardware, WPCHardware::WPCHardwareSignal signal) {
-	hardware.latchDataInput();
-	hardware.writeData(hardware.readData());
-	hardware.latchDataOutput();
-	hardware.pulse(signal);
-}
-
 void WPCHardware::WPCHardwareController::handleRowInterrupt(WPCHardware& hardware) {
-	echoData(hardware, ROW);
 }
 
 void WPCHardware::WPCHardwareController::handleColInterrupt(WPCHardware& hardware) {
-	echoData(hardware, COL);
 }
 
 void WPCHardware::WPCHardwareController::handleTriacInterrupt(WPCHardware& hardware) {
-	echoData(hardware, TRIAC);
 }
 
 void WPCHardware::WPCHardwareController::handleSol1Interrupt(WPCHardware& hardware) {
-	echoData(hardware, SOL1);
 }
 
 void WPCHardware::WPCHardwareController::handleSol2Interrupt(WPCHardware& hardware) {
-	echoData(hardware, SOL2);
 }
 
 void WPCHardware::WPCHardwareController::handleSol3Interrupt(WPCHardware& hardware) {
-	echoData(hardware, SOL3);
 }
 
 void WPCHardware::WPCHardwareController::handleSol4Interrupt(WPCHardware& hardware) {
-	echoData(hardware, SOL4);
 }
 
 void WPCHardware::WPCHardwareController::handleZeroCrossInterrupt(WPCHardware& hardware) {
@@ -181,6 +170,67 @@ void WPCHardware::WPCHardwareController::handleZeroCrossInterrupt(WPCHardware& h
 void WPCHardware::WPCHardwareController::handleBlanking(WPCHardware& hardware) {
 }
 
-// ------------------------------------------------------------------------------
 
+// ------------------------------------------------------------------------------
+class WPCPassthroughHardwareController : public WPCHardwareController {
+public:
+	WPCPassthroughHardwareController();
+	virtual ~WPCPassthroughHardwareController();
+	virtual void handleRowInterrupt(WPCHardware& hardware);
+	virtual void handleColInterrupt(WPCHardware& hardware);
+	virtual void handleTriacInterrupt(WPCHardware& hardware);
+	virtual void handleSol1Interrupt(WPCHardware& hardware);
+	virtual void handleSol2Interrupt(WPCHardware& hardware);
+	virtual void handleSol3Interrupt(WPCHardware& hardware);
+	virtual void handleSol4Interrupt(WPCHardware& hardware);
+	virtual void handleZeroCrossInterrupt(WPCHardware& hardware);
+	virtual void handleBlanking(WPCHardware& hardware);
+};
+
+WPCPassthroughHardwareController::WPCHardwareController() {
+}
+
+WPCPassthroughHardwareController::~WPCHardwareController() {
+}
+
+static inline void echoData(WPCHardware& hardware, WPCHardware::WPCHardwareSignal signal) {
+	hardware.latchDataInput();
+	hardware.writeData(hardware.readData());
+	hardware.latchDataOutput();
+	hardware.pulse(signal);
+}
+
+void WPCPassthroughHardwareController::handleRowInterrupt(WPCHardware& hardware) {
+	echoData(hardware, ROW);
+}
+
+void WPCPassthroughHardwareController::handleColInterrupt(WPCHardware& hardware) {
+	echoData(hardware, COL);
+}
+
+void WPCPassthroughHardwareController::handleTriacInterrupt(WPCHardware& hardware) {
+	echoData(hardware, TRIAC);
+}
+
+void WPCPassthroughHardwareController::handleSol1Interrupt(WPCHardware& hardware) {
+	echoData(hardware, SOL1);
+}
+
+void WPCPassthroughHardwareController::handleSol2Interrupt(WPCHardware& hardware) {
+	echoData(hardware, SOL2);
+}
+
+void WPCPassthroughHardwareController::handleSol3Interrupt(WPCHardware& hardware) {
+	echoData(hardware, SOL3);
+}
+
+void WPCPassthroughHardwareController::handleSol4Interrupt(WPCHardware& hardware) {
+	echoData(hardware, SOL4);
+}
+
+void WPCPassthroughHardwareController::handleZeroCrossInterrupt(WPCHardware& hardware) {
+}
+
+void WPCPassthroughHardwareController::handleBlanking(WPCHardware& hardware) {
+}
 

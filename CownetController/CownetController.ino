@@ -1,8 +1,9 @@
-#include "Hardware.h"
+#include “WPCHardware.h"
 
 void setup()
 {
-	Hardware::INSTANCE.attachController(NULL); //set up passthrough
+	//set up passthrough
+	WPCHardware::INSTANCE.attachController(WPCHardware::PASSTHROUGH_CONTROLLER_INSTANCE);
 }
 
 void loop()
