@@ -11,79 +11,130 @@
 static WPCHardware defaultHardwareInstance;
 WPCHardware& WPCHardware::INSTANCE = defaultHardwareInstance;
 static WPCHardware::WPCHardwareController passthroughControllerInstance;
-WPCHardware::WPCHardwareController& PASSTHROUGH_CONTROLLER_INSTANCE = passthroughControllerInstance;
+WPCHardware::WPCHardwareController& WPCHardware::PASSTHROUGH_CONTROLLER_INSTANCE = passthroughControllerInstance;
 static WPCHardware::WPCHardwareController nullHardwareController;
 
-static const byte INPUT_PIN_COUNT = 9;
+enum {
+	COL_SEL_IN = A14,
+	ROW_SEL_IN = A15,
+	TRIAC_IN = A13,
+	SOL1_IN = A12,
+	SOL2_IN = A11,
+	SOL3_IN = A10,
+	SOL4_IN = A9,
+	ZERO_CROSS_IN = A8,
+	BLANKING_IN = A7,
+
+	D0_OUT_PIN = 30,
+	D1_OUT_PIN = 31,
+	D2_OUT_PIN = 32,
+	D3_OUT_PIN = 33,
+	D4_OUT_PIN = 34,
+	D5_OUT_PIN = 35,
+	D6_OUT_PIN = 36,
+	D7_OUT_PIN = 37,
+	CLK_DATA_OUT = 38,
+	//39
+	CLK_DATA_IN = 40,
+	//41
+	D0_IN_PIN = 42,
+	D1_IN_PIN = 43,
+	D2_IN_PIN = 44,
+	D3_IN_PIN = 45,
+	D4_IN_PIN = 46,
+	D5_IN_PIN = 47,
+	D6_IN_PIN = 48,
+	D7_IN_PIN = 49,
+	COL_OUT_PIN = 50,
+	ROW_OUT_PIN = 51,
+};
+
+static const byte INPUT_PIN_COUNT = 17;
 static byte inputPins[INPUT_PIN_COUNT] = {
-	A14,	//COL
-	A15,	//ROW
-	A13,	//TRIAC
-	A12,	//SOL1
-	A11,	//SOL2
-	A10,	//SOL3
-	A9,		//SOL4
-	A8,		//ZERO_CROSS
-	A7,		//BLANK
+	COL_SEL_IN,		//COL
+	ROW_SEL_IN,		//ROW
+	TRIAC_IN,		//TRIAC
+	SOL1_IN,		//SOL1
+	SOL2_IN,		//SOL2
+	SOL3_IN,		//SOL3
+	SOL4_IN,		//SOL4
+	ZERO_CROSS_IN,	//ZERO_CROSS
+	BLANKING_IN,	//BLANK
+	D0_IN_PIN,
+	D1_IN_PIN,
+	D2_IN_PIN,
+	D3_IN_PIN,
+	D4_IN_PIN,
+	D5_IN_PIN,
+	D6_IN_PIN,
+	D7_IN_PIN,
 };
-static const byte OUTPUT_PIN_COUNT = 7;
+static const byte OUTPUT_PIN_COUNT = 19;
 static byte outputPins[OUTPUT_PIN_COUNT] = {
-	22,		//COL
-	31,		//ROW
-	-1,		//TRIAC
-	-1,		//SOL1
-	-1,		//SOL2
-	-1,		//SOL3
-	-1,		//SOL4
-	-1,		//ZERO_CROSS
-	-1		//BLANK
+	COL_OUT_PIN,		//COL
+	ROW_OUT_PIN,		//ROW
+	255,	//TRIAC
+	255,	//SOL1
+	255,	//SOL2
+	255,	//SOL3
+	255,	//SOL4
+	255,	//ZERO_CROSS
+	255,	//BLANK
+	CLK_DATA_OUT,
+	CLK_DATA_IN,
+	D0_OUT_PIN,
+	D1_OUT_PIN,
+	D2_OUT_PIN,
+	D3_OUT_PIN,
+	D4_OUT_PIN,
+	D5_OUT_PIN,
+	D6_OUT_PIN,
+	D7_OUT_PIN,
 };
-// control bus
-static const byte CLK_DATA_OUT = 38;	//PD7
-static const byte CLK_DATA_IN = 40;		//PG1
 
 static inline void pulsePin(byte pin) {
-	if (pin != -1) {
+	if (pin != 255) {
 		digitalWrite(pin, LOW);
 		digitalWrite(pin, HIGH);
 	}
 }
 
 WPCHardware::WPCHardware()
-: controller(&nullHardwareController)
+: controller(NULL)
 {
 }
 
 WPCHardware::~WPCHardware() {
 }
+
 typedef enum WPCHardwareSignal { 
 		COL, ROW, TRIAC, 
 		SOL1, SOL2, SOL3, SOL4, 
 		ZERO_CROSS, BLANKING } WPCHardwareSignal;
 
 static void handleRowInterrupt() {
-	WPCHardware::INSTANCE.getController()->handleRowInterrupt()
+	WPCHardware::INSTANCE.getController()->handleRowInterrupt(WPCHardware::INSTANCE);
 }
-static void handleColIterrupt() {
-	WPCHardware::INSTANCE.getController()->handleColInterrupt()
+static void handleColInterrupt() {
+	WPCHardware::INSTANCE.getController()->handleColInterrupt(WPCHardware::INSTANCE);
 }
 static void handleTriacInterrupt() {
-	WPCHardware::INSTANCE.getController()->handleTriacInterrupt()
+	WPCHardware::INSTANCE.getController()->handleTriacInterrupt(WPCHardware::INSTANCE);
 }
 static void handleSol1Interrupt() {
-	WPCHardware::INSTANCE.getController()->handleSol1Interrupt()
+	WPCHardware::INSTANCE.getController()->handleSol1Interrupt(WPCHardware::INSTANCE);
 }
 static void handleSol2Interrupt() {
-	WPCHardware::INSTANCE.getController()->handleSol2Interrupt()
+	WPCHardware::INSTANCE.getController()->handleSol2Interrupt(WPCHardware::INSTANCE);
 }
 static void handleSol3Interrupt() {
-	WPCHardware::INSTANCE.getController()->handleSol3Interrupt()
+	WPCHardware::INSTANCE.getController()->handleSol3Interrupt(WPCHardware::INSTANCE);
 }
 static void handleSol4Interrupt() {
-	WPCHardware::INSTANCE.getController()->handleSol4Interrupt()
+	WPCHardware::INSTANCE.getController()->handleSol4Interrupt(WPCHardware::INSTANCE);
 }
 static void handleZeroCrossInterrupt() {
-	WPCHardware::INSTANCE.getController()->handleZeroCrossInterrupt()
+	WPCHardware::INSTANCE.getController()->handleZeroCrossInterrupt(WPCHardware::INSTANCE);
 }
 
 void WPCHardware::attachController(WPCHardwareController* controllerIn) {
@@ -96,19 +147,19 @@ void WPCHardware::attachController(WPCHardwareController* controllerIn) {
 			pinMode(outputPins[i], OUTPUT);
 		}
 		attachPinChangeInterrupt(inputPins[ROW],handleRowInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[COL],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[TRIAC],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[SOL1],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[SOL2],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[SOL3],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[SOL4],handleColInterrupt,RISING);
-		attachPinChangeInterrupt(inputPIns[ZERO_CROSS],handleColInterrupt,RISING);
+		attachPinChangeInterrupt(inputPins[COL],handleColInterrupt,RISING);
+		attachPinChangeInterrupt(inputPins[TRIAC],handleTriacInterrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL1],handleSol1Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL2],handleSol2Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL3],handleSol3Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[SOL4],handleSol4Interrupt,RISING);
+		attachPinChangeInterrupt(inputPins[ZERO_CROSS],handleZeroCrossInterrupt,RISING);
 	}
 	
 	controller = controllerIn;
 }
 
-WPCHardwareController* WPCHardware::getController() const {
+WPCHardware::WPCHardwareController* WPCHardware::getController() const {
 	return (controller) ? controller : &nullHardwareController;
 }
 
@@ -172,7 +223,7 @@ void WPCHardware::WPCHardwareController::handleBlanking(WPCHardware& hardware) {
 
 
 // ------------------------------------------------------------------------------
-class WPCPassthroughHardwareController : public WPCHardwareController {
+class WPCPassthroughHardwareController : public WPCHardware::WPCHardwareController {
 public:
 	WPCPassthroughHardwareController();
 	virtual ~WPCPassthroughHardwareController();
@@ -187,10 +238,10 @@ public:
 	virtual void handleBlanking(WPCHardware& hardware);
 };
 
-WPCPassthroughHardwareController::WPCHardwareController() {
+WPCPassthroughHardwareController::WPCPassthroughHardwareController() {
 }
 
-WPCPassthroughHardwareController::~WPCHardwareController() {
+WPCPassthroughHardwareController::~WPCPassthroughHardwareController() {
 }
 
 static inline void echoData(WPCHardware& hardware, WPCHardware::WPCHardwareSignal signal) {
@@ -201,34 +252,35 @@ static inline void echoData(WPCHardware& hardware, WPCHardware::WPCHardwareSigna
 }
 
 void WPCPassthroughHardwareController::handleRowInterrupt(WPCHardware& hardware) {
-	echoData(hardware, ROW);
+	echoData(hardware, WPCHardware::ROW);
 }
 
 void WPCPassthroughHardwareController::handleColInterrupt(WPCHardware& hardware) {
-	echoData(hardware, COL);
+	echoData(hardware, WPCHardware::COL);
 }
 
 void WPCPassthroughHardwareController::handleTriacInterrupt(WPCHardware& hardware) {
-	echoData(hardware, TRIAC);
+	echoData(hardware, WPCHardware::TRIAC);
 }
 
 void WPCPassthroughHardwareController::handleSol1Interrupt(WPCHardware& hardware) {
-	echoData(hardware, SOL1);
+	echoData(hardware, WPCHardware::SOL1);
 }
 
 void WPCPassthroughHardwareController::handleSol2Interrupt(WPCHardware& hardware) {
-	echoData(hardware, SOL2);
+	echoData(hardware, WPCHardware::SOL2);
 }
 
 void WPCPassthroughHardwareController::handleSol3Interrupt(WPCHardware& hardware) {
-	echoData(hardware, SOL3);
+	echoData(hardware, WPCHardware::SOL3);
 }
 
 void WPCPassthroughHardwareController::handleSol4Interrupt(WPCHardware& hardware) {
-	echoData(hardware, SOL4);
+	echoData(hardware, WPCHardware::SOL4);
 }
 
 void WPCPassthroughHardwareController::handleZeroCrossInterrupt(WPCHardware& hardware) {
+	hardware.pulse(WPCHardware::ZERO_CROSS);
 }
 
 void WPCPassthroughHardwareController::handleBlanking(WPCHardware& hardware) {

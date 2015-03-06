@@ -46,7 +46,7 @@ public:
 	virtual bool getBlanking() const;
 
 	static WPCHardware& INSTANCE;
-	static WPCHardware::WPCHardwareController& PASSTHROUGH_CONTROLLER_INSTANCE;
+	static WPCHardwareController& PASSTHROUGH_CONTROLLER_INSTANCE;
 
 private:
 	WPCHardwareController* controller;
