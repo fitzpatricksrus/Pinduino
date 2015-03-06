@@ -24,8 +24,20 @@ public:
 		SOL3,
 		SOL4,
 		ZERO_CROSS,
-		BLANKING
-	} HardwareSignal;
+		BLANKING,
+		D0,
+		D1,
+		D2
+		D3,
+		D4,
+		D5,
+		D6,
+		D7,
+		LATCH_IN,
+		LATCH_OUT,
+		
+		SIGNAL_COUNT
+	} WPCHardwareSignal;
 
 	class WPCHardwareController {
 	public:
@@ -39,7 +51,6 @@ public:
 		virtual void handleSol3Interrupt(WPCHardware& hardware);
 		virtual void handleSol4Interrupt(WPCHardware& hardware);
 		virtual void handleZeroCrossInterrupt(WPCHardware& hardware);
-		virtual void handleBlanking(WPCHardware& hardware);
 	};
 
 	virtual void attachController(WPCHardwareController* controller);
@@ -47,12 +58,12 @@ public:
 
 	virtual void latchDataInput();
 	virtual void latchDataOutput();
-	virtual byte readData();
-	virtual void writeData(byte data);
+	virtual byte readData(bool autoLatch = true);
+	virtual void writeData(byte data, bool autoLatch = true);
 	virtual void pulse(WPCHardwareSignal pin);
 	virtual bool getBlanking() const;
 
-	long counts[BLANKING+1];
+	long counts[SIGNAL_COUNT+1];
 
 	static WPCHardware& INSTANCE;
 	static WPCHardwareController& PASSTHROUGH_CONTROLLER_INSTANCE;

@@ -10,6 +10,8 @@
 #include <Debug.h>
 
 // ------------------------------------------------------------------------------
+// The passthrough controller copies data from input to output and propagates
+// the signal pulse to the output bus.
 class WPCPassthroughHardwareController : public WPCHardware::WPCHardwareController {
 public:
 	WPCPassthroughHardwareController();
@@ -22,19 +24,27 @@ public:
 	virtual void handleSol3Interrupt(WPCHardware& hardware);
 	virtual void handleSol4Interrupt(WPCHardware& hardware);
 	virtual void handleZeroCrossInterrupt(WPCHardware& hardware);
-	virtual void handleBlanking(WPCHardware& hardware);
 };
+
 // ------------------------------------------------------------------------------
 
+// The singleton hardware instance.
 static WPCHardware defaultHardwareInstance;
 WPCHardware& WPCHardware::INSTANCE = defaultHardwareInstance;
+
+// Controller instance that simply passes data through when signaled
 static WPCPassthroughHardwareController passthroughControllerInstance;
 WPCHardware::WPCHardwareController& WPCHardware::PASSTHROUGH_CONTROLLER_INSTANCE = passthroughControllerInstance;
+
+// Controller instance that does nothing.  Data does not pass from input to output.
+// This is the default controller if no other controller is set.
 static WPCHardware::WPCHardwareController nullHardwareController;
 
+// Mapping of all the pins to the board, both input and output.  These pins
+// are them associated with the signal names in the interface.
 enum {
-	COL_SEL_IN = A14,
-	ROW_SEL_IN = A15,
+	COL_IN_PIN = A14,
+	ROW_IN_PIN = A15,
 	TRIAC_IN = A13,
 	SOL1_IN = A12,
 	SOL2_IN = A11,
@@ -42,6 +52,12 @@ enum {
 	SOL4_IN = A9,
 	ZERO_CROSS_IN = A8,
 	BLANKING_IN = A7,
+	
+	TRIAC_OUT_PIN = 22,
+	SOL1_OUT_PIN = 23,
+	SOL2_OUT_PIN = 24,
+	SOL3_OUT_PIN = 25
+	SOL4_OUT_PIN = 26
 
 	D7_OUT_PIN = 30,
 	D6_OUT_PIN = 31,
@@ -65,12 +81,16 @@ enum {
 	D7_IN_PIN = 49,
 	COL_OUT_PIN = 50,
 	ROW_OUT_PIN = 51,
+	
 };
 
-static const byte INPUT_PIN_COUNT = 17;
-static byte inputPins[INPUT_PIN_COUNT] = {
-	COL_SEL_IN,		//COL
-	ROW_SEL_IN,		//ROW
+static const byte INVALID_PIN = 255;
+
+// the pins that correspond to the input for a given signal.  This array
+// is indexed using the HardwareSignal enum in the interface.
+static byte inputPins[SIGNAL_COUNT] = {
+	COL_IN_PIN,		//COL
+	ROW_IN_PIN,		//ROW
 	TRIAC_IN,		//TRIAC
 	SOL1_IN,		//SOL1
 	SOL2_IN,		//SOL2
@@ -86,20 +106,22 @@ static byte inputPins[INPUT_PIN_COUNT] = {
 	D5_IN_PIN,
 	D6_IN_PIN,
 	D7_IN_PIN,
+	INVALID_PIN,	// LATCH_IN
+	INVALID_PIN,	// LATCH_OUT
 };
-static const byte OUTPUT_PIN_COUNT = 19;
-static byte outputPins[OUTPUT_PIN_COUNT] = {
-	COL_OUT_PIN,		//COL
-	ROW_OUT_PIN,		//ROW
-	255,	//TRIAC
-	255,	//SOL1
-	255,	//SOL2
-	255,	//SOL3
-	255,	//SOL4
-	255,	//ZERO_CROSS
-	255,	//BLANK
-	CLK_DATA_OUT,
-	CLK_DATA_IN,
+
+// the pins that correspond to the output for a given signal.  This array
+// is indexed using the HardwareSignal enum in the interface.
+static byte outputPins[SIGNAL_COUNT] = {
+	COL_OUT_PIN,	//COL
+	ROW_OUT_PIN,	//ROW
+	TRIAC_OUT_PIN,	//TRIAC
+	SOL1_OUT_PIN,	//SOL1
+	SOL2_OUT_PIN,	//SOL2
+	SOL3_OUT_PIN,	//SOL3
+	SOL4_OUT_PIN,	//SOL4
+	INVALID_PIN,	//ZERO_CROSS
+	INVALID_PIN,	//BLANK
 	D0_OUT_PIN,
 	D1_OUT_PIN,
 	D2_OUT_PIN,
@@ -108,10 +130,12 @@ static byte outputPins[OUTPUT_PIN_COUNT] = {
 	D5_OUT_PIN,
 	D6_OUT_PIN,
 	D7_OUT_PIN,
+	CLK_DATA_IN,
+	CLK_DATA_OUT,
 };
 
 static inline void pulsePin(byte pin) {
-	if (pin != 255) {
+	if (pin != INVALID_PIN) {
 		digitalWrite(pin, LOW);
 		digitalWrite(pin, HIGH);
 	}
@@ -124,11 +148,6 @@ WPCHardware::WPCHardware()
 
 WPCHardware::~WPCHardware() {
 }
-
-typedef enum WPCHardwareSignal { 
-		COL, ROW, TRIAC, 
-		SOL1, SOL2, SOL3, SOL4, 
-		ZERO_CROSS, BLANKING } WPCHardwareSignal;
 
 static void handleRowInterrupt() {
 	WPCHardware::INSTANCE.counts[WPCHardware::ROW]++;
@@ -167,15 +186,19 @@ void WPCHardware::attachController(WPCHardwareController* controllerIn) {
 	if (controller == NULL) {
 		Serial.println("Init hardware");
 		// first time initialization
-		for (byte i = 0; i < INPUT_PIN_COUNT; i++) {
-			pinMode(inputPins[i], INPUT);
-			Serial << inputPins[i] << "  ";
+		for (byte i = 0; i < SIGNAL_COUNT; i++) {
+			if (inputPins[i] != INVALID_PIN) {
+				pinMode(inputPins[i], INPUT);
+				Serial << inputPins[i] << "  ";
+			}
 		}
 		Serial << endl;
-		for (byte i = 0; i < OUTPUT_PIN_COUNT; i++) {
-			pinMode(outputPins[i], OUTPUT);
+		for (byte i = 0; i < SIGNAL_COUNT; i++) {
+			if (outputPins[i] != INVALID_PIN) {
+				pinMode(outputPins[i], OUTPUT);
+			}
 		}
-		for (byte i = 0; i <= BLANKING; i++) {
+		for (byte i = 0; i <= SIGNAL_COUNT; i++) {
 			counts[i] = 0;
 		}
 		DDRL = 0; // data INPUT
@@ -199,19 +222,21 @@ WPCHardware::WPCHardwareController* WPCHardware::getController() const {
 }
 
 void WPCHardware::latchDataInput() {
-	pulsePin(CLK_DATA_IN);
+	pulse(LATCH_IN);
 }
 
 void WPCHardware::latchDataOutput() {
-	pulsePin(CLK_DATA_OUT);
+	pulse(LATCH_OUT);
 }
 
-byte WPCHardware::readData() {
+byte WPCHardware::readData(bool autoLatch) {
+	if (autoLatch) latchDataInput();
 	return PINL;
 }
 
-void WPCHardware::writeData(byte data) {
+void WPCHardware::writeData(byte data, bool autoLatch) {
 	PORTC = data;
+	if (autoLatch) latchDataOutput();
 }
 
 void WPCHardware::pulse(WPCHardwareSignal pin) {
@@ -223,6 +248,7 @@ bool WPCHardware::getBlanking() const {
 }
 
 // ------------------------------------------------------------------------------
+// the default hardware controller does nothing.
 WPCHardware::WPCHardwareController::WPCHardwareController() {
 }
 
@@ -253,10 +279,8 @@ void WPCHardware::WPCHardwareController::handleSol4Interrupt(WPCHardware& hardwa
 void WPCHardware::WPCHardwareController::handleZeroCrossInterrupt(WPCHardware& hardware) {
 }
 
-void WPCHardware::WPCHardwareController::handleBlanking(WPCHardware& hardware) {
-}
-
 // ------------------------------------------------------------------------------
+// the passthrough controller copies the data lines and echos the signal to output
 
 WPCPassthroughHardwareController::WPCPassthroughHardwareController() {
 }
@@ -265,9 +289,7 @@ WPCPassthroughHardwareController::~WPCPassthroughHardwareController() {
 }
 
 static inline void echoData(WPCHardware& hardware, WPCHardware::WPCHardwareSignal signal) {
-	hardware.latchDataInput();
 	hardware.writeData(hardware.readData());
-	hardware.latchDataOutput();
 	hardware.pulse(signal);
 }
 
@@ -302,7 +324,3 @@ void WPCPassthroughHardwareController::handleSol4Interrupt(WPCHardware& hardware
 void WPCPassthroughHardwareController::handleZeroCrossInterrupt(WPCHardware& hardware) {
 	hardware.pulse(WPCHardware::ZERO_CROSS);
 }
-
-void WPCPassthroughHardwareController::handleBlanking(WPCHardware& hardware) {
-}
-
