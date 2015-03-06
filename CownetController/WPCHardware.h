@@ -16,9 +16,16 @@ public:
 	virtual ~WPCHardware();
 
 	typedef enum WPCHardwareSignal { 
-		COL, ROW, TRIAC, 
-		SOL1, SOL2, SOL3, SOL4, 
-		ZERO_CROSS, BLANKING } HardwareSignal;
+		COL,
+		ROW,
+		TRIAC,
+		SOL1,
+		SOL2,
+		SOL3,
+		SOL4,
+		ZERO_CROSS,
+		BLANKING
+	} HardwareSignal;
 
 	class WPCHardwareController {
 	public:
@@ -44,6 +51,8 @@ public:
 	virtual void writeData(byte data);
 	virtual void pulse(WPCHardwareSignal pin);
 	virtual bool getBlanking() const;
+
+	long counts[BLANKING+1];
 
 	static WPCHardware& INSTANCE;
 	static WPCHardwareController& PASSTHROUGH_CONTROLLER_INSTANCE;
