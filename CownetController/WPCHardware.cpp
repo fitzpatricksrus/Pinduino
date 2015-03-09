@@ -262,6 +262,8 @@ void WPCHardware::WPCController::handleZeroCrossInterrupt(WPCHardware& hardware)
 // ------------------------------------------------------------------------------
 // the passthrough controller copies the data lines and echos the signal to output
 
+static char printVal2[16] = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
+
 WPCHardware::WPCPassthroughController::WPCPassthroughController() {
 }
 
@@ -269,16 +271,22 @@ WPCHardware::WPCPassthroughController::~WPCPassthroughController() {
 }
 
 static inline void echoData(WPCHardware& hardware, WPCHardware::WPCHardwareSignal signal) {
-	hardware.writeData(hardware.readData());
+	byte data = hardware.readData();
+	hardware.writeData(data);
 	hardware.pulse(signal);
+//	data = ~data;
+//	DebugSerial::INSTANCE << printVal2[ (data>>4) & 0x0F];
+//	DebugSerial::INSTANCE << printVal2[ data & 0x0F];
 }
 
 void WPCHardware::WPCPassthroughController::handleRowInterrupt(WPCHardware& hardware) {
 	echoData(hardware, WPCHardware::ROW);
+//	DebugSerial::INSTANCE << "r" << endl;
 }
 
 void WPCHardware::WPCPassthroughController::handleColInterrupt(WPCHardware& hardware) {
 	echoData(hardware, WPCHardware::COL);
+//	DebugSerial::INSTANCE << "c" << endl;
 }
 
 void WPCHardware::WPCPassthroughController::handleTriacInterrupt(WPCHardware& hardware) {

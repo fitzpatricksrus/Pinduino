@@ -15,6 +15,13 @@ static unsigned long count = 0;
 void loop()
 {
 	count++;
+	{
+		char buf[256];
+		if (DebugSerial::INSTANCE.getContents(buf) > 0) {
+			Serial.print(buf);
+		}
+
+	}
 	if (millis() - t > 1000) {
 		for (byte i = 0; i < 9; i++) {
 			Serial << WPCHardware::INSTANCE.counts[i] << "  ";
