@@ -12,7 +12,7 @@
 #include <Debug.h>
 #endif
 
-static long const lowDelay = 15;
+static long const lowDelay = 25;
 
 /*
  * The WPC lamp matrix is driven by a row select pin, a column select pin, and

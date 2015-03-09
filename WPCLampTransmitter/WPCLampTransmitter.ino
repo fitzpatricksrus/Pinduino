@@ -128,8 +128,8 @@ static byte row = 0;
 void nextDot() {
 	xmitMatrix.setColumn(col, 1 << row);
 //	delayMicroseconds(2000000);
-//	delayMicroseconds(6);
-	delay(50);
+//	delayMicroseconds(125);
+//	delay(1);
 	row++;
 	if (row >= 8) {
 		row = 0;
