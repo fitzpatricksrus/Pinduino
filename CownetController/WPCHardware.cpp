@@ -64,11 +64,9 @@ enum {
 	
 };
 
-static const byte INVALID_PIN = 255;
-
 // the pins that correspond to the input for a given signal.  This array
 // is indexed using the HardwareSignal enum in the interface.
-static byte inputPins[WPCHardware::SIGNAL_COUNT] = {
+static byte arduinoInputPins[WPCHardware::SIGNAL_COUNT] = {
 	COL_IN_PIN,		//COL
 	ROW_IN_PIN,		//ROW
 	TRIAC_IN,		//TRIAC
@@ -86,13 +84,13 @@ static byte inputPins[WPCHardware::SIGNAL_COUNT] = {
 	D5_IN_PIN,
 	D6_IN_PIN,
 	D7_IN_PIN,
-	INVALID_PIN,	// LATCH_IN
-	INVALID_PIN,	// LATCH_OUT
+	WPCHardware::INVALID_PIN,	// LATCH_IN
+	WPCHardware::INVALID_PIN,	// LATCH_OUT
 };
 
 // the pins that correspond to the output for a given signal.  This array
 // is indexed using the HardwareSignal enum in the interface.
-static byte outputPins[WPCHardware::SIGNAL_COUNT] = {
+byte arduinoOutputPins[WPCHardware::SIGNAL_COUNT] = {
 	COL_OUT_PIN,	//COL
 	ROW_OUT_PIN,	//ROW
 	TRIAC_OUT_PIN,	//TRIAC
@@ -100,8 +98,8 @@ static byte outputPins[WPCHardware::SIGNAL_COUNT] = {
 	SOL2_OUT_PIN,	//SOL2
 	SOL3_OUT_PIN,	//SOL3
 	SOL4_OUT_PIN,	//SOL4
-	INVALID_PIN,	//ZERO_CROSS
-	INVALID_PIN,	//BLANK
+	WPCHardware::INVALID_PIN,	//ZERO_CROSS
+	WPCHardware::INVALID_PIN,	//BLANK
 	D0_OUT_PIN,
 	D1_OUT_PIN,
 	D2_OUT_PIN,
@@ -114,15 +112,8 @@ static byte outputPins[WPCHardware::SIGNAL_COUNT] = {
 	CLK_DATA_OUT,
 };
 
-static inline void pulsePin(byte pin) {
-	if (pin != INVALID_PIN) {
-		digitalWrite(pin, LOW);
-		digitalWrite(pin, HIGH);
-	}
-}
-
 WPCHardware::WPCHardware()
-: controller(NULL)
+: controller(NULL), inputPins(arduinoInputPins), outputPins(arduinoOutputPins)
 {
 }
 
@@ -201,6 +192,7 @@ WPCHardware::WPCController* WPCHardware::getController() const {
 	return (controller != NULL) ? controller : &nullHardwareController;
 }
 
+/*
 void WPCHardware::latchDataInput() {
 	pulse(LATCH_IN);
 }
@@ -222,6 +214,7 @@ void WPCHardware::writeData(byte data, bool autoLatch) {
 void WPCHardware::pulse(WPCHardwareSignal pin) {
 	pulsePin(outputPins[pin]);
 }
+*/
 
 bool WPCHardware::getBlanking() const {
 	return digitalRead(inputPins[BLANKING]);
