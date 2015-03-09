@@ -262,7 +262,7 @@ void WPCHardware::WPCController::handleZeroCrossInterrupt(WPCHardware& hardware)
 // ------------------------------------------------------------------------------
 // the passthrough controller copies the data lines and echos the signal to output
 
-static char printVal2[16] = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
+//static char printVal2[16] = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
 
 WPCHardware::WPCPassthroughController::WPCPassthroughController() {
 }
