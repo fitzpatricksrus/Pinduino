@@ -1,44 +1,24 @@
 /*
  * Hardware.cpp
- *
- *  Created on: Mar 1, 2015
- *      Author: Dad
  */
 
 #include "WPCHardware.h"
 #include <PinChangeInt.h>
 #include <Debug.h>
 
-// ------------------------------------------------------------------------------
-// The passthrough controller copies data from input to output and propagates
-// the signal pulse to the output bus.
-class WPCPassthroughHardwareController : public WPCHardware::WPCHardwareController {
-public:
-	WPCPassthroughHardwareController();
-	virtual ~WPCPassthroughHardwareController();
-	virtual void handleRowInterrupt(WPCHardware& hardware);
-	virtual void handleColInterrupt(WPCHardware& hardware);
-	virtual void handleTriacInterrupt(WPCHardware& hardware);
-	virtual void handleSol1Interrupt(WPCHardware& hardware);
-	virtual void handleSol2Interrupt(WPCHardware& hardware);
-	virtual void handleSol3Interrupt(WPCHardware& hardware);
-	virtual void handleSol4Interrupt(WPCHardware& hardware);
-	virtual void handleZeroCrossInterrupt(WPCHardware& hardware);
-};
 
 // ------------------------------------------------------------------------------
-
 // The singleton hardware instance.
 static WPCHardware defaultHardwareInstance;
 WPCHardware& WPCHardware::INSTANCE = defaultHardwareInstance;
 
 // Controller instance that simply passes data through when signaled
-static WPCPassthroughHardwareController passthroughControllerInstance;
-WPCHardware::WPCHardwareController& WPCHardware::PASSTHROUGH_CONTROLLER_INSTANCE = passthroughControllerInstance;
+static WPCHardware::WPCPassthroughController passthroughControllerInstance;
+WPCHardware::WPCController& WPCHardware::PASSTHROUGH_CONTROLLER_INSTANCE = passthroughControllerInstance;
 
 // Controller instance that does nothing.  Data does not pass from input to output.
 // This is the default controller if no other controller is set.
-static WPCHardware::WPCHardwareController nullHardwareController;
+static WPCHardware::WPCController nullHardwareController;
 
 // Mapping of all the pins to the board, both input and output.  These pins
 // are them associated with the signal names in the interface.
@@ -56,8 +36,8 @@ enum {
 	TRIAC_OUT_PIN = 22,
 	SOL1_OUT_PIN = 23,
 	SOL2_OUT_PIN = 24,
-	SOL3_OUT_PIN = 25
-	SOL4_OUT_PIN = 26
+	SOL3_OUT_PIN = 25,
+	SOL4_OUT_PIN = 26,
 
 	D7_OUT_PIN = 30,
 	D6_OUT_PIN = 31,
@@ -88,7 +68,7 @@ static const byte INVALID_PIN = 255;
 
 // the pins that correspond to the input for a given signal.  This array
 // is indexed using the HardwareSignal enum in the interface.
-static byte inputPins[SIGNAL_COUNT] = {
+static byte inputPins[WPCHardware::SIGNAL_COUNT] = {
 	COL_IN_PIN,		//COL
 	ROW_IN_PIN,		//ROW
 	TRIAC_IN,		//TRIAC
@@ -112,7 +92,7 @@ static byte inputPins[SIGNAL_COUNT] = {
 
 // the pins that correspond to the output for a given signal.  This array
 // is indexed using the HardwareSignal enum in the interface.
-static byte outputPins[SIGNAL_COUNT] = {
+static byte outputPins[WPCHardware::SIGNAL_COUNT] = {
 	COL_OUT_PIN,	//COL
 	ROW_OUT_PIN,	//ROW
 	TRIAC_OUT_PIN,	//TRIAC
@@ -182,7 +162,7 @@ static void handleZeroCrossInterrupt() {
 	WPCHardware::INSTANCE.getController()->handleZeroCrossInterrupt(WPCHardware::INSTANCE);
 }
 
-void WPCHardware::attachController(WPCHardwareController* controllerIn) {
+void WPCHardware::attachController(WPCController* controllerIn) {
 	if (controller == NULL) {
 		Serial.println("Init hardware");
 		// first time initialization
@@ -217,7 +197,7 @@ void WPCHardware::attachController(WPCHardwareController* controllerIn) {
 	}
 }
 
-WPCHardware::WPCHardwareController* WPCHardware::getController() const {
+WPCHardware::WPCController* WPCHardware::getController() const {
 	return (controller != NULL) ? controller : &nullHardwareController;
 }
 
@@ -249,43 +229,43 @@ bool WPCHardware::getBlanking() const {
 
 // ------------------------------------------------------------------------------
 // the default hardware controller does nothing.
-WPCHardware::WPCHardwareController::WPCHardwareController() {
+WPCHardware::WPCController::WPCController() {
 }
 
-WPCHardware::WPCHardwareController::~WPCHardwareController() {
+WPCHardware::WPCController::~WPCController() {
 }
 
-void WPCHardware::WPCHardwareController::handleRowInterrupt(WPCHardware& hardware) {
+void WPCHardware::WPCController::handleRowInterrupt(WPCHardware& hardware) {
 }
 
-void WPCHardware::WPCHardwareController::handleColInterrupt(WPCHardware& hardware) {
+void WPCHardware::WPCController::handleColInterrupt(WPCHardware& hardware) {
 }
 
-void WPCHardware::WPCHardwareController::handleTriacInterrupt(WPCHardware& hardware) {
+void WPCHardware::WPCController::handleTriacInterrupt(WPCHardware& hardware) {
 }
 
-void WPCHardware::WPCHardwareController::handleSol1Interrupt(WPCHardware& hardware) {
+void WPCHardware::WPCController::handleSol1Interrupt(WPCHardware& hardware) {
 }
 
-void WPCHardware::WPCHardwareController::handleSol2Interrupt(WPCHardware& hardware) {
+void WPCHardware::WPCController::handleSol2Interrupt(WPCHardware& hardware) {
 }
 
-void WPCHardware::WPCHardwareController::handleSol3Interrupt(WPCHardware& hardware) {
+void WPCHardware::WPCController::handleSol3Interrupt(WPCHardware& hardware) {
 }
 
-void WPCHardware::WPCHardwareController::handleSol4Interrupt(WPCHardware& hardware) {
+void WPCHardware::WPCController::handleSol4Interrupt(WPCHardware& hardware) {
 }
 
-void WPCHardware::WPCHardwareController::handleZeroCrossInterrupt(WPCHardware& hardware) {
+void WPCHardware::WPCController::handleZeroCrossInterrupt(WPCHardware& hardware) {
 }
 
 // ------------------------------------------------------------------------------
 // the passthrough controller copies the data lines and echos the signal to output
 
-WPCPassthroughHardwareController::WPCPassthroughHardwareController() {
+WPCHardware::WPCPassthroughController::WPCPassthroughController() {
 }
 
-WPCPassthroughHardwareController::~WPCPassthroughHardwareController() {
+WPCHardware::WPCPassthroughController::~WPCPassthroughController() {
 }
 
 static inline void echoData(WPCHardware& hardware, WPCHardware::WPCHardwareSignal signal) {
@@ -293,34 +273,34 @@ static inline void echoData(WPCHardware& hardware, WPCHardware::WPCHardwareSigna
 	hardware.pulse(signal);
 }
 
-void WPCPassthroughHardwareController::handleRowInterrupt(WPCHardware& hardware) {
+void WPCHardware::WPCPassthroughController::handleRowInterrupt(WPCHardware& hardware) {
 	echoData(hardware, WPCHardware::ROW);
 }
 
-void WPCPassthroughHardwareController::handleColInterrupt(WPCHardware& hardware) {
+void WPCHardware::WPCPassthroughController::handleColInterrupt(WPCHardware& hardware) {
 	echoData(hardware, WPCHardware::COL);
 }
 
-void WPCPassthroughHardwareController::handleTriacInterrupt(WPCHardware& hardware) {
+void WPCHardware::WPCPassthroughController::handleTriacInterrupt(WPCHardware& hardware) {
 	echoData(hardware, WPCHardware::TRIAC);
 }
 
-void WPCPassthroughHardwareController::handleSol1Interrupt(WPCHardware& hardware) {
+void WPCHardware::WPCPassthroughController::handleSol1Interrupt(WPCHardware& hardware) {
 	echoData(hardware, WPCHardware::SOL1);
 }
 
-void WPCPassthroughHardwareController::handleSol2Interrupt(WPCHardware& hardware) {
+void WPCHardware::WPCPassthroughController::handleSol2Interrupt(WPCHardware& hardware) {
 	echoData(hardware, WPCHardware::SOL2);
 }
 
-void WPCPassthroughHardwareController::handleSol3Interrupt(WPCHardware& hardware) {
+void WPCHardware::WPCPassthroughController::handleSol3Interrupt(WPCHardware& hardware) {
 	echoData(hardware, WPCHardware::SOL3);
 }
 
-void WPCPassthroughHardwareController::handleSol4Interrupt(WPCHardware& hardware) {
+void WPCHardware::WPCPassthroughController::handleSol4Interrupt(WPCHardware& hardware) {
 	echoData(hardware, WPCHardware::SOL4);
 }
 
-void WPCPassthroughHardwareController::handleZeroCrossInterrupt(WPCHardware& hardware) {
+void WPCHardware::WPCPassthroughController::handleZeroCrossInterrupt(WPCHardware& hardware) {
 	hardware.pulse(WPCHardware::ZERO_CROSS);
 }

@@ -1,8 +1,5 @@
 /*
  * Hardware.h
- *
- *  Created on: Mar 1, 2015
- *      Author: Dad
  */
 
 #ifndef WPCHARDWARE_H_
@@ -27,7 +24,7 @@ public:
 		BLANKING,
 		D0,
 		D1,
-		D2
+		D2,
 		D3,
 		D4,
 		D5,
@@ -39,10 +36,12 @@ public:
 		SIGNAL_COUNT
 	} WPCHardwareSignal;
 
-	class WPCHardwareController {
+	// ------------------------------------------------------------------------------
+	// default controller does nothing.
+	class WPCController {
 	public:
-		WPCHardwareController();
-		virtual ~WPCHardwareController();
+		WPCController();
+		virtual ~WPCController();
 		virtual void handleRowInterrupt(WPCHardware& hardware);
 		virtual void handleColInterrupt(WPCHardware& hardware);
 		virtual void handleTriacInterrupt(WPCHardware& hardware);
@@ -53,8 +52,27 @@ public:
 		virtual void handleZeroCrossInterrupt(WPCHardware& hardware);
 	};
 
-	virtual void attachController(WPCHardwareController* controller);
-	virtual WPCHardwareController* getController() const;
+	// ------------------------------------------------------------------------------
+	// The passthrough controller copies data from input to output and propagates
+	// the signal pulse to the output bus.
+	class WPCPassthroughController : public WPCController {
+	public:
+		WPCPassthroughController();
+		virtual ~WPCPassthroughController();
+		virtual void handleRowInterrupt(WPCHardware& hardware);
+		virtual void handleColInterrupt(WPCHardware& hardware);
+		virtual void handleTriacInterrupt(WPCHardware& hardware);
+		virtual void handleSol1Interrupt(WPCHardware& hardware);
+		virtual void handleSol2Interrupt(WPCHardware& hardware);
+		virtual void handleSol3Interrupt(WPCHardware& hardware);
+		virtual void handleSol4Interrupt(WPCHardware& hardware);
+		virtual void handleZeroCrossInterrupt(WPCHardware& hardware);
+	};
+
+	// ------------------------------------------------------------------------------
+	// Hardware methods
+	virtual void attachController(WPCController* controller);
+	virtual WPCController* getController() const;
 
 	virtual void latchDataInput();
 	virtual void latchDataOutput();
@@ -66,10 +84,10 @@ public:
 	long counts[SIGNAL_COUNT+1];
 
 	static WPCHardware& INSTANCE;
-	static WPCHardwareController& PASSTHROUGH_CONTROLLER_INSTANCE;
+	static WPCController& PASSTHROUGH_CONTROLLER_INSTANCE;
 
 private:
-	WPCHardwareController* controller;
+	WPCController* controller;
 };
 
 #endif /* HARDWARE_H_ */
