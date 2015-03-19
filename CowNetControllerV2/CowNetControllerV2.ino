@@ -16,14 +16,8 @@
  * output instead of input.
  */
 
+#include "CowZoneHardware.h"
 
-class CowNetHardware {
-public:
-	CowNetHardware();
-	virtual ~CowNetHardware();
-
-	static CowNetHardware& INSTANCE;
-};
 
 //The setup function is called once at startup of the sketch
 void setup()
@@ -31,8 +25,12 @@ void setup()
 // Add your initialization code here
 }
 
-// The loop function is called in an endless loop
+// The loop function is called repeatedly.  Each iteration copies all the buses.
 void loop()
 {
-//Add your repeated code here
+	for (int i = CowZoneHardware::SOL1; i < CowZoneHardware::SIGNAL_COUNT; i++) {
+		CowZoneHardware::INSTANCE.write(
+				(CowZoneHardware::Signal)i,
+				CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i));
+	}
 }
