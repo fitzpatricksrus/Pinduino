@@ -47,6 +47,7 @@ private:
 	static const byte signalSelectorBit3Pin = 11;
 	static const byte inputSelectorPin = 12;
 	static const byte outputSelectorPin = 13;
+	static const byte outputLatchPin = A0;
 };
 
 inline void CowZoneHardware::selectSignal(Signal signal) {
@@ -69,6 +70,8 @@ inline void CowZoneHardware::write(Signal signal, byte value) {
 	selectSignal(signal);					// select the desired signal
 	DDRC = -1;								// controller pins as output
 	PORTC = value;							// write to the data bus
+	digitalWrite(outputLatchPin, LOW);		// latch data onto output bus
+	digitalWrite(outputLatchPin, HIGH);
 	digitalWrite(outputSelectorPin, LOW);	// pulse the output signal
 	digitalWrite(outputSelectorPin, HIGH);
 }
