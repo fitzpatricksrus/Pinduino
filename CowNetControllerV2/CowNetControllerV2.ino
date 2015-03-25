@@ -29,7 +29,7 @@ void setup()
 // The loop function is called repeatedly.  Each iteration copies all the buses.
 void loop()
 {
-	for (byte i = CowZoneHardware::LAMP_ROW; i < CowZoneHardware::SIGNAL_COUNT; i++) {
+	for (byte i = CowZoneHardware::LAMP_ROW; i < CowZoneHardware::OUTPUT_LATCH; i++) {
 		CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i);
 
 //		CowZoneHardware::INSTANCE.write(
