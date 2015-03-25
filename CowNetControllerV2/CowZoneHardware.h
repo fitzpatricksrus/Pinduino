@@ -19,58 +19,86 @@ public:
 	virtual ~CowZoneHardware();
 
 	enum Signal {
-		SOL1,
-		SOL2,
-		SOL3,
-		SOL4,
-		LAMP_ROW,
-		LAMP_COL,
-		TRIAC,
-		SWITCH_ROW,
-		SWITCH_COL,
-		SWITCH_DEDICATED,
+		LAMP_ROW = 0,
+		LAMP_COL = 1,
+		SOL1 =     2,
+		SOL2 =     3,
+		SOL3 =     4,
+		SOL4 =     5,
+		TRIAC =    6,
+		SWITCH_ROW = 7,
+		SWITCH_COL = 8,
+		SWITCH_DEDICATED = 9,
 
-		SIGNAL_COUNT
+		OUTPUT_LATCH = 10
 	};
+
+
+	void init();
 
 	byte read(Signal signal);
 	void write(Signal signal, byte value);
+	void selfTest();
 
 	static CowZoneHardware& INSTANCE;
 
 private:
 	void selectSignal(Signal signal);
 
-	static const byte signalSelectorBit0Pin = 8;
-	static const byte signalSelectorBit1Pin = 9;
-	static const byte signalSelectorBit2Pin = 10;
-	static const byte signalSelectorBit3Pin = 11;
-	static const byte inputSelectorPin = 12;
-	static const byte outputSelectorPin = 13;
+	static const byte firstDataPin = 9;
+	static const byte lastDataPin = 10;
+	static const byte firstOutputPin = 2;
+	static const byte lastOutputPin = 7;
+
+	static const byte signalSelectorBit0Pin = 5;
+	static const byte signalSelectorBit1Pin = 4;
+	static const byte signalSelectorBit2Pin = 3;
+	static const byte signalSelectorBit3Pin = 2;	// not in use
+
+	static const byte inputEnablePin = 6;
+	static const byte outputEnablePin = 7;
 };
+
+inline void CowZoneHardware::init() {
+	for (byte i = firstDataPin; i <= lastDataPin; i++) {
+		pinMode(i, INPUT);
+	}
+	for (byte i = firstOutputPin; i <= lastOutputPin; i++) {
+		pinMode(i, OUTPUT);
+		digitalWrite(i, HIGH);
+	}
+}
 
 inline void CowZoneHardware::selectSignal(Signal signal) {
 	int sig = signal;
-	for (byte i = signalSelectorBit0Pin; i <= signalSelectorBit3Pin;i++) {
-		digitalWrite(i, (sig & 0x01));
+	for (byte i = signalSelectorBit0Pin; i >= signalSelectorBit3Pin; i--) {
+		digitalWrite(i, (sig & 0x01) != 0);
 		sig = sig >> 1;
 	}
 }
 
 inline byte CowZoneHardware::read(Signal signal) {
-	DDRC = 0;								// controller pins as input
+	DDRB = 0;								// controller pins as input
 	selectSignal(signal);					// select the desired signal
-	digitalWrite(inputSelectorPin, LOW);	// ensure we're in input mode
-	return PINC;							// return databus value
+	digitalWrite(inputEnablePin, LOW);		// input owns the data bus
+	byte result = PINB;						// return data bus value
+	digitalWrite(inputEnablePin, HIGH);		// release the bus
+	return result;
 }
 
 inline void CowZoneHardware::write(Signal signal, byte value) {
-	digitalWrite(inputSelectorPin, HIGH);	// turn off input
-	selectSignal(signal);					// select the desired signal
-	DDRC = -1;								// controller pins as output
-	PORTC = value;							// write to the data bus
-	digitalWrite(outputSelectorPin, LOW);	// pulse the output signal
-	digitalWrite(outputSelectorPin, HIGH);
+	// write output to the data bus
+	DDRB = -1;
+	PORTB = value;
+	// latch the output data
+	selectSignal(OUTPUT_LATCH);
+	digitalWrite(outputEnablePin, LOW);
+	digitalWrite(outputEnablePin, HIGH);
+	// select output latch signal
+	selectSignal(signal);
+	// pulse signal to wpc
+	digitalWrite(outputEnablePin, LOW);
+	digitalWrite(outputEnablePin, HIGH);
 }
 
 #endif /* COWZONEHARDWARE_H_ */

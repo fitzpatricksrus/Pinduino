@@ -23,14 +23,18 @@
 void setup()
 {
 // Add your initialization code here
+	CowZoneHardware::INSTANCE.init();
 }
 
 // The loop function is called repeatedly.  Each iteration copies all the buses.
 void loop()
 {
-	for (int i = CowZoneHardware::SOL1; i < CowZoneHardware::SIGNAL_COUNT; i++) {
-		CowZoneHardware::INSTANCE.write(
-				(CowZoneHardware::Signal)i,
-				CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i));
+	for (byte i = CowZoneHardware::LAMP_ROW; i < CowZoneHardware::SIGNAL_COUNT; i++) {
+		CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i);
+
+//		CowZoneHardware::INSTANCE.write(
+//				(CowZoneHardware::Signal)i,
+//				CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i));
+		delay(10);
 	}
 }
