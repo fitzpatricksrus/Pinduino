@@ -6,7 +6,7 @@
  */
 
 #include "SPIOutputPins.h"
-#include "../SPI.h"
+#include <SPI.h>
 
 namespace pins {
 

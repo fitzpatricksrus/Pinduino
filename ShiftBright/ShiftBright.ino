@@ -19,7 +19,7 @@ static inline int cycleValue(int x) {
 
 static inline void latchWrite(byte pin, byte value) {
 	digitalWrite(pin, (value == HIGH) ? HIGH : LOW);
-	delay(1);
+	delayMicroseconds(100);
 	digitalWrite(pin, (value == HIGH) ? LOW : HIGH);
 }
 

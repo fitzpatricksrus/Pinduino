@@ -77,6 +77,8 @@ int availableMemory();
 
 int availableRam();
 
+bool interruptsAreEnabled();
+
 /*
 Streaming.h - Arduino library for supporting the << streaming operator
 Copyright (c) 2010-2012 Mikal Hart.  All rights reserved.
@@ -171,5 +173,20 @@ enum _EndLineCode { endl };
 
 inline Print &operator <<(Print &obj, _EndLineCode arg)
 { obj.println(); return obj; }
+
+class DebugSerial : public Print {
+public:
+	DebugSerial() { start = 0; pos = 0; }
+    virtual size_t write(uint8_t);
+    byte getContents(char* buf);
+
+    char buffer[256];
+    byte start;
+    byte pos;
+
+    static DebugSerial& INSTANCE;
+	static char strings[16][5];
+};
+
 
 #endif // DEBUG_H_

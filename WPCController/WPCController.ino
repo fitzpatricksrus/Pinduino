@@ -39,7 +39,7 @@ static inline void delay() {
 
 static inline void toggle(byte pin) {
 	digitalWrite(pin, LOW);
-	delay();
+//	delay();
 	digitalWrite(pin, HIGH);
 }
 
@@ -83,90 +83,9 @@ static inline void updateMatrix() {
 
 #endif
 
-#ifdef DIRECT_DATA_PASSTHROUGH
-#if 0
-static void handleRowInterrupt() {
-	// move data onto data bus from input latch
-//	latchImport();
-	toggle(CLK_DATA_IN);
-	
-	// ensure MPU input is on the data bus
-//	setDataBusMaster(MPU);
-
-	// clock data from data bus into output latch
-//	latchExport();
-	toggle(CLK_DATA_OUT);
-
-	// signal to external client that row data is in output latch
-//	signalExport(ROW_OUT);
-	toggle(ROW_OUT);
-	rows++;
-}
-
-static void handleColInterrupt() {
-	//	latchImport();
-		toggle(CLK_DATA_IN);
-
-		// ensure MPU input is on the data bus
-	//	setDataBusMaster(MPU);
-
-		// clock data from data bus into output latch
-	//	latchExport();
-		toggle(CLK_DATA_OUT);
-
-		// signal to external client that row data is in output latch
-	//	signalExport(ROW_OUT);
-		toggle(COL_OUT);
-		cols++;
-}
-
-static inline void updateMatrix() {
-	matrixUpdateCount++;
-}
-
-#else
-static void handleRowInterrupt() {
-	// move data onto data bus from input latch
-	latchImport();
-
-	// ensure MPU input is on the data bus
-	setDataBusMaster(MPU);
-	delay();
-
-	// clock data from data bus into output latch
-	latchExport();
-	delay();
-
-	// signal to external client that row data is in output latch
-	signalExport(ROW_OUT);
-	rowSelectCount++;
-}
-
-static void handleColInterrupt() {
-		latchImport();
-
-		// ensure MPU input is on the data bus
-		setDataBusMaster(MPU);
-		delay();
-
-		// clock data from data bus into output latch
-		latchExport();
-		delay();
-
-		// signal to external client that row data is in output latch
-		signalExport(COL_OUT);
-		colSelectCount++;
-}
-static inline void updateMatrix() {
-	matrixUpdateCount++;
-}
-
-#endif
-#endif
-
 #ifdef DIRECT_DATA_PASSTHROUGH2
 
-static void handleInterrupt() {
+static inline byte handleInterrupt() {
 	// move data onto data bus from input latch
 	latchImport();
 
@@ -178,22 +97,36 @@ static void handleInterrupt() {
 
 	// clock data from data bus into output latch
 	latchExport();
+
+	return data;
 }
 
+static char printVal2[16] = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
+
 static void handleRowInterrupt() {
-	handleInterrupt();
+	byte data = handleInterrupt();
 
 	// signal to external client that row data is in output latch
 	signalExport(ROW_OUT);
 	rowSelectCount++;
+//	DebugSerial::INSTANCE << "R ";
+//	data = ~data;
+//	DebugSerial::INSTANCE << printVal2[ (data>>4) & 0x0F];
+//	DebugSerial::INSTANCE << printVal2[ data & 0x0F];
+//	DebugSerial::INSTANCE << endl;
 }
 
 static void handleColInterrupt() {
-	handleInterrupt();
+	byte data = handleInterrupt();
 
 	// signal to external client that column data is in output latch
 	signalExport(COL_OUT);
 	colSelectCount++;
+//	DebugSerial::INSTANCE << "COL ";
+//	data = ~data;
+//	DebugSerial::INSTANCE << printVal2[ (data>>4) & 0x0F];
+//	DebugSerial::INSTANCE << printVal2[ data & 0x0F];
+//	DebugSerial::INSTANCE << endl;
 }
 
 static inline void updateMatrix() {
@@ -436,6 +369,14 @@ void setup() {
 static long t = 0;
 void loop() {
 	updateMatrix();
+	{
+		char buf[256];
+		if (DebugSerial::INSTANCE.getContents(buf) > 0) {
+			Serial.print(buf);
+		}
+
+	}
+
 	if (millis() - t > 1000) {
 		Serial.print(rowSelectCount);
 		Serial.print(", ");

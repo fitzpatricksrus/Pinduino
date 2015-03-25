@@ -12,7 +12,10 @@
 #include <Debug.h>
 #endif
 
-static long const lowDelay = 25;
+static long const lowDelay = 250;
+static inline void delayJustATad() {
+	delayMicroseconds(lowDelay);
+}
 
 /*
  * The WPC lamp matrix is driven by a row select pin, a column select pin, and
@@ -60,10 +63,10 @@ void WPCLampMatrix::setColumn(byte column) {
 	writeDataPins(~(1 << column));
 //	writeDataPins(0);
 	digitalWrite(colSelectPin, LOW);
-	delayMicroseconds(lowDelay);
+	delayJustATad();
 	digitalWrite(colSelectPin, HIGH);
 //	writeDataPins(-1);
-	delayMicroseconds(lowDelay);
+	delayJustATad();
 }
 
 void WPCLampMatrix::setRows(byte values) {
@@ -73,10 +76,10 @@ void WPCLampMatrix::setRows(byte values) {
 //	writeDataPins(0);
 	writeDataPins(~values);
 	digitalWrite(rowSelectPin, LOW);
-	delayMicroseconds(lowDelay);
+	delayJustATad();
 	digitalWrite(rowSelectPin, HIGH);
 //	writeDataPins(-1);
-	delayMicroseconds(lowDelay);
+	delayJustATad();
 #ifdef _DEBUG_
 	Serial << endl;
 #endif

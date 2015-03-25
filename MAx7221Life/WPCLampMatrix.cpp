@@ -49,6 +49,5 @@ void WPCLampMatrix::writeDataPins(byte value) {
 		digitalWrite(firstDataPin + i, value & 1);
 		value = value >> 1;
 	}
-	pulseIn(10, HIGH);
 }
 

@@ -138,3 +138,33 @@ int availableRam () {
   int v;
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 }
+
+bool interruptsAreEnabled() {
+    if (bit_is_clear(SREG, SREG_I)) {
+    	return false;
+    } else {
+    	return true;
+    }
+}
+
+size_t DebugSerial::write(uint8_t c) {
+	buffer[pos++] = c;
+	return 1;
+}
+
+byte DebugSerial::getContents(char* buf) {
+	byte bufPos = 0;
+	while (start != pos) {
+		buf[bufPos++] = buffer[start++];
+	}
+	buf[bufPos++] = '\0';
+	return bufPos;
+}
+
+static DebugSerial DEBUG_SERIAL_INSTANCE;
+DebugSerial& DebugSerial::INSTANCE = DEBUG_SERIAL_INSTANCE;
+
+char DebugSerial::strings[16][5] = {
+		"0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111",
+		"1000", "1001", "1010", "1011", "1100", "1101", "1110", "1111"
+};

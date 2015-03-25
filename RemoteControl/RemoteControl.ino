@@ -15,7 +15,7 @@ StringStream input(buffer, 0);
 bool spiStarted = false;
 
 void setup() {
-	Serial.begin(9600);
+	Serial.begin(57600);
 	Serial.setTimeout(30 * 1000);
 }
 

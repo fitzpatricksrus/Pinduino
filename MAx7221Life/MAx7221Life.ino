@@ -1,7 +1,6 @@
 #include <Arduino.h>
 
-#include <SPI.h>
-#include <Max7221.h>
+#include "LampMatrix7221.h"
 
 static const byte COL_COUNT = 8; //24;
 static const byte ROW_COUNT = 8;
@@ -10,10 +9,9 @@ static bool life[COL_COUNT][ROW_COUNT];
 static bool plife[COL_COUNT][ROW_COUNT];
 static bool p2life[COL_COUNT][ROW_COUNT];
 
-static Max7221 maxchip(4);
+static LampMatrix7221 maxchip(10);
 
 void MAXSetup() {
-	maxchip.init();
     randomSeed(analogRead(1));
 	for (int col = 0; col < COL_COUNT; col++) {
 		for (int row = 0; row < ROW_COUNT; row++) {

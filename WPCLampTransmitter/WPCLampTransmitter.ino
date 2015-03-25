@@ -8,8 +8,8 @@
 #include <debug.h>
 #endif
 
-static const byte COL_COUNT = 8; //24;
-static const byte ROW_COUNT = 8;
+static const byte COL_COUNT = 2; //24;
+static const byte ROW_COUNT = 2;
 
 static bool life[COL_COUNT][ROW_COUNT];
 static bool plife[COL_COUNT][ROW_COUNT];
@@ -129,13 +129,13 @@ void nextDot() {
 	xmitMatrix.setColumn(col, 1 << row);
 //	delayMicroseconds(2000000);
 //	delayMicroseconds(125);
-//	delay(1);
+	delay(100);
 	row++;
-	if (row >= 8) {
+	if (row >= ROW_COUNT) {
 		row = 0;
 		xmitMatrix.setColumn(col, 0);
 		col++;
-		if (col >= 8) {
+		if (col >= COL_COUNT) {
 			col = 0;
 		}
 	}
@@ -147,10 +147,10 @@ void nextDotA() {
 
 	delay(150);
 	row++;
-	if (row >= 8) {
+	if (row >= ROW_COUNT) {
 		row = 0;
 		col++;
-		if (col >= 8) {
+		if (col >= COL_COUNT) {
 			col = 0;
 		}
 		xmitMatrix.setRows(0);
@@ -163,11 +163,11 @@ void nextDot2() {
 	delay(80);
 
 	col++;
-	if (col >= 8) {
+	if (col >= COL_COUNT) {
 		col = 0;
 		xmitMatrix.setColumn(col, 0);
 		row++;
-		if (row >= 8) {
+		if (row >= ROW_COUNT) {
 			row = 0;
 		}
 	}
@@ -178,16 +178,15 @@ void colTest() {
 	xmitMatrix.setRows(-1);
 	delay(500);
 	col++;
-	if (col >= 8) {
+	if (col >= COL_COUNT) {
 		col = 0;
 	}
 }
 
 void col1Test() {
 	xmitMatrix.setColumn(3, 1 << row);
-	delay(500);
 	row++;
-	if (row >= 8) {
+	if (row >= ROW_COUNT) {
 		row = 0;
 	}
 }
@@ -197,10 +196,22 @@ void rowTest() {
 	xmitMatrix.setRows(1 << row);
 	delay(500);
 	row++;
-	if (row >= 8) {
+	if (row >= ROW_COUNT) {
 		row = 0;
 	}
 }
+
+inline void togglePin2() {
+	digitalWrite(2, LOW);
+	digitalWrite(2, HIGH);
+}
+
+
+void justOneDot() {
+	xmitMatrix.setColumn(0, 0);
+	xmitMatrix.setColumn(1, 0);
+}
+
 
 void setup() {
 #ifdef _DEBUG_
@@ -210,8 +221,10 @@ void setup() {
 }
 
 void loop() {
+//	justOneDot();
 //	MAXLoop();
 	nextDot();
+//	while (1) togglePin2();
 //	nextDotA();
 //	nextDot2();
 //	rowTest();

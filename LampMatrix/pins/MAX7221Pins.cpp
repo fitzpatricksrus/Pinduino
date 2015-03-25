@@ -7,7 +7,7 @@
 
 #include "MAX7221Pins.h"
 #include <Arduino.h>
-#include "../SPI.h"
+#include <SPI.h>
 
 enum COMMAND {
 	noop =      0b00000000,

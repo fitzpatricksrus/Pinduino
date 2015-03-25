@@ -8,7 +8,7 @@
 #include "SPIOutputPins.h"
 
 #include <Arduino.h>
-#include "../SPI.h"
+#include <SPI.h>
 
 /*
     uint8_t valueCount;
