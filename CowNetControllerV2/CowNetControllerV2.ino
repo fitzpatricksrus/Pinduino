@@ -24,17 +24,30 @@ void setup()
 {
 // Add your initialization code here
 	CowZoneHardware::INSTANCE.init();
+
+#if 0
+	while (1) {
+		for (byte col = 0; col < 8; col++) {
+			CowZoneHardware::INSTANCE.write(CowZoneHardware::LAMP_COL, ~(1 << col));
+			for (byte row = 0; row < 8; row++) {
+				CowZoneHardware::INSTANCE.write(CowZoneHardware::LAMP_ROW, ~(1 << row));
+//				delay(1);
+				CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)CowZoneHardware::LAMP_ROW);
+			}
+		}
+	}
+#endif
 }
 
 // The loop function is called repeatedly.  Each iteration copies all the buses.
 void loop()
 {
-	for (byte i = CowZoneHardware::LAMP_ROW; i < CowZoneHardware::OUTPUT_LATCH; i++) {
-		CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i);
+	for (byte i = CowZoneHardware::LAMP_ROW; i < CowZoneHardware::SOL1; i++) {
+//		CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i);
 
-//		CowZoneHardware::INSTANCE.write(
-//				(CowZoneHardware::Signal)i,
-//				CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i));
-		delay(10);
+		CowZoneHardware::INSTANCE.write(
+				(CowZoneHardware::Signal)i,
+				CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i));
 	}
+//	delayMicroseconds(25);
 }
