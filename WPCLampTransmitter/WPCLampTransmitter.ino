@@ -8,8 +8,8 @@
 #include <debug.h>
 #endif
 
-static const byte COL_COUNT = 2; //24;
-static const byte ROW_COUNT = 2;
+static const byte COL_COUNT = 8; //24;
+static const byte ROW_COUNT = 8;
 
 static bool life[COL_COUNT][ROW_COUNT];
 static bool plife[COL_COUNT][ROW_COUNT];
@@ -128,8 +128,8 @@ static byte row = 0;
 void nextDot() {
 	xmitMatrix.setColumn(col, 1 << row);
 //	delayMicroseconds(2000000);
-//	delayMicroseconds(125);
-	delay(100);
+//	delayMicroseconds(50);
+//	delay(1);
 	row++;
 	if (row >= ROW_COUNT) {
 		row = 0;
@@ -145,7 +145,7 @@ void nextDotA() {
 	xmitMatrix.setRows(1 << row);
 //	delayMicroseconds(2000000);
 
-	delay(150);
+//	delay(150);
 	row++;
 	if (row >= ROW_COUNT) {
 		row = 0;
@@ -176,7 +176,7 @@ void nextDot2() {
 void colTest() {
 	xmitMatrix.setColumn(col);
 	xmitMatrix.setRows(-1);
-	delay(500);
+//	delay(500);
 	col++;
 	if (col >= COL_COUNT) {
 		col = 0;
@@ -223,12 +223,12 @@ void setup() {
 void loop() {
 //	justOneDot();
 //	MAXLoop();
-	nextDot();
+//	nextDot();
 //	while (1) togglePin2();
 //	nextDotA();
 //	nextDot2();
 //	rowTest();
-//	colTest();
+	colTest();
 //	col1Test();
 //	attachInterrupt(2, handleFallingEdge, FALLING);
 }

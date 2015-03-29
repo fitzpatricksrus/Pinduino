@@ -14,7 +14,7 @@
 
 static long const lowDelay = 250;
 static inline void delayJustATad() {
-	delayMicroseconds(lowDelay);
+//	delayMicroseconds(lowDelay);
 }
 
 /*
@@ -61,11 +61,9 @@ void WPCLampMatrix::setColumn(byte column) {
 	Serial << "COL ";
 #endif
 	writeDataPins(~(1 << column));
-//	writeDataPins(0);
 	digitalWrite(colSelectPin, LOW);
 	delayJustATad();
 	digitalWrite(colSelectPin, HIGH);
-//	writeDataPins(-1);
 	delayJustATad();
 }
 
@@ -73,12 +71,10 @@ void WPCLampMatrix::setRows(byte values) {
 #ifdef _DEBUG_
 	Serial << "    ROWs  ";
 #endif
-//	writeDataPins(0);
 	writeDataPins(~values);
 	digitalWrite(rowSelectPin, LOW);
 	delayJustATad();
 	digitalWrite(rowSelectPin, HIGH);
-//	writeDataPins(-1);
 	delayJustATad();
 #ifdef _DEBUG_
 	Serial << endl;
