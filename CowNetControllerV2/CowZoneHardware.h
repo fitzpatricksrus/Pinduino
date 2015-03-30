@@ -83,18 +83,6 @@ static inline void toggle(byte pin) {
 //	delayMicroseconds(20);
 	digitalWrite(pin, HIGH);
 }
-static inline void writeData(byte value) {
-#if 1
-	DDRA = -1;
-	PORTA = value;
-//	delayMicroseconds(20);
-#else
-	for (byte i = 22; i <= 35; i++) {
-		digitalWrite(i, (value & 0x01) != 0);
-		value = value >> 1;
-	}
-#endif
-}
 
 inline byte CowZoneHardware::read(Signal signal) {
 	DDRA = 0;								// controller pins as input
@@ -107,7 +95,8 @@ inline byte CowZoneHardware::read(Signal signal) {
 
 inline void CowZoneHardware::write(Signal signal, byte value) {
 	// write output to the data bus
-	writeData(value);
+	DDRA = -1;
+	PORTA = value;
 	// latch the output data
 	toggle(outputLatchPin);
 	selectSignal(signal);
