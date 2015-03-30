@@ -12,9 +12,9 @@
 #include <Debug.h>
 #endif
 
-static long const lowDelay = 250;
+static long const lowDelay = 28;
 static inline void delayJustATad() {
-//	delayMicroseconds(lowDelay);
+	delayMicroseconds(lowDelay);
 }
 
 /*
@@ -51,10 +51,45 @@ void WPCLampMatrix::init() {
 //	pinMode(13, OUTPUT);
 }
 
+inline void WPCLampMatrix::writeDataPins(byte value) {
+	digitalWrite(firstDataPin + 0, (value & 0x01) != 0);
+	digitalWrite(firstDataPin + 1, (value & 0x02) != 0);
+	digitalWrite(firstDataPin + 2, (value & 0x04) != 0);
+	digitalWrite(firstDataPin + 3, (value & 0x08) != 0);
+	digitalWrite(firstDataPin + 4, (value & 0x10) != 0);
+	digitalWrite(firstDataPin + 5, (value & 0x20) != 0);
+	digitalWrite(firstDataPin + 6, (value & 0x40) != 0);
+	digitalWrite(firstDataPin + 7, (value & 0x80) != 0);
+}
+
+#if 0
 void WPCLampMatrix::setColumn(byte column, byte values) {
 	setColumn(column);
 	setRows(values);
 }
+#else
+void WPCLampMatrix::setColumn(byte column, byte values) {
+	writeDataPins(-1);	//turn off all columns
+	digitalWrite(colSelectPin, LOW);
+	delayJustATad();
+	digitalWrite(colSelectPin, HIGH);
+	delayJustATad();
+
+	// write the row data
+	writeDataPins(~values);
+	digitalWrite(rowSelectPin, LOW);
+	delayJustATad();
+	digitalWrite(rowSelectPin, HIGH);
+	delayJustATad();
+
+	// turn the proper column on
+	writeDataPins(~(1 << column));
+	digitalWrite(colSelectPin, LOW);
+	delayJustATad();
+	digitalWrite(colSelectPin, HIGH);
+	delayJustATad();
+}
+#endif
 
 void WPCLampMatrix::setColumn(byte column) {
 #ifdef _DEBUG_
@@ -80,15 +115,3 @@ void WPCLampMatrix::setRows(byte values) {
 	Serial << endl;
 #endif
 }
-
-
-void WPCLampMatrix::writeDataPins(byte value) {
-	for (byte i = 0; i < 8; i++) {
-		digitalWrite(firstDataPin + i, value & 1);
-#ifdef _DEBUG_
-		Serial << (value & 1);
-#endif
-		value = value >> 1;
-	}
-}
-

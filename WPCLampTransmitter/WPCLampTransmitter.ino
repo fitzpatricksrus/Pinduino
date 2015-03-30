@@ -160,7 +160,7 @@ void nextDotA() {
 
 void nextDot2() {
 	xmitMatrix.setColumn(col, 1 << row);
-	delay(80);
+//	delay(80);
 
 	col++;
 	if (col >= COL_COUNT) {
@@ -174,6 +174,7 @@ void nextDot2() {
 }
 
 void colTest() {
+//	xmitMatrix.setColumn(col, -1);
 	xmitMatrix.setColumn(col);
 	xmitMatrix.setRows(-1);
 //	delay(500);
@@ -191,14 +192,38 @@ void col1Test() {
 	}
 }
 
+
+static long lastRowTime = 0;
 void rowTest() {
-	xmitMatrix.setColumn(0);
-	xmitMatrix.setRows(1 << row);
-	delay(500);
-	row++;
-	if (row >= ROW_COUNT) {
-		row = 0;
+	xmitMatrix.setColumn(col, 1 << row);
+	col++;
+	if (col >= COL_COUNT) {
+		col = 0;
+		if (millis() - lastRowTime > 200) {
+			row++;
+			if (row >= ROW_COUNT) {
+				row = 0;
+			}
+			lastRowTime = millis();
+		}
 	}
+}
+
+static byte patternForTest[8] = {
+		0b10000001,
+		0b01000010,
+		0b00100100,
+		0b00011000,
+		0b00011000,
+		0b00100100,
+		0b01000010,
+		0b10000001,
+};
+void patternTest() {
+	xmitMatrix.setColumn(col, patternForTest[col]);
+	col++;
+	if (col >= COL_COUNT) col = 0;
+//	delay(5);
 }
 
 inline void togglePin2() {
@@ -228,7 +253,8 @@ void loop() {
 //	nextDotA();
 //	nextDot2();
 //	rowTest();
-	colTest();
+//	colTest();
 //	col1Test();
+	patternTest();
 //	attachInterrupt(2, handleFallingEdge, FALLING);
 }
