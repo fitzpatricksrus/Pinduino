@@ -19,21 +19,34 @@
 #include "CowZoneHardware.h"
 
 
-void setup()
-{
-}
-
 static long lastPrint = 0;
 static long count = 0;
+
+static byte signalCache[CowZoneHardware::SIGNAL_COUNT];
+
+void setup()
+{
+	for (byte i = 0; i < CowZoneHardware::SIGNAL_COUNT; i++) {
+		signalCache[i] = 0;
+	}
+}
+
 void loop()
 {
 	CowZoneHardware::INSTANCE.init();
 	Serial.begin(57600);
 	while (1) {
 		for (byte i = CowZoneHardware::LAMP_ROW; i < CowZoneHardware::SOL1; i++) {
-			CowZoneHardware::INSTANCE.write(
-					(CowZoneHardware::Signal)i,
+#if 1
+			byte val = CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i);
+			if (val != signalCache[i]) {
+				CowZoneHardware::INSTANCE.write((CowZoneHardware::Signal)i, val);
+				signalCache[i] = val;
+			}
+#else
+			CowZoneHardware::INSTANCE.write((CowZoneHardware::Signal)i,
 					CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i));
+#endif
 		}
 		count++;
 		if (millis() - lastPrint > 1000) {

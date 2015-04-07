@@ -71,11 +71,16 @@ inline void CowZoneHardware::init() {
 }
 
 inline void CowZoneHardware::selectSignal(Signal signal) {
+#if 1
+	DDRL = -1;
+	PORTL = signal;
+#else
 	int sig = signal;
 	for (byte i = signalSelectorBit0Pin; i <= signalSelectorBit2Pin; i++) {
 		digitalWrite(i, (sig & 0x01) != 0);
 		sig = sig >> 1;
 	}
+#endif
 }
 
 static inline void toggle(byte pin) {
