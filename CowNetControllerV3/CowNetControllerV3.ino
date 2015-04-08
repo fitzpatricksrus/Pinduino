@@ -22,17 +22,50 @@
 static long lastPrint = 0;
 static long count = 0;
 
-static byte signalCache[CowZoneHardware::SIGNAL_COUNT];
 
 void setup()
 {
+}
+
+#if 0
+void loop()
+{
+	byte signalCache[CowZoneHardware::SIGNAL_COUNT];
+	bool signalChanged[CowZoneHardware::SIGNAL_COUNT];
 	for (byte i = 0; i < CowZoneHardware::SIGNAL_COUNT; i++) {
 		signalCache[i] = 0;
+		signalChanged[i] = false;
 	}
+
+	CowZoneHardware::INSTANCE.init();
+	Serial.begin(57600);
+	while (1) {
+		unsigned long t = microseconds();
+		// 	quickly just write everything that changed out
+		for (byte i = CowZoneHardware::LAMP_ROW; i < CowZoneHardware::SOL1; i++) {
+			if (signalChanged[i]) {
+				CowZoneHardware::INSTANCE.write((CowZoneHardware::Signal)i, signalCache[i]);
+			}
+		}
+		for (byte i = CowZoneHardware::LAMP_ROW; i < CowZoneHardware::SOL1; i++) {
+			byte newValue = CowZoneHardware::INSTANCE.read((CowZoneHardware::Signal)i);
+			signalChanged[i] = (signalCache[i] == newValue);
+			signalCache[i] = newValue;
+		}
+		delayMicroseconds(1000 - (microseconds() - t));
+	}	
 }
+
+
+#else
 
 void loop()
 {
+	static byte signalCache[CowZoneHardware::SIGNAL_COUNT];
+	for (byte i = 0; i < CowZoneHardware::SIGNAL_COUNT; i++) {
+		signalCache[i] = 0;
+	}
+
 	CowZoneHardware::INSTANCE.init();
 	Serial.begin(57600);
 	while (1) {
@@ -56,3 +89,4 @@ void loop()
 		}
 	}
 }
+#endif
