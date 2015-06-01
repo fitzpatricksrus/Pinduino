@@ -9,7 +9,7 @@
 #define US_COWNET_LAMPS_SIMPLE_SIMPLELAMPPATTERN_H_
 
 #include <Arduino.h>
-#include "../LampPattern.h"xxxxxxxxxxxx
+#include "../LampPattern.h"
 
 namespace us_cownet_lamps_simple {
 

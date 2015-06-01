@@ -9,9 +9,11 @@
 #define US_COWNET_LAMPS_WPC_WPCOUTPUTCONTROLLER_H_
 
 #include <Arduino.h>
-#include "PinballOutputController.h"
+#include "../PinballOutputController.h"
 
-namespace us_cownet_lamps {
+namespace us_cownet_lamps_wpc {
+
+using namespace us_cownet_lamps;
 
 class WpcOutputController {
 public:
