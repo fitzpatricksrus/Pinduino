@@ -31,6 +31,6 @@ private:
 	byte pattern[8];
 };
 
-} /* namespace us_cownet_lamps */
+} /* namespace us_cownet_lamps_simple */
 
 #endif /* US_COWNET_LAMPS_SIMPLE_SIMPLELAMPPATTERN_H_ */
