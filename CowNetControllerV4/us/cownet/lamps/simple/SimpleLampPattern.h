@@ -25,7 +25,7 @@ public:
 	virtual bool getLamp(int col, int row);
 	virtual void setLamp(int col, int row, bool on);
 
-	static const SimpleLampPattern& ALL_OFF;
+	static SimpleLampPattern& ALL_OFF;
 
 private:
 	byte pattern[8];

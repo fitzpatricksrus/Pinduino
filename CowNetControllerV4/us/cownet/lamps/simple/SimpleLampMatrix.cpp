@@ -5,9 +5,9 @@
 namespace us_cownet_lamps_simple {
 	
 SimpleLampMatrix::SimpleLampMatrix(PinballOutputController* controllerIn, long nanosIn) 
-: controller(controllerIn), nanos(nanosIn), currentColumn(0), 
+: controller(controllerIn), micros(nanosIn), currentColumn(0), 
   currentPattern(&SimpleLampPattern::ALL_OFF), nextPattern(&SimpleLampPattern::ALL_OFF), 
-  callback(nullptr) {
+  callback(0) {
 }
 
 SimpleLampMatrix::~SimpleLampMatrix() {
@@ -23,9 +23,9 @@ LampPattern* SimpleLampMatrix::getPattern() {
 
 void SimpleLampMatrix::setPattern(LampPattern* lamps) {
 	nextPattern = lamps;
-	if (currentPattern == nullptr && nextPattern != nullptr) {
+	if (currentPattern == NULL && nextPattern != NULL) {
 		// start refresh
-	} if (currentPattern != nullptr && nextPattern == nullptr) {
+	} if (currentPattern != NULL && nextPattern == NULL) {
 		// stop refresh
 	}
 }
@@ -35,14 +35,14 @@ void SimpleLampMatrix::setSyncCallback(Runnable* callback) {
 }
 
 void SimpleLampMatrix::tock() {
-	controller.write(PinballOutputController::Register.LAMP_COL, (byte)0);
-	controller.write(PinballOutputController::Register.LAMP_ROW, currentLampPattern->getPattern()[currentColumn]);
-	controller.write(PinballOutputController::Register.LAMP_COL, (byte)(1 << currentColumn));
+	controller->write(PinballOutputController::LAMP_COL, (byte)0);
+	controller->write(PinballOutputController::LAMP_ROW, currentPattern->getPattern()[currentColumn]);
+	controller->write(PinballOutputController::LAMP_COL, (byte)(1 << currentColumn));
 	currentColumn = (currentColumn + 1) % 8;
 	if (currentColumn == 0) {
-		currentLampPattern = nextLampPattern;
-		if (callback != nullptr) {
-			callback.call();
+		currentPattern = nextPattern;
+		if (callback != NULL) {
+			(*callback)();
 		}
 	}
 }

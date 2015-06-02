@@ -9,6 +9,9 @@
 
 namespace us_cownet_lamps_simple {
 
+static SimpleLampPattern ALL_OFF_INSTANCE = SimpleLampPattern();
+SimpleLampPattern& SimpleLampPattern::ALL_OFF = ALL_OFF_INSTANCE;
+
 SimpleLampPattern::SimpleLampPattern()
 : pattern()
 {
