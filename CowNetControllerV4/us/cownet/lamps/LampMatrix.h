@@ -15,13 +15,13 @@ namespace us_cownet_lamps {
 
 class LampMatrix {
 public:
-	typedef void (Runnable)();
+	typedef void (*Runnable)();
 
 	LampMatrix();
 	virtual ~LampMatrix();
 	virtual LampPattern* getPattern() = 0;
 	virtual void setPattern(LampPattern* lamps) = 0;
-	virtual void setSyncCallback(Runnable* callback) = 0;
+	virtual void setSyncCallback(void (*callback)()) = 0;
 };
 
 } /* namespace us_cownet_lamps */

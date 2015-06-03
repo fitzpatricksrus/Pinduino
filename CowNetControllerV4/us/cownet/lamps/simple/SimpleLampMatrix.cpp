@@ -2,6 +2,8 @@
 
 #include "SimpleLampPattern.h"
 
+#include "TimerUtil.h"
+
 namespace us_cownet_lamps_simple {
 	
 SimpleLampMatrix::SimpleLampMatrix(PinballOutputController* controllerIn, long nanosIn) 
@@ -21,16 +23,21 @@ LampPattern* SimpleLampMatrix::getPattern() {
 	return nextPattern;
 }
 
+static SimpleLampMatrix* matrix = NULL;
+static void isrCallback() {
+	if (matrix) matrix->tock();
+}
+
 void SimpleLampMatrix::setPattern(LampPattern* lamps) {
 	nextPattern = lamps;
 	if (currentPattern == NULL && nextPattern != NULL) {
-		// start refresh
+		TimerUtil::attachInterrupt(isrCallback, 2000);
 	} if (currentPattern != NULL && nextPattern == NULL) {
-		// stop refresh
+		TimerUtil::detachInterrupt();
 	}
 }
 
-void SimpleLampMatrix::setSyncCallback(Runnable* callback) {
+void SimpleLampMatrix::setSyncCallback(void (*callback)()) {
 	this->callback = callback;
 }
 

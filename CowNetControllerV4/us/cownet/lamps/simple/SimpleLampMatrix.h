@@ -16,17 +16,17 @@ public:
 	virtual LampPattern* getDisplayedPattern();
 	virtual LampPattern* getPattern();
 	virtual void setPattern(LampPattern* lamps);
-	virtual void setSyncCallback(Runnable* callback);
+	virtual void setSyncCallback(void (*callback)());
 	
-private:
 	void tock();
+private:
 	
 	PinballOutputController* controller;
 	long micros;
 	int currentColumn;
 	LampPattern* currentPattern;
 	LampPattern* nextPattern;
-	Runnable* callback;
+	Runnable callback;
 };
 
 } /* namespace us_cownet_lamps_simple */
