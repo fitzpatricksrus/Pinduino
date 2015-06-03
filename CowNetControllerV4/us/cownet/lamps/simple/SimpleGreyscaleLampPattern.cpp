@@ -9,7 +9,9 @@
 
 namespace us_cownet_lamps_simple {
 
-SimpleGreyscaleLampPattern::SimpleGreyscaleLampPattern() {
+SimpleGreyscaleLampPattern::SimpleGreyscaleLampPattern()
+: pattern(0)
+{
 }
 
 SimpleGreyscaleLampPattern::~SimpleGreyscaleLampPattern() {

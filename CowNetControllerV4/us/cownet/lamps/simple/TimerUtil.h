@@ -15,9 +15,10 @@ public:
 	TimerUtil();
 	virtual ~TimerUtil();
 
-    static void attachInterrupt(void (*isr)(), long microseconds=-1);
-    static void detachInterrupt();
+    virtual void attachInterrupt(void (*isr)(), long microseconds=-1) = 0;
+    virtual void detachInterrupt() = 0;
 
+    static TimerUtil& DEFAULT_TIMER;
 };
 
 } /* namespace pins */

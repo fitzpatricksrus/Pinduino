@@ -7,8 +7,14 @@
 namespace us_cownet_lamps_simple {
 	
 SimpleLampMatrix::SimpleLampMatrix(PinballOutputController* controllerIn, long nanosIn) 
-: controller(controllerIn), micros(nanosIn), currentColumn(0), 
+: timer(&TimerUtil::DEFAULT_TIMER), controller(controllerIn), micros(nanosIn), currentColumn(0),
   currentPattern(&SimpleLampPattern::ALL_OFF), nextPattern(&SimpleLampPattern::ALL_OFF), 
+  callback(0) {
+}
+
+SimpleLampMatrix::SimpleLampMatrix(TimerUtil* timerIn, PinballOutputController* controllerIn, long nanosIn)
+: timer(timerIn), controller(controllerIn), micros(nanosIn), currentColumn(0),
+  currentPattern(&SimpleLampPattern::ALL_OFF), nextPattern(&SimpleLampPattern::ALL_OFF),
   callback(0) {
 }
 
@@ -31,9 +37,9 @@ static void isrCallback() {
 void SimpleLampMatrix::setPattern(LampPattern* lamps) {
 	nextPattern = lamps;
 	if (currentPattern == NULL && nextPattern != NULL) {
-		TimerUtil::attachInterrupt(isrCallback, 2000);
+		timer->attachInterrupt(isrCallback, 2000);
 	} if (currentPattern != NULL && nextPattern == NULL) {
-		TimerUtil::detachInterrupt();
+		timer->detachInterrupt();
 	}
 }
 

@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "../LampMatrix.h"
 #include "../PinballOutputController.h"
+#include "TimerUtil.h"
 
 namespace us_cownet_lamps_simple {
 	
@@ -12,6 +13,7 @@ using namespace us_cownet_lamps;
 class SimpleLampMatrix : public LampMatrix {
 public:
 	SimpleLampMatrix(PinballOutputController* controller, long micros);
+	SimpleLampMatrix(TimerUtil* timer, PinballOutputController* controller, long micros);
 	virtual ~SimpleLampMatrix();
 	virtual LampPattern* getDisplayedPattern();
 	virtual LampPattern* getPattern();
@@ -20,7 +22,7 @@ public:
 	
 	void tock();
 private:
-	
+	TimerUtil* timer;
 	PinballOutputController* controller;
 	long micros;
 	int currentColumn;

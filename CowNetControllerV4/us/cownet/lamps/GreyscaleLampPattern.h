@@ -17,9 +17,9 @@ public:
 	GreyscaleLampPattern();
 	virtual ~GreyscaleLampPattern();
 
-	byte** getPattern();
+	virtual byte** getPattern() = 0;
 
-	byte getLamp(int x, int y);
+	virtual byte getLamp(int col, int row) = 0;
 };
 
 } /* namespace us_cownet_lamps */
