@@ -18,7 +18,7 @@ public:
 	virtual LampPattern* getDisplayedPattern();
 	virtual LampPattern* getPattern();
 	virtual void setPattern(LampPattern* lamps);
-	virtual void setSyncCallback(void (*callback)());
+	virtual void setSyncCallback(Callback* callback);
 	
 	void tock();
 private:
@@ -28,7 +28,7 @@ private:
 	int currentColumn;
 	LampPattern* currentPattern;
 	LampPattern* nextPattern;
-	Runnable callback;
+	Callback* callback;
 };
 
 } /* namespace us_cownet_lamps_simple */

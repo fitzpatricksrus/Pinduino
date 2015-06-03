@@ -43,8 +43,8 @@ void SimpleLampMatrix::setPattern(LampPattern* lamps) {
 	}
 }
 
-void SimpleLampMatrix::setSyncCallback(void (*callback)()) {
-	this->callback = callback;
+void SimpleLampMatrix::setSyncCallback(Callback* callbackIn) {
+	callback = callbackIn;
 }
 
 void SimpleLampMatrix::tock() {

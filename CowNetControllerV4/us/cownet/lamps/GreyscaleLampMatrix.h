@@ -7,16 +7,16 @@ namespace us_cownet_lamps {
 
 class GreyscaleLampMatrix {
 public:
-	typedef void (Runnable)();
+	typedef void (Callback)();
 
 	GreyscaleLampMatrix();
 	virtual ~GreyscaleLampMatrix();
 
-	GreyscaleLampPattern* getPattern();
+	virtual GreyscaleLampPattern* getPattern() = 0;
 
-	void setPattern(GreyscaleLampPattern* lamps);
+	virtual void setPattern(GreyscaleLampPattern* lamps) = 0;
 
-	void setSyncCallback(Runnable* callback);
+	virtual void setSyncCallback(Callback* callback) = 0;
 };
 
 } /* namespace us_cownet_lamps */
