@@ -8,7 +8,9 @@
 #ifndef SIMPLEGREYSCALELAMPMATRIX_H_
 #define SIMPLEGREYSCALELAMPMATRIX_H_
 
+#include "../LampMatrix.h"
 #include "../GreyscaleLampMatrix.h"
+#include "SimpleLampPattern.h"
 
 namespace us_cownet_lamps_simple {
 
@@ -16,7 +18,7 @@ using namespace us_cownet_lamps;
 
 class SimpleGreyscaleLampMatrix : public GreyscaleLampMatrix {
 public:
-	SimpleGreyscaleLampMatrix();
+	SimpleGreyscaleLampMatrix(LampMatrix* matrix);
 	virtual ~SimpleGreyscaleLampMatrix();
 
 	virtual GreyscaleLampPattern* getPattern();
@@ -24,8 +26,15 @@ public:
 	virtual void setSyncCallback(Callback* callback);
 
 private:
+	friend void SimpleGreyscaleLampMatrix_Callback();
+	static SimpleGreyscaleLampMatrix* activeMatrix;
+	void tock();
+
+	LampMatrix* matrix;
 	Callback* callback;
 	GreyscaleLampPattern* pattern;
+	SimpleLampPattern patterns[8];
+	int tickNumber;
 };
 
 } /* namespace us_cownet_lamps_simple */

@@ -19,9 +19,11 @@ public:
 	virtual LampPattern* getPattern();
 	virtual void setPattern(LampPattern* lamps);
 	virtual void setSyncCallback(Callback* callback);
-	
-	void tock();
+
 private:
+	friend void SimpleLampMatrix_Callback();
+	void tock();
+
 	TimerUtil* timer;
 	PinballOutputController* controller;
 	long micros;
