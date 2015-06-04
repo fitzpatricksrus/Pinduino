@@ -11,10 +11,12 @@
 #include "../LampMatrix.h"
 #include "../GreyscaleLampMatrix.h"
 #include "SimpleLampPattern.h"
+#include "../../timers/Callback.h"
 
 namespace us_cownet_lamps_simple {
 
 using namespace us_cownet_lamps;
+using namespace us_cownet_timers;
 
 class SimpleGreyscaleLampMatrix : public GreyscaleLampMatrix {
 public:
@@ -26,13 +28,12 @@ public:
 	virtual void setSyncCallback(Callback* callback);
 
 private:
-	friend void SimpleGreyscaleLampMatrix_Callback();
-	static SimpleGreyscaleLampMatrix* activeMatrix;
+	CallbackTo<SimpleGreyscaleLampMatrix> localCallback;
 	void tock();
 
 	LampMatrix* matrix;
-	Callback* callback;
 	GreyscaleLampPattern* pattern;
+	Callback* callback;
 	SimpleLampPattern patterns[8];
 	int tickNumber;
 };

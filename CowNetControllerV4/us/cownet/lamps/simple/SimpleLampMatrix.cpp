@@ -2,24 +2,13 @@
 
 #include "SimpleLampPattern.h"
 
-#include "TimerUtil.h"
-
 namespace us_cownet_lamps_simple {
 
-static SimpleLampMatrix* matrix = NULL;
-void SimpleLampMatrix_Callback() {
-	if (matrix) matrix->tock();
-}
+using namespace us_cownet_timers;
 
-SimpleLampMatrix::SimpleLampMatrix(PinballOutputController* controllerIn, long nanosIn) 
-: timer(&TimerUtil::DEFAULT_TIMER), controller(controllerIn), micros(nanosIn), currentColumn(0),
+SimpleLampMatrix::SimpleLampMatrix(PinballOutputController* controllerIn, long microsIn)
+: localCallback(this, &SimpleLampMatrix::tock), controller(controllerIn), micros(microsIn), currentColumn(0),
   currentPattern(&SimpleLampPattern::ALL_OFF), nextPattern(&SimpleLampPattern::ALL_OFF), 
-  callback(0) {
-}
-
-SimpleLampMatrix::SimpleLampMatrix(TimerUtil* timerIn, PinballOutputController* controllerIn, long nanosIn)
-: timer(timerIn), controller(controllerIn), micros(nanosIn), currentColumn(0),
-  currentPattern(&SimpleLampPattern::ALL_OFF), nextPattern(&SimpleLampPattern::ALL_OFF),
   callback(0) {
 }
 
@@ -37,15 +26,14 @@ LampPattern* SimpleLampMatrix::getPattern() {
 void SimpleLampMatrix::setPattern(LampPattern* lamps) {
 	nextPattern = lamps;
 	if (currentPattern == NULL && nextPattern != NULL) {
-		timer->attachInterrupt(&SimpleLampMatrix_Callback, 2000);
+		TimerUtil::TIMERS.attachInterrupt(&localCallback, micros);
 	} if (currentPattern != NULL && nextPattern == NULL) {
-		timer->detachInterrupt();
+		TimerUtil::TIMERS.detachInterrupt(&localCallback);
 	}
 }
 
 void SimpleLampMatrix::setSyncCallback(Callback* callbackIn) {
 	callback = callbackIn;
-	matrix = this;
 }
 
 void SimpleLampMatrix::tock() {
@@ -54,10 +42,10 @@ void SimpleLampMatrix::tock() {
 	controller->write(PinballOutputController::LAMP_COL, (byte)(1 << currentColumn));
 	currentColumn = (currentColumn + 1) % 8;
 	if (currentColumn == 0) {
-		currentPattern = nextPattern;
 		if (callback != NULL) {
-			(*callback)();
+			callback->call();
 		}
+		currentPattern = nextPattern;
 	}
 }
 

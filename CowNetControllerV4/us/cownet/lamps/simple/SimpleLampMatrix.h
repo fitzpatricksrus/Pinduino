@@ -4,27 +4,26 @@
 #include <Arduino.h>
 #include "../LampMatrix.h"
 #include "../PinballOutputController.h"
-#include "TimerUtil.h"
+#include "../../timers/TimerUtil.h"
 
 namespace us_cownet_lamps_simple {
 	
 using namespace us_cownet_lamps;
+using namespace us_cownet_timers;
 
 class SimpleLampMatrix : public LampMatrix {
 public:
 	SimpleLampMatrix(PinballOutputController* controller, long micros);
-	SimpleLampMatrix(TimerUtil* timer, PinballOutputController* controller, long micros);
 	virtual ~SimpleLampMatrix();
 	virtual LampPattern* getDisplayedPattern();
 	virtual LampPattern* getPattern();
 	virtual void setPattern(LampPattern* lamps);
-	virtual void setSyncCallback(Callback* callback);
+	virtual void setSyncCallback(Callback* callbackIn);
 
 private:
-	friend void SimpleLampMatrix_Callback();
 	void tock();
+	CallbackTo<SimpleLampMatrix> localCallback;
 
-	TimerUtil* timer;
 	PinballOutputController* controller;
 	long micros;
 	int currentColumn;

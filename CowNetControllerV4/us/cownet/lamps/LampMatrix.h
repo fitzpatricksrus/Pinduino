@@ -10,13 +10,14 @@
 
 #include <Arduino.h>
 #include "LampPattern.h"
+#include "../timers/Callback.h"
 
 namespace us_cownet_lamps {
 
+using namespace us_cownet_timers;
+
 class LampMatrix {
 public:
-	typedef void (Callback)();
-
 	LampMatrix();
 	virtual ~LampMatrix();
 	virtual LampPattern* getPattern() = 0;
