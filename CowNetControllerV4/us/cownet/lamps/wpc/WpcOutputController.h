@@ -17,16 +17,14 @@ using namespace us_cownet_lamps;
 
 class WpcOutputController {
 public:
-	WpcOutputController();
+	WpcOutputController(byte* dataPinsIn, byte* signalPinsIn);
 	virtual ~WpcOutputController();
 
 	virtual void write(PinballOutputController::Register signal, byte value);
 
-
 private:
-	byte dataPin[8];
-	byte signalPin[PinballOutputController::SIGNAL_COUNT];
-
+	byte *dataPin;
+	byte *signalPin;
 };
 
 } /* namespace us_cownet_lamps */

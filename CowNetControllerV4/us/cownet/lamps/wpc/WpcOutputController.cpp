@@ -11,7 +11,9 @@ namespace us_cownet_lamps_wpc {
 
 static const int MASK[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 
-WpcOutputController::WpcOutputController() {
+WpcOutputController::WpcOutputController(byte* dataPinsIn, byte* signalPinsIn)
+: dataPin(dataPinsIn), signalPin(signalPinsIn)
+{
 }
 
 WpcOutputController::~WpcOutputController() {
