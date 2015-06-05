@@ -18,6 +18,7 @@ using namespace us_cownet_lamps;
 class SimpleLampPattern : public LampPattern {
 public:
 	SimpleLampPattern();
+	SimpleLampPattern(byte pattern[]);
 	virtual ~SimpleLampPattern();
 
 	virtual byte* getPattern();

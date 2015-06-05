@@ -1,9 +1,20 @@
-//The setup function is called once at startup of the sketch
+#include "us/cownet/lamps/wpc/tests/WpcOutputControllerTest.h"
+#include "us/cownet/testing/Test.h"
+
+using namespace us_cownet_testing;
+using namespace us_cownet_lamps_wpc_tests;
+
+static WpcOutputControllerTest test;
+
+static Test &currentTest = test;
+
+
 void setup()
 {
+	currentTest.setup();
 }
 
-// The loop function is called in an endless loop
 void loop()
 {
+	currentTest.loop();
 }

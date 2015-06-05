@@ -18,6 +18,12 @@ SimpleLampPattern::SimpleLampPattern()
 	for (byte i = 0; i < 8; i++) pattern[i] = 0;
 }
 
+SimpleLampPattern::SimpleLampPattern(byte pattern[])
+: pattern()
+{
+	for (byte i = 0; i < 8; i++) this->pattern[i] = pattern[i];
+}
+
 SimpleLampPattern::~SimpleLampPattern() {
 }
 
