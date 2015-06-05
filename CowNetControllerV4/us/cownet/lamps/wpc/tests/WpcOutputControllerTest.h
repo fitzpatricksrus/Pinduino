@@ -5,14 +5,14 @@
  *      Author: Dad
  */
 
-#ifndef US_COWNET_LAMPS_WPC_TEST_WPCOUTPUTCONTROLLERTEST_H_
-#define US_COWNET_LAMPS_WPC_TEST_WPCOUTPUTCONTROLLERTEST_H_
+#ifndef US_COWNET_LAMPS_WPC_TESTS_WPCOUTPUTCONTROLLERTEST_H_
+#define US_COWNET_LAMPS_WPC_TESTS_WPCOUTPUTCONTROLLERTEST_H_
 
 #include "../WpcOutputController.h"
 #include "../../../testing/Test.h"
 #include "../../../testing/Ticker.h"
 
-namespace us_cownet_lamps_wpc_test {
+namespace us_cownet_lamps_wpc_tests {
 
 using namespace us_cownet_lamps_wpc;
 using namespace us_cownet_testing;
@@ -36,4 +36,4 @@ private:
 
 } /* namespace us_cownet_lamps_wpc_test */
 
-#endif /* US_COWNET_LAMPS_WPC_TEST_WPCOUTPUTCONTROLLERTEST_H_ */
+#endif /* US_COWNET_LAMPS_WPC_TESTS_WPCOUTPUTCONTROLLERTEST_H_ */

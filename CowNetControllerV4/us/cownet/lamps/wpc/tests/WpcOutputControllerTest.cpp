@@ -5,10 +5,11 @@
  *      Author: Dad
  */
 
-#include "WpcOutputControllerTest.h"
+#include "../tests/WpcOutputControllerTest.h"
+
 #include "../../../timers/TimerUtil.h"
 
-namespace us_cownet_lamps_wpc_test {
+namespace us_cownet_lamps_wpc_tests {
 
 using namespace us_cownet_timers;
 
