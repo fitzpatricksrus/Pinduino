@@ -37,8 +37,9 @@ public:
     }
 
     virtual void hackTick() {
-    	if (micros() - lastTick > microseconds) {
-    		lastTick = micros();
+    	unsigned long now = micros();
+    	if (now - lastTick > microseconds) {
+    		lastTick = now;
     		if (callback != NULL) {
     			(*callback).call();
     		}
