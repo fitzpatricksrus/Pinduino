@@ -20,6 +20,8 @@ public:
     virtual bool attachInterrupt(Callback* callback, long microseconds=-1) = 0;
     virtual void detachInterrupt(Callback* callback) = 0;
 
+    virtual void hackTick() = 0;
+
     static TimerUtil& TIMERS;
 };
 
