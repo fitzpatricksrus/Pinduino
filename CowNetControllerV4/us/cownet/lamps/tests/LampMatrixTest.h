@@ -19,14 +19,14 @@ using us_cownet_lamps::LampMatrix;
 
 class LampMatrixTest : public Test {
 public:
-	LampMatrixTest();
+	LampMatrixTest(LampMatrix* matrix);
 	virtual ~LampMatrixTest();
 
 	virtual void setup();
 	virtual void loop();
 
-	virtual LampMatrix* getMatrix() = 0;
-
+private:
+	LampMatrix* matrix;
 };
 
 } /* namespace us_cownet_lamps_tests */

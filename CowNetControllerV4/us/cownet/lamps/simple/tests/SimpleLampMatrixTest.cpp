@@ -10,15 +10,19 @@
 namespace us_cownet_lamps_tests {
 
 SimpleLampMatrixTest::SimpleLampMatrixTest(PinballOutputController* controller, long micros)
-: matrix(controller, micros)
+: matrix(controller, micros), test(&matrix)
 {
 }
 
 SimpleLampMatrixTest::~SimpleLampMatrixTest() {
 }
 
-LampMatrix* SimpleLampMatrixTest::getMatrix() {
-	return &matrix;
+void SimpleLampMatrixTest::setup() {
+	test.setup();
+}
+
+void SimpleLampMatrixTest::loop() {
+	test.loop();
 }
 
 } /* namespace us_cownet_lamps_tests */

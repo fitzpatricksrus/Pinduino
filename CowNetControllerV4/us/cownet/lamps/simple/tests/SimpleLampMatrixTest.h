@@ -17,15 +17,17 @@ namespace us_cownet_lamps_tests {
 using us_cownet_lamps::PinballOutputController;
 using us_cownet_lamps_simple::SimpleLampMatrix;
 
-class SimpleLampMatrixTest: public us_cownet_lamps_tests::LampMatrixTest {
+class SimpleLampMatrixTest: public us_cownet_testing::Test {
 public:
 	SimpleLampMatrixTest(PinballOutputController* controller, long micros);
 	virtual ~SimpleLampMatrixTest();
 
-	virtual LampMatrix* getMatrix();
+	virtual void setup();
+	virtual void loop();
 
 private:
 	SimpleLampMatrix matrix;
+	LampMatrixTest test;
 };
 
 } /* namespace us_cownet_lamps_tests */
