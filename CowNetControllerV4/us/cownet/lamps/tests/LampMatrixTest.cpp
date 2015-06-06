@@ -14,8 +14,7 @@ namespace us_cownet_lamps_tests {
 using us_cownet_lamps_simple::SimpleLampPattern;
 using us_cownet_timers::TimerUtil;
 
-LampMatrixTest::LampMatrixTest(LampMatrix* matrixIn)
-: matrix(matrixIn)
+LampMatrixTest::LampMatrixTest()
 {
 }
 
@@ -34,7 +33,7 @@ static byte patternValues[] = {
 };
 static SimpleLampPattern pattern(patternValues);
 void LampMatrixTest::setup() {
-	matrix->setPattern(&pattern);
+	getMatrix()->setPattern(&pattern);
 }
 
 void LampMatrixTest::loop() {
