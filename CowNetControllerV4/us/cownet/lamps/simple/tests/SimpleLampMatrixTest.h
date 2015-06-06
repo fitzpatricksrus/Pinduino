@@ -22,9 +22,6 @@ public:
 	SimpleLampMatrixTest(PinballOutputController* controller, long micros);
 	virtual ~SimpleLampMatrixTest();
 
-	virtual void setup();
-	virtual void loop();
-
 	virtual LampMatrix* getMatrix();
 
 private:

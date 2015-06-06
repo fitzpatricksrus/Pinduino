@@ -5,6 +5,7 @@ using namespace us_cownet_testing;
 using namespace us_cownet_lamps_wpc_tests;
 
 static WpcOutputControllerTest test;
+//static SimpleLampMatrixTest test;
 
 static Test &currentTest = test;
 

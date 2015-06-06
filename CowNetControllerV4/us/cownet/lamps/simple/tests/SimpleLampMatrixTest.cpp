@@ -17,14 +17,6 @@ SimpleLampMatrixTest::SimpleLampMatrixTest(PinballOutputController* controller, 
 SimpleLampMatrixTest::~SimpleLampMatrixTest() {
 }
 
-void SimpleLampMatrixTest::setup() {
-	LampMatrixTest::setup();
-}
-
-void SimpleLampMatrixTest::loop() {
-	LampMatrixTest::loop();
-}
-
 LampMatrix* SimpleLampMatrixTest::getMatrix() {
 	return &matrix;
 }
