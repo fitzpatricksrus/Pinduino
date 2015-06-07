@@ -20,7 +20,6 @@ using us_cownet_testing::Ticker;
 
 class WpcOutputControllerTest : public Test {
 public:
-	WpcOutputControllerTest();
 	WpcOutputControllerTest(WpcOutputController* testController);
 	virtual ~WpcOutputControllerTest();
 
@@ -29,7 +28,6 @@ public:
 
 private:
 	WpcOutputController* hardware;
-	WpcOutputController* ownedHardware;
 	int row;
 	int col;
 	Ticker ticks;

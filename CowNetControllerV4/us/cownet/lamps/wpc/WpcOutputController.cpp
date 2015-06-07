@@ -14,6 +14,12 @@ static const int MASK[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 WpcOutputController::WpcOutputController(byte* dataPinsIn, byte* signalPinsIn)
 : dataPin(dataPinsIn), signalPin(signalPinsIn)
 {
+	for (int i = 0; i < 8; i++) {
+		pinMode(dataPin[i], OUTPUT);
+	}
+	for (int i = 0; i < PinballOutputController::SIGNAL_COUNT; i++) {
+		pinMode(signalPin[i], OUTPUT);
+	}
 }
 
 WpcOutputController::~WpcOutputController() {

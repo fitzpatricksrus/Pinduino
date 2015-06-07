@@ -13,30 +13,18 @@ namespace us_cownet_lamps_wpc_tests {
 
 using namespace us_cownet_timers;
 
-static const unsigned long delayPeriod = 200L * 1000L;
-
-WpcOutputControllerTest::WpcOutputControllerTest()
-: hardware(NULL), ownedHardware(NULL), row(0), col(0), ticks(delayPeriod)
-{
-}
+//static const unsigned long delayPeriod = 200L * 1000L;
+static const unsigned long delayPeriod = 1L;
 
 WpcOutputControllerTest::WpcOutputControllerTest(WpcOutputController* testController)
-: hardware(testController), ownedHardware(NULL), row(0), col(0), ticks(delayPeriod)
+: hardware(testController), row(0), col(0), ticks(delayPeriod)
 {
 }
 
 WpcOutputControllerTest::~WpcOutputControllerTest() {
-	delete ownedHardware;
 }
 
 void WpcOutputControllerTest::setup() {
-	if (hardware == NULL) {
-		// initialize the output pins
-		byte dataPins[] = { 1 };
-		byte signalPins[] = { 1 } ;
-		hardware = new WpcOutputController(dataPins, signalPins);
-		ownedHardware = hardware;
-	}
 }
 
 void WpcOutputControllerTest::loop() {
