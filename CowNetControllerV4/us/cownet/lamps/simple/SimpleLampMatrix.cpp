@@ -2,6 +2,8 @@
 
 #include "SimpleLampPattern.h"
 
+#include <Debug.h>
+
 namespace us_cownet_lamps_simple {
 
 using namespace us_cownet_timers;
@@ -26,8 +28,10 @@ LampPattern* SimpleLampMatrix::getPattern() {
 void SimpleLampMatrix::setPattern(LampPattern* lamps) {
 	nextPattern = lamps;
 	if (currentPattern == NULL && nextPattern != NULL) {
+		Serial << "SimpleLampMatrix register callback" << endl;
 		TimerUtil::TIMERS.attachInterrupt(&localCallback, micros);
 	} if (currentPattern != NULL && nextPattern == NULL) {
+		Serial << "SimpleLampMatrix DE-register callback" << endl;
 		TimerUtil::TIMERS.detachInterrupt(&localCallback);
 	}
 }

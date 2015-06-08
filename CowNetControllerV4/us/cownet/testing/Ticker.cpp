@@ -19,6 +19,10 @@ Ticker::Ticker(unsigned long periodMicrosIn)
 Ticker::~Ticker() {
 }
 
+void Ticker::setPeriod(unsigned long periodInMicrosIn) {
+	periodMicros = (periodInMicrosIn);
+}
+
 bool Ticker::isTime() {
 	unsigned long now = micros();
 	if (now - lastTick > periodMicros) {

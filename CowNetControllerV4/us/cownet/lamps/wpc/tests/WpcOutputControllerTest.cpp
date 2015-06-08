@@ -13,8 +13,8 @@ namespace us_cownet_lamps_wpc_tests {
 
 using namespace us_cownet_timers;
 
-//static const unsigned long delayPeriod = 200L * 1000L;
-static const unsigned long delayPeriod = 1L;
+static const unsigned long delayPeriod = 200L * 1000L;
+//static const unsigned long delayPeriod = 200L;
 
 WpcOutputControllerTest::WpcOutputControllerTest(WpcOutputController* testController)
 : hardware(testController), row(0), col(0), ticks(delayPeriod)

@@ -15,7 +15,7 @@ namespace us_cownet_lamps_wpc {
 
 using namespace us_cownet_lamps;
 
-class WpcOutputController {
+class WpcOutputController : public PinballOutputController {
 public:
 	WpcOutputController(byte* dataPinsIn, byte* signalPinsIn);
 	virtual ~WpcOutputController();

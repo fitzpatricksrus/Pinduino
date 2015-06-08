@@ -9,21 +9,26 @@
 
 namespace us_cownet_lamps_wpc {
 
-static const int MASK[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
-
 WpcOutputController::WpcOutputController(byte* dataPinsIn, byte* signalPinsIn)
 : dataPin(dataPinsIn), signalPin(signalPinsIn)
 {
 	for (int i = 0; i < 8; i++) {
 		pinMode(dataPin[i], OUTPUT);
+		digitalWrite(dataPin[i], HIGH);
 	}
-	for (int i = 0; i < PinballOutputController::SIGNAL_COUNT; i++) {
+	for (PinballOutputController::Register i = PinballOutputController::LAMP_COL;
+			i < PinballOutputController::SIGNAL_COUNT; i++) {
 		pinMode(signalPin[i], OUTPUT);
+        // Note that the write() method will convert this to the
+        // proper inverted value to turn things off/low
+		write(i, (byte)0);
 	}
 }
 
 WpcOutputController::~WpcOutputController() {
 }
+
+static const int MASK[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 
 void WpcOutputController::write(PinballOutputController::Register signal,
 		byte value) {

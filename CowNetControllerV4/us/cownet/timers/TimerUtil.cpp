@@ -8,8 +8,11 @@
 #include "TimerUtil.h"
 
 #include <Arduino.h>
+#include "../testing/Ticker.h"
 
 namespace us_cownet_timers {
+
+using us_cownet_testing::Ticker;
 
 TimerUtil::TimerUtil() {
 }
@@ -20,7 +23,7 @@ TimerUtil::~TimerUtil() {
 class TimerUtilMega : public TimerUtil {
 public:
 	TimerUtilMega()
-	: callback(NULL), microseconds(0), lastTick(0)
+	: callback(NULL), ticker(0)
 	{
 	}
 
@@ -28,7 +31,7 @@ public:
 
     virtual bool attachInterrupt(Callback* callbackIn, long microsecondsIn) {
     	callback = callbackIn;
-    	microseconds = microsecondsIn;
+    	ticker.setPeriod((unsigned long)microsecondsIn);
     	return true;
     }
 
@@ -37,19 +40,14 @@ public:
     }
 
     virtual void hackTick() {
-    	unsigned long now = micros();
-    	if (now - lastTick > microseconds) {
-    		lastTick = now;
-    		if (callback != NULL) {
-    			(*callback).call();
-    		}
+    	if (callback != NULL && ticker.isTime()) {
+			(*callback).call();
     	}
     }
 
 private:
     Callback* callback;
-    long microseconds;
-    long lastTick;
+    Ticker ticker;
 };
 
 static TimerUtilMega bla = TimerUtilMega();

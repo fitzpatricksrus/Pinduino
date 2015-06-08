@@ -15,6 +15,7 @@ public:
 	Ticker(unsigned long periodMicrosIn);
 	~Ticker();
 
+	void setPeriod(unsigned long periodInMicrosIn);
 	bool isTime();
 
 private:
