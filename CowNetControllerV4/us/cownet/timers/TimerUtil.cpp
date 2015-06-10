@@ -8,11 +8,9 @@
 #include "TimerUtil.h"
 
 #include <Arduino.h>
-#include "../testing/Ticker.h"
+#include "Ticker.h"
 
 namespace us_cownet_timers {
-
-using us_cownet_testing::Ticker;
 
 TimerUtil::TimerUtil() {
 }

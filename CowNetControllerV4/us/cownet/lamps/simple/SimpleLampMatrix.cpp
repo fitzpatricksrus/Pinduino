@@ -9,8 +9,8 @@ namespace us_cownet_lamps_simple {
 using namespace us_cownet_timers;
 
 SimpleLampMatrix::SimpleLampMatrix(PinballOutputController* controllerIn, long microsIn)
-: localCallback(this, &SimpleLampMatrix::tock), controller(controllerIn), micros(microsIn), currentColumn(0),
-  currentPattern(&SimpleLampPattern::ALL_OFF), nextPattern(&SimpleLampPattern::ALL_OFF), 
+: thisCallback(this, &SimpleLampMatrix::tock), controller(controllerIn), micros(microsIn), currentColumn(0),
+  currentPattern(NULL), nextPattern(NULL),
   callback(0) {
 }
 
@@ -29,10 +29,10 @@ void SimpleLampMatrix::setPattern(LampPattern* lamps) {
 	nextPattern = lamps;
 	if (currentPattern == NULL && nextPattern != NULL) {
 		Serial << "SimpleLampMatrix register callback" << endl;
-		TimerUtil::TIMERS.attachInterrupt(&localCallback, micros);
-	} if (currentPattern != NULL && nextPattern == NULL) {
+		TimerUtil::TIMERS.attachInterrupt(&thisCallback, micros);
+	} else if (currentPattern != NULL && nextPattern == NULL) {
 		Serial << "SimpleLampMatrix DE-register callback" << endl;
-		TimerUtil::TIMERS.detachInterrupt(&localCallback);
+		TimerUtil::TIMERS.detachInterrupt(&thisCallback);
 	}
 }
 

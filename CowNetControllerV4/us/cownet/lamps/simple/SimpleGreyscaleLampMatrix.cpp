@@ -37,11 +37,11 @@ void SimpleGreyscaleLampMatrix::setPattern(GreyscaleLampPattern* lamps) {
 		matrix->setPattern(NULL);
         matrix->setSyncCallback(NULL);
     } else {
-
-		for (int i = 0; i < 8; i++) {
+		for (int modulation = 0; modulation < 8; modulation++) {
 			for (int col = 0; col < 8; col++) {
 				for (int row = 0; row < 8; row++) {
-					patterns[i].setLamp(col, row, (lamps->getLamp(col, row) & MASK[i]) != 0);
+					// only turn lamp on if it's on for this modulation cycle
+					patterns[modulation].setLamp(col, row, (lamps->getLamp(col, row) & MASK[modulation]) != 0);
 				}
 			}
 		}
@@ -60,7 +60,7 @@ void SimpleGreyscaleLampMatrix::tock() {
     if (tickNumber == 0 && callback != NULL) {
         (*callback)();
     }
-    matrix->setPattern(&patterns[INDEX[tickNumber]]);
+    matrix->setPattern(&patterns[INDEX[tickNumber]]);	//maybe only do this on tick 0?
 }
 
 } /* namespace us_cownet_lamps_simple */

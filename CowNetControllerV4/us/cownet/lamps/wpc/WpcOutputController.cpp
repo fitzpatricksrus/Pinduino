@@ -16,12 +16,12 @@ WpcOutputController::WpcOutputController(byte* dataPinsIn, byte* signalPinsIn)
 		pinMode(dataPin[i], OUTPUT);
 		digitalWrite(dataPin[i], HIGH);
 	}
-	for (PinballOutputController::Register i = PinballOutputController::LAMP_COL;
+	for (int i = PinballOutputController::LAMP_COL;
 			i < PinballOutputController::SIGNAL_COUNT; i++) {
 		pinMode(signalPin[i], OUTPUT);
         // Note that the write() method will convert this to the
         // proper inverted value to turn things off/low
-		write(i, (byte)0);
+		write(static_cast<PinballOutputController::Register>(i), (byte)0);
 	}
 }
 

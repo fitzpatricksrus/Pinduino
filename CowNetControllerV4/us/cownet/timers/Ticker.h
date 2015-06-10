@@ -8,7 +8,7 @@
 #ifndef US_COWNET_TESTING_TICKER_H_
 #define US_COWNET_TESTING_TICKER_H_
 
-namespace us_cownet_testing {
+namespace us_cownet_timers {
 
 class Ticker {
 public:

@@ -10,13 +10,13 @@
 
 #include "../WpcOutputController.h"
 #include "../../../testing/Test.h"
-#include "../../../testing/Ticker.h"
+#include "../../../timers/Ticker.h"
 
 namespace us_cownet_lamps_wpc_tests {
 
 using namespace us_cownet_lamps_wpc;
 using us_cownet_testing::Test;
-using us_cownet_testing::Ticker;
+using us_cownet_timers::Ticker;
 
 class WpcOutputControllerTest : public Test {
 public:

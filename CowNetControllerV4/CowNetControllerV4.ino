@@ -1,10 +1,12 @@
 #include "us/cownet/lamps/wpc/tests/WpcOutputControllerTest.h"
 #include "us/cownet/lamps/simple/tests/SimpleLampMatrixTest.h"
 #include "us/cownet/testing/Test.h"
+#include "us/cownet/timers/Ticker.h"
 
 #include <Debug.h>
 
 using namespace us_cownet_testing;
+using namespace us_cownet_timers;
 using namespace us_cownet_lamps_wpc_tests;
 using namespace us_cownet_lamps_tests;
 

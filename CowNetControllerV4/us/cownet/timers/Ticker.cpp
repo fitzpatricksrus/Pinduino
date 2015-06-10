@@ -9,7 +9,7 @@
 
 #include <Arduino.h>
 
-namespace us_cownet_testing {
+namespace us_cownet_timers {
 
 Ticker::Ticker(unsigned long periodMicrosIn)
 : periodMicros(periodMicrosIn), lastTick(0)

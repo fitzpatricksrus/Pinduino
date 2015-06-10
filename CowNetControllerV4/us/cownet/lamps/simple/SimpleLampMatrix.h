@@ -22,7 +22,7 @@ public:
 
 private:
 	void tock();
-	CallbackTo<SimpleLampMatrix> localCallback;
+	CallbackTo<SimpleLampMatrix> thisCallback;
 
 	PinballOutputController* controller;
 	long micros;

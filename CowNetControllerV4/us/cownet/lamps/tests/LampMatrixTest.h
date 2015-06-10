@@ -10,7 +10,7 @@
 
 #include "../LampMatrix.h"
 #include "../../testing/Test.h"
-#include "../../testing/Ticker.h"
+#include "../../timers/Ticker.h"
 
 namespace us_cownet_lamps_tests {
 
