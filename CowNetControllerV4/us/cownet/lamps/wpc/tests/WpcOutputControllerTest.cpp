@@ -28,7 +28,7 @@ void WpcOutputControllerTest::setup() {
 }
 
 void WpcOutputControllerTest::loop() {
-	TimerUtil::TIMERS.hackTick();
+	TimerUtil::INSTANCE.hackTick();
 	if (ticks.isTime()) {
 		hardware->write(PinballOutputController::LAMP_COL, (byte)0);
 		// set the row lamps

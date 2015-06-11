@@ -7,6 +7,8 @@
 
 #include "Ticker.h"
 
+#include "TimerUtil.h"
+
 #include <Arduino.h>
 
 namespace us_cownet_timers {
@@ -24,7 +26,7 @@ void Ticker::setPeriod(unsigned long periodInMicrosIn) {
 }
 
 bool Ticker::isTime() {
-	unsigned long now = micros();
+	unsigned long now = TimerUtil::INSTANCE.currentTimeMicros();
 	if (now - lastTick > periodMicros) {
 		lastTick = now;
 		return true;

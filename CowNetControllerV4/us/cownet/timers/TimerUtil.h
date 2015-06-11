@@ -10,6 +10,8 @@
 
 #include "Callback.h"
 
+#include "Ticker.h"
+
 namespace us_cownet_timers {
 
 class TimerUtil {
@@ -17,12 +19,21 @@ public:
 	TimerUtil();
 	virtual ~TimerUtil();
 
-    virtual bool attachInterrupt(Callback* callback, long microseconds=-1) = 0;
-    virtual void detachInterrupt(Callback* callback) = 0;
+    virtual bool attachInterrupt(Callback* callback, long microseconds=-1);
+    virtual void detachInterrupt(Callback* callback);
 
-    virtual void hackTick() = 0;
+    virtual void hackTick();
+    virtual void hackTime(long timeInMicros);
 
-    static TimerUtil& TIMERS;
+    virtual long currentTimeMillis();
+    virtual long currentTimeMicros();
+
+    static TimerUtil& INSTANCE;
+
+private:
+    Callback* callback;
+    Ticker ticker;
+    long hackMicros;
 };
 
 } /* namespace us_cownet_timers */

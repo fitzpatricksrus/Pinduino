@@ -26,7 +26,7 @@ void PinballOutputControllerTest::setup() {
 }
 
 void PinballOutputControllerTest::loop() {
-	TimerUtil::TIMERS.hackTick();
+	TimerUtil::INSTANCE.hackTick();
 	if (ticks.isTime()) {
 		controller->write(PinballOutputController::LAMP_COL, (byte)0);
 		// set the row lamps

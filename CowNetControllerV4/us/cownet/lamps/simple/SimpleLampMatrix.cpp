@@ -29,10 +29,10 @@ void SimpleLampMatrix::setPattern(LampPattern* lamps) {
 	nextPattern = lamps;
 	if (currentPattern == NULL && nextPattern != NULL) {
 		Serial << "SimpleLampMatrix register callback" << endl;
-		TimerUtil::TIMERS.attachInterrupt(&thisCallback, micros);
+		TimerUtil::INSTANCE.attachInterrupt(&thisCallback, micros);
 	} else if (currentPattern != NULL && nextPattern == NULL) {
 		Serial << "SimpleLampMatrix DE-register callback" << endl;
-		TimerUtil::TIMERS.detachInterrupt(&thisCallback);
+		TimerUtil::INSTANCE.detachInterrupt(&thisCallback);
 	}
 }
 

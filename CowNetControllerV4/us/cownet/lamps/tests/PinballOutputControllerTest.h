@@ -10,13 +10,13 @@
 
 #include "../PinballOutputController.h"
 #include "../../testing/Test.h"
-#include "../../testing/Ticker.h"
+#include "../../timers/Ticker.h"
 
 namespace us_cownet_lamps_tests {
 
 using us_cownet_lamps::PinballOutputController;
 using us_cownet_testing::Test;
-using us_cownet_testing::Ticker;
+using us_cownet_timers::Ticker;
 
 class PinballOutputControllerTest: public Test {
 public:

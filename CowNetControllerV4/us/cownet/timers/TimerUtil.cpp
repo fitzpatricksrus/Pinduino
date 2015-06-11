@@ -12,44 +12,48 @@
 
 namespace us_cownet_timers {
 
-TimerUtil::TimerUtil() {
+TimerUtil::TimerUtil()
+: callback(NULL), ticker(0), hackMicros(-1)
+{
 }
 
 TimerUtil::~TimerUtil() {
 }
 
-class TimerUtilMega : public TimerUtil {
-public:
-	TimerUtilMega()
-	: callback(NULL), ticker(0)
-	{
+bool TimerUtil::attachInterrupt(Callback* callbackIn, long microsecondsIn) {
+	callback = callbackIn;
+	ticker.setPeriod((unsigned long)microsecondsIn);
+	return true;
+}
+
+void TimerUtil::detachInterrupt(Callback* callbackIn) {
+	callback = NULL;
+}
+
+void TimerUtil::hackTick() {
+	if (callback != NULL && ticker.isTime()) {
+		(*callback).call();
 	}
+}
 
-	virtual ~TimerUtilMega() {}
+void TimerUtil::hackTime(long timeInMicros) {
+	hackMicros = timeInMicros;
+}
 
-    virtual bool attachInterrupt(Callback* callbackIn, long microsecondsIn) {
-    	callback = callbackIn;
-    	ticker.setPeriod((unsigned long)microsecondsIn);
-    	return true;
-    }
+long TimerUtil::currentTimeMillis() {
+	return currentTimeMicros() * 1000;
+}
 
-    virtual void detachInterrupt(Callback* callbackIn) {
-    	callback = NULL;
-    }
+long TimerUtil::currentTimeMicros() {
+	if (hackMicros != -1) {
+		return hackMicros;
+	} else {
+		return micros();
+	}
+}
 
-    virtual void hackTick() {
-    	if (callback != NULL && ticker.isTime()) {
-			(*callback).call();
-    	}
-    }
-
-private:
-    Callback* callback;
-    Ticker ticker;
-};
-
-static TimerUtilMega bla = TimerUtilMega();
-TimerUtil& TimerUtil::TIMERS = bla;
+static TimerUtil bla = TimerUtil();
+TimerUtil& TimerUtil::INSTANCE = bla;
 
 
 } /* namespace us_cownet_timers */
