@@ -29,10 +29,12 @@ void SimpleLampMatrix::setPattern(LampPattern* lamps) {
 	nextPattern = lamps;
 	if (currentPattern == NULL && nextPattern != NULL) {
 		Serial << "SimpleLampMatrix register callback" << endl;
+		currentPattern = nextPattern;
 		TimerUtil::INSTANCE.attachInterrupt(&thisCallback, micros);
 	} else if (currentPattern != NULL && nextPattern == NULL) {
 		Serial << "SimpleLampMatrix DE-register callback" << endl;
 		TimerUtil::INSTANCE.detachInterrupt(&thisCallback);
+		currentPattern = NULL;
 	}
 }
 
@@ -41,13 +43,6 @@ void SimpleLampMatrix::setSyncCallback(Callback* callbackIn) {
 }
 
 void SimpleLampMatrix::tock() {
-    if (currentPattern == NULL) {
-        if (nextPattern == NULL) {
-            return;
-        } else {
-            currentPattern = nextPattern;
-        }
-    }
 	controller->write(PinballOutputController::LAMP_COL, (byte)0);
 	controller->write(PinballOutputController::LAMP_ROW, currentPattern->getPattern()[currentColumn]);
 	controller->write(PinballOutputController::LAMP_COL, (byte)(1 << currentColumn));
