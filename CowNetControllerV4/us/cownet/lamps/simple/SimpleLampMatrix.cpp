@@ -41,6 +41,13 @@ void SimpleLampMatrix::setSyncCallback(Callback* callbackIn) {
 }
 
 void SimpleLampMatrix::tock() {
+    if (currentPattern == NULL) {
+        if (nextPattern == NULL) {
+            return;
+        } else {
+            currentPattern = nextPattern;
+        }
+    }
 	controller->write(PinballOutputController::LAMP_COL, (byte)0);
 	controller->write(PinballOutputController::LAMP_ROW, currentPattern->getPattern()[currentColumn]);
 	controller->write(PinballOutputController::LAMP_COL, (byte)(1 << currentColumn));
