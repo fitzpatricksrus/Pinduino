@@ -29,6 +29,7 @@ public:
     virtual long currentTimeMicros();
 
     static TimerUtil& INSTANCE;
+    static const long REAL_TICKS = -1;
 
 private:
     Callback* callback;

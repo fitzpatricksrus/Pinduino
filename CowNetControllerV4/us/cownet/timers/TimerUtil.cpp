@@ -13,7 +13,7 @@
 namespace us_cownet_timers {
 
 TimerUtil::TimerUtil()
-: callback(NULL), ticker(0), hackMicros(-1)
+: callback(NULL), ticker(0), hackMicros(REAL_TICKS)
 {
 }
 
@@ -31,6 +31,9 @@ void TimerUtil::detachInterrupt(Callback* callbackIn) {
 }
 
 void TimerUtil::hackTick() {
+	if (hackMicros != REAL_TICKS) {
+		hackMicros++;
+	}
 	if (callback != NULL && ticker.isTime()) {
 		(*callback).call();
 	}
@@ -45,7 +48,7 @@ long TimerUtil::currentTimeMillis() {
 }
 
 long TimerUtil::currentTimeMicros() {
-	if (hackMicros != -1) {
+	if (hackMicros != REAL_TICKS) {
 		return hackMicros;
 	} else {
 		return micros();
@@ -54,6 +57,7 @@ long TimerUtil::currentTimeMicros() {
 
 static TimerUtil bla = TimerUtil();
 TimerUtil& TimerUtil::INSTANCE = bla;
+
 
 
 } /* namespace us_cownet_timers */
