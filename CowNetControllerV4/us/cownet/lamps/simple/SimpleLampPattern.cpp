@@ -13,15 +13,13 @@ static SimpleLampPattern ALL_OFF_INSTANCE = SimpleLampPattern();
 SimpleLampPattern& SimpleLampPattern::ALL_OFF = ALL_OFF_INSTANCE;
 
 SimpleLampPattern::SimpleLampPattern()
-: pattern()
+: pattern(NULL), colCount(0)
 {
-	for (byte i = 0; i < 8; i++) pattern[i] = 0;
 }
 
-SimpleLampPattern::SimpleLampPattern(byte pattern[])
-: pattern()
+SimpleLampPattern::SimpleLampPattern(byte patternIn[], byte colCountIn)
+: pattern(patternIn), colCount(colCountIn)
 {
-	for (byte i = 0; i < 8; i++) this->pattern[i] = pattern[i];
 }
 
 SimpleLampPattern::~SimpleLampPattern() {
@@ -31,8 +29,8 @@ byte* SimpleLampPattern::getPattern() {
 	return pattern;
 }
 
-void SimpleLampPattern::setPattern(byte pattern[]) {
-	for (byte i = 0; i < 8; i++) this->pattern[i] = pattern[i];
+void SimpleLampPattern::setPattern(byte patternIn[], byte colCount) {
+	pattern = patternIn;
 }
 
 bool SimpleLampPattern::getLamp(int col, int row) {
@@ -45,6 +43,10 @@ void SimpleLampPattern::setLamp(int col, int row, bool on) {
 	} else {
 		pattern[col] &= ~(1 << row);
 	}
+}
+
+byte SimpleLampPattern::getColCount() {
+	return colCount;
 }
 
 } /* namespace us_cownet_lamps */

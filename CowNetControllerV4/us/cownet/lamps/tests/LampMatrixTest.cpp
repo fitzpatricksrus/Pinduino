@@ -32,7 +32,7 @@ static byte patternValues[] = {
 		0b00100010,
 		0b01000001,
 };
-static SimpleLampPattern pattern(patternValues);
+static SimpleLampPattern pattern(patternValues, 8);
 void LampMatrixTest::setup() {
 	matrix->setPattern(&pattern);
 }

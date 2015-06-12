@@ -13,7 +13,7 @@ static const int MASK[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 static int INDEX[256];
 
 SimpleGreyscaleLampMatrix::SimpleGreyscaleLampMatrix(LampMatrix* matrixIn)
-: localCallback(this, &SimpleGreyscaleLampMatrix::tock), matrix(matrixIn), pattern(0), callback(0), tickNumber(0)
+: localCallback(this, &SimpleGreyscaleLampMatrix::tock), matrix(matrixIn), pattern(), callback(0), tickNumber(0)
 {
 	// hey jf - this is really static initialization!
     int next = 0;

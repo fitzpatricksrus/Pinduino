@@ -18,18 +18,21 @@ using namespace us_cownet_lamps;
 class SimpleLampPattern : public LampPattern {
 public:
 	SimpleLampPattern();
-	SimpleLampPattern(byte pattern[]);
+	SimpleLampPattern(byte pattern[], byte colCount);
 	virtual ~SimpleLampPattern();
 
 	virtual byte* getPattern();
-	virtual void setPattern(byte pattern[]);
+	virtual void setPattern(byte pattern[], byte colCount);
 	virtual bool getLamp(int col, int row);
 	virtual void setLamp(int col, int row, bool on);
+
+	virtual byte getColCount();
 
 	static SimpleLampPattern& ALL_OFF;
 
 private:
-	byte pattern[8];
+	byte* pattern;
+	byte colCount;
 };
 
 } /* namespace us_cownet_lamps_simple */
