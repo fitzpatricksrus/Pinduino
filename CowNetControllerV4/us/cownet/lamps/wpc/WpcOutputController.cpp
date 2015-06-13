@@ -12,10 +12,12 @@ namespace us_cownet_lamps_wpc {
 WpcOutputController::WpcOutputController(byte* dataPinsIn, byte* signalPinsIn)
 : dataPin(dataPinsIn), signalPin(signalPinsIn)
 {
+	// initialize all the pins to output
 	for (int i = 0; i < 8; i++) {
 		pinMode(dataPin[i], OUTPUT);
 		digitalWrite(dataPin[i], HIGH);
 	}
+	// turn all data latches off for all signals
 	for (int i = PinballOutputController::LAMP_COL;
 			i < PinballOutputController::SIGNAL_COUNT; i++) {
 		pinMode(signalPin[i], OUTPUT);

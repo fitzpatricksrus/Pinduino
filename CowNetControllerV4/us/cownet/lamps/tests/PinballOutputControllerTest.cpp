@@ -23,6 +23,7 @@ PinballOutputControllerTest::~PinballOutputControllerTest() {
 }
 
 void PinballOutputControllerTest::setup() {
+	TimerUtil::INSTANCE.hackTime(0);
 }
 
 void PinballOutputControllerTest::loop() {
