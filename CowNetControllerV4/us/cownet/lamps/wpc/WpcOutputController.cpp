@@ -7,6 +7,8 @@
 
 #include "WpcOutputController.h"
 
+#include <Debug.h>
+
 namespace us_cownet_lamps_wpc {
 
 WpcOutputController::WpcOutputController(byte* dataPinsIn, byte* signalPinsIn)
@@ -18,11 +20,12 @@ WpcOutputController::WpcOutputController(byte* dataPinsIn, byte* signalPinsIn)
 		digitalWrite(dataPin[i], HIGH);
 	}
 	// turn all data latches off for all signals
-	for (int i = PinballOutputController::LAMP_COL;
+	for (int i = PinballOutputController::LAMP_ROW;
 			i < PinballOutputController::SIGNAL_COUNT; i++) {
 		pinMode(signalPin[i], OUTPUT);
-        // Note that the write() method will convert this to the
-        // proper inverted value to turn things off/low
+		digitalWrite(signalPin[i], HIGH);
+		// Note that the write() method will convert this to the
+		// proper inverted value to turn things off/low
 		write(static_cast<PinballOutputController::Register>(i), (byte)0);
 	}
 }
@@ -34,6 +37,7 @@ static const int MASK[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 
 void WpcOutputController::write(PinballOutputController::Register signal,
 		byte value) {
+
 	//        if (value == cachedData[signal.ordinal()]) {
 	//            return;
 	//        }

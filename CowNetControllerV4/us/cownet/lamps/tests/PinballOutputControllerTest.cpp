@@ -7,6 +7,7 @@
 
 #include "PinballOutputControllerTest.h"
 #include "../../timers/TimerUtil.h"
+#include <Debug.h>
 
 namespace us_cownet_lamps_tests {
 
@@ -23,17 +24,20 @@ PinballOutputControllerTest::~PinballOutputControllerTest() {
 }
 
 void PinballOutputControllerTest::setup() {
-	TimerUtil::INSTANCE.hackTime(0);
 }
 
 void PinballOutputControllerTest::loop() {
 	TimerUtil::INSTANCE.hackTick();
 	if (ticks.isTime()) {
+//		Serial << "tick (" << col << ", " << row << ") ";
 		controller->write(PinballOutputController::LAMP_COL, (byte)0);
+//		Serial << "col(0) ";
 		// set the row lamps
 		controller->write(PinballOutputController::LAMP_ROW, (byte)(1 << row));
+//		Serial << "row( " << (1 << row) <<") ";
 		// turn the proper column back on
 		controller->write(PinballOutputController::LAMP_COL, (byte)(1 << col));
+//		Serial << "col( " << (1 << col) <<") " << endl;
 
 		row = row + 1;
 		if (row >= 8) {
