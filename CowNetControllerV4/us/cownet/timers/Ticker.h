@@ -12,14 +12,15 @@ namespace us_cownet_timers {
 
 class Ticker {
 public:
-	Ticker(unsigned long periodMicrosIn);
+	Ticker(unsigned long periodTicksIn);
 	~Ticker();
 
-	void setPeriod(unsigned long periodInMicrosIn);
+	void setPeriod(unsigned long periodInTicksIn);
+	unsigned long getPeriod();
 	bool isTime();
 
 private:
-	unsigned long periodMicros;
+	unsigned long periodTicks;
 	unsigned long lastTick;
 };
 

@@ -13,21 +13,25 @@
 
 namespace us_cownet_timers {
 
-Ticker::Ticker(unsigned long periodMicrosIn)
-: periodMicros(periodMicrosIn), lastTick(0)
+Ticker::Ticker(unsigned long periodTicksIn)
+: periodTicks(periodTicksIn), lastTick(0)
 {
 }
 
 Ticker::~Ticker() {
 }
 
-void Ticker::setPeriod(unsigned long periodInMicrosIn) {
-	periodMicros = (periodInMicrosIn);
+void Ticker::setPeriod(unsigned long periodTicksIn) {
+	periodTicks = (periodTicksIn);
+}
+
+unsigned long Ticker::getPeriod() {
+	return periodTicks;
 }
 
 bool Ticker::isTime() {
-	unsigned long now = TimerUtil::INSTANCE.currentTimeMicros();
-	if (now - lastTick > periodMicros) {
+	unsigned long now = TimerUtil::INSTANCE.currentTicks();
+	if (now - lastTick > periodTicks) {
 		lastTick = now;
 		return true;
 	} else {

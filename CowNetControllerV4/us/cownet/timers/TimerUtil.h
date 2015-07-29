@@ -19,14 +19,17 @@ public:
 	TimerUtil();
 	virtual ~TimerUtil();
 
-    virtual bool attachInterrupt(Callback* callback, long microseconds=-1);
-    virtual void detachInterrupt(Callback* callback);
+	virtual void attachTickerCallback(Callback* callback, unsigned long ticks);
+	virtual void detachTickerCallback(Callback* callback);
 
-    virtual void hackTick();
-    virtual void hackTime(long timeInMicros);
+	virtual void attachTimerCallback(Callback* callback, unsigned long micros);
+	virtual void detachTimerCallback(Callback* callback);
 
-    virtual long currentTimeMillis();
-    virtual long currentTimeMicros();
+	virtual void tick();
+	virtual void enableHackTicks(bool userHacks);
+	virtual unsigned long currentTimeMillis();
+	virtual unsigned long currentTimeMicros();
+	virtual unsigned long currentTicks();
 
     static TimerUtil& INSTANCE;
     static const long REAL_TICKS = -1;
