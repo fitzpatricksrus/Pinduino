@@ -27,7 +27,7 @@ void PinballOutputControllerTest::setup() {
 }
 
 void PinballOutputControllerTest::loop() {
-	TimerUtil::INSTANCE.hackTick();
+	TimerUtil::INSTANCE.tick();
 	if (ticks.isTime()) {
 //		Serial << "tick (" << col << ", " << row << ") ";
 		controller->write(PinballOutputController::LAMP_COL, (byte)0);

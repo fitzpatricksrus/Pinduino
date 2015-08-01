@@ -23,6 +23,8 @@ public:
 	void put(Key key, Value* value);
 	void remove(Key key);
 	Key* keySet();
+	Value* valueSet();
+	int size();
 
 private:
 	int getNdx(Key key) const;
@@ -91,6 +93,16 @@ inline void HashMap<Key, Value, maxSize>::remove(Key key) {
 template<class Key, class Value, int maxSize>
 inline Key* HashMap<Key, Value, maxSize>::keySet() {
 	return keys;
+}
+
+template<class Key, class Value, int maxSize>
+inline Value* HashMap<Key, Value, maxSize>::valueSet() {
+	return values;
+}
+
+template<class Key, class Value, int maxSize>
+inline int HashMap<Key, Value, maxSize>::size() {
+	return maxSize;
 }
 
 template<class Key, class Value, int maxSize>

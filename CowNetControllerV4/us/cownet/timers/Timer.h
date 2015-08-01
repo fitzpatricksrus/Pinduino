@@ -8,19 +8,14 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
+#include "PeriodicEvent.h"
+
 namespace us_cownet_timers {
 
-class Timer {
+class Timer : public PeriodicEvent {
 public:
-	Timer(unsigned long periodInMicrosIn);
-	virtual ~Timer();
-	void setPeriod(unsigned long periodInMicrosIn);
-	unsigned long getPeriod();
-	bool isTime();
-
-private:
-	unsigned long periodMicros;
-	unsigned long lastMicro;
+	Timer(unsigned long periodInMicrosIn) : PeriodicEvent(false, periodInMicrosIn) {}
+	virtual ~Timer() {}
 };
 
 } /* namespace us_cownet_timers */

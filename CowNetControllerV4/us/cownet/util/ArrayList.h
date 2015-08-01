@@ -17,8 +17,8 @@ public:
 	ArrayList();
 	~ArrayList();
 
-	void add(T* obj);
-	void remove(T* obj);
+	int add(T* obj);
+	int remove(T* obj);
 	void remove(int ndx);
 	bool contains(T* obj);
 	int indexOf(T* obj);
@@ -46,21 +46,23 @@ inline ArrayList<T, maxSize>::~ArrayList()
 }
 
 template<class T, int maxSize>
-inline void ArrayList<T, maxSize>::add(T* obj) {
+inline int ArrayList<T, maxSize>::add(T* obj) {
 	if (count < maxSize) {
-		contents[count++] = obj;
+		contents[count] = obj;
 	}
+	return count++;
 	// hey jf - this just silently fails if the list is full.
 }
 
 template<class T, int maxSize>
-inline void ArrayList<T, maxSize>::remove(T* obj) {
+inline int ArrayList<T, maxSize>::remove(T* obj) {
 	for (int i = 0; i < count; i++) {
 		if (contents[i] == obj) {
 			remove(i);
-			return;
+			return i;
 		}
 	}
+	return -1;
 }
 
 template<class T, int maxSize>

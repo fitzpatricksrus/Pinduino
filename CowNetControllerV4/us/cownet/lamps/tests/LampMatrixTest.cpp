@@ -38,7 +38,7 @@ void LampMatrixTest::setup() {
 }
 
 void LampMatrixTest::loop() {
-	TimerUtil::INSTANCE.hackTick();
+	TimerUtil::INSTANCE.tick();
 }
 
 } /* namespace us_cownet_lamps_tests */

@@ -12,13 +12,9 @@
 
 #include "Ticker.h"
 #include "Timer.h"
-#include "../util/ArrayList.h"
-#include "../util/HashMap.h"
+#include "PeriodicEvent.h"
 
 namespace us_cownet_timers {
-
-using us_cownet_util::ArrayList;
-using us_cownet_util::HashMap;
 
 class TimerUtil {
 public:
@@ -26,10 +22,8 @@ public:
 	virtual ~TimerUtil();
 
 	virtual void attachTickerCallback(Callback* callback, unsigned long ticks);
-	virtual void detachTickerCallback(Callback* callback);
-
 	virtual void attachTimerCallback(Callback* callback, unsigned long micros);
-	virtual void detachTimerCallback(Callback* callback);
+	virtual void detachCallback(Callback* callback);
 
 	virtual void tick();
 	virtual void enableHackTicks(bool userHacks);
@@ -41,25 +35,21 @@ public:
     static const long REAL_TICKS = -1;
 
 private:
+    class CallbackEntry {
+    public:
+    	CallbackEntry();
+    	CallbackEntry(Callback* c, bool isTicker, unsigned long period);
+    	CallbackEntry(const CallbackEntry& other);
+    	void tick();
+
+    	Callback* callback;
+    	PeriodicEvent event;
+    };
+
     static const int MAX_CALLBACKS = 20;
 
-    class CallbackHandler {
-	public:
-		CallbackHandler();
-		void invokeCallbacks();
-		void addCallback(Callback* c);
-		void removeCallback(Callback* c);
-		bool isEmpty();
-	private:
-		ArrayList<Callback, MAX_CALLBACKS> callbacks;
-	};
-
-    HashMap<Ticker*, CallbackHandler, MAX_CALLBACKS> tickerCallbackList;
-    HashMap<unsigned long, Ticker, MAX_CALLBACKS> tickers;
-
-    HashMap<Timer*, CallbackHandler, MAX_CALLBACKS> timerCallbackList;
-    HashMap<unsigned long, Timer, MAX_CALLBACKS> timers;
-
+    CallbackEntry callbackList[MAX_CALLBACKS];
+    int size;
 	unsigned long ticks;
 	bool useHackTicks;
 };

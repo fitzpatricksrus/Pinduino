@@ -16,7 +16,7 @@ static byte signalOutputPins[] = { 52, 53 };
 
 static WpcOutputController controller(dataOutputPins, signalOutputPins);
 //static PinballOutputControllerTest test(&controller);
-static SimpleLampMatrixTest test(&controller, 2L * 1000L / 4);
+static SimpleLampMatrixTest test(&controller, 2L * 1000L);
 
 static Test &currentTest = test;
 
