@@ -19,6 +19,7 @@ public:
 
 	void add(T* obj);
 	void remove(T* obj);
+	void remove(int ndx);
 	bool contains(T* obj);
 	int indexOf(T* obj);
 	int size();
@@ -29,10 +30,9 @@ private:
 	int count;
 };
 
-} /* namespace us_cownet_util */
 
 template<class T, int maxSize>
-inline us_cownet_util::ArrayList<T, maxSize>::ArrayList()
+inline ArrayList<T, maxSize>::ArrayList()
 : contents(), count(0)
 {
 	for (int i = 0; i < maxSize; i++) {
@@ -41,12 +41,12 @@ inline us_cownet_util::ArrayList<T, maxSize>::ArrayList()
 }
 
 template<class T, int maxSize>
-inline us_cownet_util::ArrayList<T, maxSize>::~ArrayList()
+inline ArrayList<T, maxSize>::~ArrayList()
 {
 }
 
 template<class T, int maxSize>
-inline void us_cownet_util::ArrayList<T, maxSize>::add(T* obj) {
+inline void ArrayList<T, maxSize>::add(T* obj) {
 	if (count < maxSize) {
 		contents[count++] = obj;
 	}
@@ -54,24 +54,29 @@ inline void us_cownet_util::ArrayList<T, maxSize>::add(T* obj) {
 }
 
 template<class T, int maxSize>
-inline void us_cownet_util::ArrayList<T, maxSize>::remove(T* obj) {
+inline void ArrayList<T, maxSize>::remove(T* obj) {
 	for (int i = 0; i < count; i++) {
 		if (contents[i] == obj) {
-			contents[i] = contents[count - 1];
-			contents[count - 1] = NULL;
-			count--;
+			remove(i);
 			return;
 		}
 	}
 }
 
 template<class T, int maxSize>
-inline bool us_cownet_util::ArrayList<T, maxSize>::contains(T* obj) {
+inline void ArrayList<T, maxSize>::remove(int ndx) {
+	contents[ndx] = contents[count - 1];
+	contents[count - 1] = NULL;
+	count--;
+}
+
+template<class T, int maxSize>
+inline bool ArrayList<T, maxSize>::contains(T* obj) {
 	return indexOf(obj) != -1;
 }
 
 template<class T, int maxSize>
-inline int us_cownet_util::ArrayList<T, maxSize>::indexOf(T* obj) {
+inline int ArrayList<T, maxSize>::indexOf(T* obj) {
 	for (int i = 0; i < count; i++) {
 		if (contents[i] == obj) {
 			return i;
@@ -81,13 +86,15 @@ inline int us_cownet_util::ArrayList<T, maxSize>::indexOf(T* obj) {
 }
 
 template<class T, int maxSize>
-inline int us_cownet_util::ArrayList<T, maxSize>::size() {
+inline int ArrayList<T, maxSize>::size() {
 	return count;
 }
 
 template<class T, int maxSize>
-inline T us_cownet_util::ArrayList<T, maxSize>::operator [](int ndx) const {
+inline T ArrayList<T, maxSize>::operator [](int ndx) const {
 	return contents[ndx];
 }
+
+} /* namespace us_cownet_util */
 
 #endif /* ARRAYLIST_H_ */

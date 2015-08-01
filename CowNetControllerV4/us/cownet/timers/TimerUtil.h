@@ -11,8 +11,14 @@
 #include "Callback.h"
 
 #include "Ticker.h"
+#include "Timer.h"
+#include "../util/ArrayList.h"
+#include "../util/HashMap.h"
 
 namespace us_cownet_timers {
+
+using us_cownet_util::ArrayList;
+using us_cownet_util::HashMap;
 
 class TimerUtil {
 public:
@@ -35,9 +41,27 @@ public:
     static const long REAL_TICKS = -1;
 
 private:
-    Callback* callback;
-    Ticker ticker;
-    long hackMicros;
+    static const int MAX_CALLBACKS = 20;
+
+    class CallbackHandler {
+	public:
+		CallbackHandler();
+		void invokeCallbacks();
+		void addCallback(Callback* c);
+		void removeCallback(Callback* c);
+		bool isEmpty();
+	private:
+		ArrayList<Callback, MAX_CALLBACKS> callbacks;
+	};
+
+    HashMap<Ticker*, CallbackHandler, MAX_CALLBACKS> tickerCallbackList;
+    HashMap<unsigned long, Ticker, MAX_CALLBACKS> tickers;
+
+    HashMap<Timer*, CallbackHandler, MAX_CALLBACKS> timerCallbackList;
+    HashMap<unsigned long, Timer, MAX_CALLBACKS> timers;
+
+	unsigned long ticks;
+	bool useHackTicks;
 };
 
 } /* namespace us_cownet_timers */
