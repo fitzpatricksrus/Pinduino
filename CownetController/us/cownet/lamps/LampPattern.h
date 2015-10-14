@@ -17,17 +17,19 @@ public:
 	LampPattern();
 	virtual ~LampPattern();
 
-	virtual byte getColumn(int x);
+	virtual byte getColumn(int x) = 0;
 
 	virtual int getColCount() = 0;
 
-	virtual bool getLamp(int x, int y);
+	virtual int getLampCount() = 0;
 
-	virtual bool getLamp(int index);
+	virtual bool getLamp(int x, int y) = 0;
 
-	virtual void attached() = 0;
+	virtual bool getLamp(int index) = 0;
 
-	virtual void endOfMatrixSync() = 0;
+	virtual void attached();
+
+	virtual void endOfMatrixSync();
 
 	/*
 	 Used only by pattern containers.  isDone() should return true when the

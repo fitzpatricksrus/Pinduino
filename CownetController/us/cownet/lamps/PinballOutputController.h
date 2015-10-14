@@ -36,7 +36,7 @@ public:
 	virtual void write(Register signal, byte value) = 0;
 
 	virtual void writeRow(byte value) {
-		write(LAMP_ROW, value);
+		write(LAMP_ROW, (byte)value);
 	}
 
 	virtual void writeCol(byte value) {
