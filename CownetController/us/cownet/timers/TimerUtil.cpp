@@ -8,8 +8,11 @@
 #include "TimerUtil.h"
 #include "PeriodicEvent.h"
 #include "Callback.h"
+#include "../utils/Map.h"
 
 namespace us_cownet_timers {
+
+using us_cownet_utils::Map;
 
 class CallbackHandler {
 public:
@@ -34,7 +37,7 @@ void CallbackHandler::tick() {
 
 
 
-static HashMap<Callback, CallbackHandler> callbackList;
+static Map<Callback, CallbackHandler, 20> callbackList;
 static long ticks;
 
 static TimerUtil INSTANCE = new TimerUtil();
