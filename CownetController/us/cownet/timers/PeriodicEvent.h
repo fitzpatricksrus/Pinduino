@@ -15,7 +15,15 @@ public:
 	PeriodicEvent();
 	virtual ~PeriodicEvent();
 
-	virtual bool isTime() = 0;
+	virtual bool isTime();
+
+	virtual void setTicks(long ticks);
+	virtual void setTime(long time);
+
+private:
+	long lastTock;
+	long period;
+	bool isTicks;
 };
 
 } /* namespace us_cownet_timers */

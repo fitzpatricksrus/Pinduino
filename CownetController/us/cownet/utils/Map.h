@@ -28,17 +28,17 @@ public:
 	List<V, maxSize> valueList;
 };
 
-template<class K, class V, int maxSize>
-inline Map<K, V, maxSize>::Map(K notFoundKeyIn, V notFoundValueIn)
+template <class K, class V, int maxSize>
+Map<K, V, maxSize>::Map(K notFoundKeyIn, V notFoundValueIn)
 : notFoundKey(notFoundKeyIn), notFoundValue(notFoundValueIn)
 {
 }
 
-template<class K, class V, int maxSize>
+template <class K, class V, int maxSize>
 inline Map<K, V, maxSize>::~Map() {
 }
 
-template<class K, class V, int maxSize>
+template <class K, class V, int maxSize>
 inline void Map<K, V, maxSize>::put(K key, V value) {
 	int ndx = keyList.indexOf(key);
 	if (ndx != -1) {
@@ -49,7 +49,7 @@ inline void Map<K, V, maxSize>::put(K key, V value) {
 	valueList.add(value);
 }
 
-template<class K, class V, int maxSize>
+template <class K, class V, int maxSize>
 inline V Map<K, V, maxSize>::get(K key) {
 	int ndx = keyList.indexOf(key);
 	if (ndx != -1) {
@@ -59,7 +59,7 @@ inline V Map<K, V, maxSize>::get(K key) {
 	}
 }
 
-template<class K, class V, int maxSize>
+template <class K, class V, int maxSize>
 inline int Map<K, V, maxSize>::size() const {
 	return keyList.size();
 }
