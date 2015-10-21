@@ -11,12 +11,32 @@
 
 namespace us_cownet_timers {
 
+static const PeriodicEvent NEVER_INSTANCE = PeriodicEvent::forTime(-1);
+const PeriodicEvent& PeriodicEvent::NEVER = NEVER_INSTANCE;
+
 PeriodicEvent::PeriodicEvent()
 : lastTock(0), period(0), isTicks(false)
 {
 }
 
+PeriodicEvent::PeriodicEvent(const PeriodicEvent& other)
+: lastTock(other.lastTock), period(other.period), isTicks(other.isTicks)
+{
+}
+
+PeriodicEvent::PeriodicEvent(const PeriodicEvent&& other)
+: lastTock(other.lastTock), period(other.period), isTicks(other.isTicks)
+{
+}
+
 PeriodicEvent::~PeriodicEvent() {
+}
+
+PeriodicEvent& PeriodicEvent::operator=(const PeriodicEvent& other) {
+	lastTock = other.lastTock;
+	period = other.period;
+	isTicks = other.isTicks;
+	return *this;
 }
 
 void PeriodicEvent::setTicks(long ticks) {
@@ -43,5 +63,18 @@ bool PeriodicEvent::isTime() {
 		return false;
 	}
 }
+
+PeriodicEvent PeriodicEvent::forTicks(long ticks) {
+	PeriodicEvent e;
+	e.setTicks(ticks);
+	return e;
+}
+
+PeriodicEvent PeriodicEvent::forTime(long time) {
+	PeriodicEvent e;
+	e.setTime(time);
+	return e;
+}
+
 
 } /* namespace us_cownet_timers */

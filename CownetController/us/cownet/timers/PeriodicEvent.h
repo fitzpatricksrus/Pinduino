@@ -13,12 +13,19 @@ namespace us_cownet_timers {
 class PeriodicEvent {
 public:
 	PeriodicEvent();
-	virtual ~PeriodicEvent();
+	PeriodicEvent(const PeriodicEvent& other);
+	PeriodicEvent(const PeriodicEvent&& other);
+	~PeriodicEvent();
+	PeriodicEvent& operator=(const PeriodicEvent& other);
 
-	virtual bool isTime();
+	bool isTime();
 
-	virtual void setTicks(long ticks);
-	virtual void setTime(long time);
+	void setTicks(long ticks);
+	void setTime(long time);
+
+	static PeriodicEvent forTicks(long ticks);
+	static PeriodicEvent forTime(long time);
+	static const PeriodicEvent& NEVER;
 
 private:
 	long lastTock;

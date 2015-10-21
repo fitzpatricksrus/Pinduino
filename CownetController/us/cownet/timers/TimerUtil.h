@@ -32,15 +32,21 @@ public:
 
 	static TimerUtil& INSTANCE;
 
-
-private:
 	class CallbackHandler {
+	public:
+		CallbackHandler();
+		CallbackHandler(Callback* c, const PeriodicEvent e);
 
+		void tick();
+
+		Callback* c;
+		PeriodicEvent e;
 	};
 
+private:
 	void attachCallback(Callback* c, PeriodicEvent p);
 
-	Map<Callback*, CallbackHandler*, 10> callbackList;
+	Map<Callback*, CallbackHandler, 10> callbackList;
 	long ticks;
 };
 

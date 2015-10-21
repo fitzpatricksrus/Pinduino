@@ -8,100 +8,78 @@
 #include "TimerUtil.h"
 #include "PeriodicEvent.h"
 #include "Callback.h"
+#include "../utils/List.h"
 #include "../utils/Map.h"
+
+#include <stdlib.h>
 
 namespace us_cownet_timers {
 
 using us_cownet_utils::Map;
 
-class CallbackHandler {
-public:
-	CallbackHandler(Callback* c, PeriodicEvent* e);
+TimerUtil::CallbackHandler::CallbackHandler() {
+	c = NULL;
+	e = PeriodicEvent::NEVER;
+}
 
-	void tick();
+TimerUtil::CallbackHandler::CallbackHandler(Callback* cIn, PeriodicEvent eIn) {
+	c = cIn;
+	e = eIn;
+}
 
-	Callback* c;
-	PeriodicEvent* e;
-};
-
-CallbackHandler::CallbackHandler(Callback* cIn, PeriodicEvent* eIn) {
-		c = cIn;
-		e = eIn;
-	}
-
-void CallbackHandler::tick() {
-	if (e->isTime()) {
+void TimerUtil::CallbackHandler::tick() {
+	if (e.isTime()) {
 		c->call();
 	}
 }
 
+static TimerUtil REAL_INSTANCE = TimerUtil();
+TimerUtil& TimerUtil::INSTANCE = REAL_INSTANCE;
+static TimerUtil::CallbackHandler NOT_FOUND_VALUE;
 
-
-static Map<Callback, CallbackHandler, 20> callbackList;
-static long ticks;
-
-static TimerUtil INSTANCE = new TimerUtil();
-static long REAL_TICKS = -1;
-
-
-
-TimerUtil::TimerUtil() {
+TimerUtil::TimerUtil()
+: callbackList(NULL, NOT_FOUND_VALUE), ticks(0)
+{
 }
 
 TimerUtil::~TimerUtil() {
 }
 
-void attachTickerCallback(Callback c, long ticks) {
-	attachCallback(c, new Ticker(ticks));
+void TimerUtil::attachTickerCallback(Callback* c, long ticks) {
+	attachCallback(c, PeriodicEvent::forTicks(ticks));
 }
 
-void attachTimerCallback(Callback c, long micros) {
-	attachCallback(c, new Timer(micros));
+void TimerUtil::attachTimerCallback(Callback* c, long micros) {
+	attachCallback(c, PeriodicEvent::forTime(micros));
 }
 
-private void attachCallback(Callback c, PeriodicEvent p) {
-	callbackList.put(c, new CallbackHandler(c, p));
+void TimerUtil::attachCallback(Callback* c, PeriodicEvent p) {
+	callbackList.put(c, CallbackHandler(c, p));
 }
 
-void detachCallback(Callback c) {
-	callbackList.put(c, null);
+void TimerUtil::detachCallback(Callback* c) {
+	callbackList.put(c, NOT_FOUND_VALUE);
 }
 
-void tick() {
-	ticks++;
-	for (CallbackHandler handler : callbackList.values()) {
-		handler.tick();
+void TimerUtil::tick() {
+	TimerUtil::ticks++;
+	auto values = callbackList.valueList();
+	for (int i = 0; i < values.size(); i++) {
+		CallbackHandler* handler = values[i];
+		handler->tick();
 	}
 }
 
-void enableHackTicks(boolean useHacks) {
-	useHackTicks = useHacks;
-}
-
-long currentTimeMillis() {
+long TimerUtil::currentTimeMillis() const {
 	return currentTimeMicros() / 1000;
 }
 
-long currentTimeMicros() {
-	if (useHackTicks) {
-		return currentTicks();
-	} else {
-		return System.nanoTime() / 1000;
-	}
+long TimerUtil::currentTimeMicros() const {
+	return System.nanoTime() / 1000;
 }
 
-long currentTicks() {
+long TimerUtil::currentTicks() const {
 	return ticks;
 }
-
-private TimerUtil() {
-	callbackList = new HashMap<>();
-	ticks = 0;
-	useHackTicks = false;
-}
-
-private HashMap<Callback, CallbackHandler> callbackList;
-private long ticks;
-private boolean useHackTicks;
 
 } /* namespace us_cownet_timers */
