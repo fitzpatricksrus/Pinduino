@@ -13,8 +13,11 @@
 
 #include <stdlib.h>
 
+#include <Arduino.h>
+
 namespace us_cownet_timers {
 
+using us_cownet_utils::List;
 using us_cownet_utils::Map;
 
 TimerUtil::CallbackHandler::CallbackHandler() {
@@ -63,19 +66,19 @@ void TimerUtil::detachCallback(Callback* c) {
 
 void TimerUtil::tick() {
 	TimerUtil::ticks++;
-	auto values = callbackList.valueList();
+	List<CallbackHandler, 10> values = callbackList.valueList;
 	for (int i = 0; i < values.size(); i++) {
-		CallbackHandler* handler = values[i];
-		handler->tick();
+		CallbackHandler handler = values[i];
+		handler.tick();
 	}
 }
 
 long TimerUtil::currentTimeMillis() const {
-	return currentTimeMicros() / 1000;
+	return millis();
 }
 
-long TimerUtil::currentTimeMicros() const {
-	return System.nanoTime() / 1000;
+unsigned long TimerUtil::currentTimeMicros() const {
+	return micros();
 }
 
 long TimerUtil::currentTicks() const {

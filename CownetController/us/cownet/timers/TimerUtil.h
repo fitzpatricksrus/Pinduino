@@ -27,7 +27,7 @@ public:
 	void tick();
 	void enableHackTicks(bool useHacks);
 	long currentTimeMillis() const;
-	long currentTimeMicros() const;
+	unsigned long currentTimeMicros() const;
 	long currentTicks() const;
 
 	static TimerUtil& INSTANCE;
