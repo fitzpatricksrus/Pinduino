@@ -46,7 +46,9 @@ public:
 private:
 	void attachCallback(Callback* c, PeriodicEvent p);
 
-	Map<Callback*, CallbackHandler, 10> callbackList;
+	typedef Map<Callback*, CallbackHandler, 10> MapType;
+
+	MapType callbackList;
 	long ticks;
 };
 

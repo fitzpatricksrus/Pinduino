@@ -24,8 +24,12 @@ public:
 
 	K notFoundKey;
 	V notFoundValue;
-	List<K, maxSize> keyList;
-	List<V, maxSize> valueList;
+
+	typedef List<K, maxSize> KeyListType;
+	typedef List<V, maxSize> ValueListType;
+
+	KeyListType keyList;
+	ValueListType valueList;
 };
 
 template <class K, class V, int maxSize>

@@ -66,7 +66,7 @@ void TimerUtil::detachCallback(Callback* c) {
 
 void TimerUtil::tick() {
 	TimerUtil::ticks++;
-	List<CallbackHandler, 10> values = callbackList.valueList;
+	MapType::ValueListType values = callbackList.valueList;
 	for (int i = 0; i < values.size(); i++) {
 		CallbackHandler handler = values[i];
 		handler.tick();

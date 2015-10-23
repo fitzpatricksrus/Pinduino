@@ -18,6 +18,29 @@ public:
 	virtual void call() = 0;
 };
 
+template <class T>
+class CallbackFor : public Callback {
+public:
+	typedef void (T::*MemberFunction)();
+	CallbackFor(T* instance, MemberFunction memberFunction);
+	virtual void call();
+
+private:
+	T* instance;
+	MemberFunction memberFunction;
+};
+
+template<class T>
+inline CallbackFor<T>::CallbackFor(T* instanceIn, MemberFunction memberFunctionIn)
+: instance(instanceIn), memberFunction(memberFunctionIn)
+{
+}
+
+template<class T>
+inline void CallbackFor<T>::call() {
+	(instance->*memberFunction)();
+}
+
 } /* namespace us_cownet_timers */
 
 #endif /* US_COWNET_TIMERS_CALLBACK_H_ */
