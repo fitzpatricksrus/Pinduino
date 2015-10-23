@@ -28,6 +28,7 @@ public:
 		//		SWITCH_ROW,
 		//		SWITCH_COL,
 		//		SWITCH_DEDICATED,
+		REGISTER_COUNT
 	};
 
 	virtual int getColumnCount() = 0;

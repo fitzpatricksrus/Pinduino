@@ -39,8 +39,8 @@ private:
 	long ticks;
 	int currentColumn;
 	LampPattern* nextPattern;
-	Callback* syncCallback;
 	LampPattern* attachedPattern;
+	Callback* syncCallback;
 	CallbackFor<PrefetchSimpleLampMatrix> thisCallback;
 	byte prefetchedColumnValue;
 };

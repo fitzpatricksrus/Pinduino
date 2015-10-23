@@ -11,7 +11,7 @@ namespace us_cownet_lamps {
 
 PrefetchSimpleLampMatrix::PrefetchSimpleLampMatrix(PinballOutputController* controllerIn, long ticksIn)
 : controller(controllerIn), ticks(ticksIn), currentColumn(0), nextPattern(NULL), attachedPattern(NULL),
-  thisCallback(this, &PrefetchSimpleLampMatrix::tock), prefetchedColumnValue(0)
+  syncCallback(NULL), thisCallback(this, &PrefetchSimpleLampMatrix::tock), prefetchedColumnValue(0)
 {
 }
 
@@ -40,9 +40,14 @@ void PrefetchSimpleLampMatrix::setPattern(LampPattern* lamps) {
 }
 
 void PrefetchSimpleLampMatrix::tock() {
+	// turn off all columns for a split second so when we change to a new
+	// column we don't get artifacts from the previous one.
 	controller->writeCol((byte)0);
+	// update the rows that will light when we turn a column on
 	controller->writeRow(prefetchedColumnValue);
+	// turn on the proper column
 	controller->writeCol((byte)(1 << currentColumn));
+	// calculate the next column to light
 	currentColumn = (currentColumn + 1) % attachedPattern->getColCount();
 	if (currentColumn == 0) {
 		// we've finished refreshing the matrix one complete cycle.
