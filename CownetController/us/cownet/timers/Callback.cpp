@@ -10,12 +10,12 @@
 namespace us_cownet_timers {
 
 Callback::Callback() {
-	// TODO Auto-generated constructor stub
-
 }
 
 Callback::~Callback() {
-	// TODO Auto-generated destructor stub
+}
+
+void Callback::call() {
 }
 
 } /* namespace us_cownet_timers */

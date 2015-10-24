@@ -1,0 +1,57 @@
+/*
+ * SimpleLampPattern.h
+ *
+ *  Created on: Oct 23, 2015
+ *      Author: Dad
+ */
+
+#ifndef US_COWNET_LAMPS_SIMPLELAMPPATTERN_H_
+#define US_COWNET_LAMPS_SIMPLELAMPPATTERN_H_
+
+#include "MatrixLampPattern.h"
+
+namespace us_cownet_lamps {
+
+class SimpleLampPattern: virtual MatrixLampPattern {
+public:
+	SimpleLampPattern(int* patternIn, int columnCountIn);
+
+	virtual ~SimpleLampPattern();
+
+	virtual int* getPattern();
+
+	virtual void setPattern(int* newPattern);
+
+	virtual byte getColumn(int col);
+
+	virtual void setLamp(int col, int row, boolean on);
+
+	virtual int getColCount();
+
+	virtual void attached();
+
+	virtual void endOfMatrixSync();
+
+	virtual bool isDone();
+
+	virtual void reset();
+
+	virtual void detached();
+
+	virtual void allOn();
+
+	virtual void allOff();
+
+	virtual void unionPattern(LampPattern* other);
+
+	virtual void differencePattern(LampPattern* other);
+
+private:
+	int columnCount;
+	int* pattern;
+};
+
+} /* namespace us_cownet_lamps */
+
+#endif /* US_COWNET_LAMPS_SIMPLELAMPPATTERN_H_ */
+

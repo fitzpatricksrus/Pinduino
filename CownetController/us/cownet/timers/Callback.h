@@ -15,7 +15,7 @@ public:
 	Callback();
 	virtual ~Callback();
 
-	virtual void call() = 0;
+	virtual void call();
 };
 
 template <class T>
