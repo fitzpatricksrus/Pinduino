@@ -5,9 +5,9 @@
  *      Author: jfitzpatrick
  */
 
-#include "WPCOutputController.h"
+#include "../controllers/WPCOutputController.h"
 
-namespace us_cownet_lamps_wpc {
+namespace us_cownet_lamps_controllers {
 
 static const int MASK[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 

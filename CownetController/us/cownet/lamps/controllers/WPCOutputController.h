@@ -5,12 +5,12 @@
  *      Author: jfitzpatrick
  */
 
-#ifndef WPCOUTPUTCONTROLLER_H_
-#define WPCOUTPUTCONTROLLER_H_
+#ifndef US_COWNET_LAMPS_CONTROLLERS_WPCOUTPUTCONTROLLER_H_
+#define US_COWNET_LAMPS_CONTROLLERS_WPCOUTPUTCONTROLLER_H_
 
 #include "../PinballOutputController.h"
 
-namespace us_cownet_lamps_wpc {
+namespace us_cownet_lamps_controllers {
 
 using namespace us_cownet_lamps;
 
