@@ -5,10 +5,10 @@
  *      Author: jfitzpatrick
  */
 
-#ifndef LAMPMATRIXTEST_H_
-#define LAMPMATRIXTEST_H_
+#ifndef us_cownet_lamps_tests_LAMPMATRIXTEST_H_
+#define us_cownet_lamps_tests_LAMPMATRIXTEST_H_
 
-#include "../LampMatrixTest.h"
+#include "../LampMatrix.h"
 
 namespace us_cownet_lamps_tests {
 

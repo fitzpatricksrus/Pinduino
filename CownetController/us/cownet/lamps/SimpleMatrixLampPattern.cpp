@@ -9,7 +9,7 @@
 
 namespace us_cownet_lamps {
 
-SimpleMatrixLampPattern::SimpleMatrixLampPattern() {
+SimpleMatrixLampPattern::SimpleMatrixLampPattern(int* patternIn, int columnCountIn) {
 	// TODO Auto-generated constructor stub
 
 }

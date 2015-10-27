@@ -40,7 +40,7 @@ void PinballOutputControllerTest::loop() {
 }
 
 static int controlPins[]  = { 2, 3 };
-static int dataPins[] { 4, 5, 6, 7, 8, 9, 10, 11 };
+static int dataPins[] = { 4, 5, 6, 7, 8, 9, 10, 11 };
 
 PinballOutputController* PinballOutputControllerTest::createTestController() {
 	return new us_cownet_lamps_controllers::WPCOutputController(dataPins, controlPins);

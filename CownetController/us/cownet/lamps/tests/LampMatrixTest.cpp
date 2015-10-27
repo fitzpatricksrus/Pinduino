@@ -10,10 +10,12 @@
 #include "../PinballOutputController.h"
 #include "../PrefetchSimpleLampMatrix.h"
 #include "../SimpleMatrixLampPattern.h"
+#include "PinballOutputControllerTest.h"
 
 namespace us_cownet_lamps_tests {
 
 using us_cownet_lamps::SimpleMatrixLampPattern;
+using us_cownet_lamps::PrefetchSimpleLampMatrix;
 
 static int patternValues[] = {
 	0b10000001,
@@ -44,9 +46,9 @@ void LampMatrixTest::loop() {
 	TimerUtil::INSTANCE.tick();
 }
 
-static LampMatrix* LampMatrixTest::createTestMatrix() {
+LampMatrix* LampMatrixTest::createTestMatrix() {
 	PinballOutputController* controller = PinballOutputControllerTest::createTestController();
-	PrefetchSimpleLampMatrix prefetchLampMatrix = new PrefetchSimpleLampMatrix(controller, 0);
+	PrefetchSimpleLampMatrix* prefetchLampMatrix = new PrefetchSimpleLampMatrix(controller, 0);
 
 	return prefetchLampMatrix;
 }

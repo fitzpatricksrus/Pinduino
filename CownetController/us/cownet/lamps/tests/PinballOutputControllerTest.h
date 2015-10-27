@@ -9,17 +9,18 @@
 #define PINBALLOUTPUTCONTROLLERTEST_H_
 
 #include "../PinballOutputController.h"
+#include "../../testing/Test.h"
 
 namespace us_cownet_lamps_tests {
 
 using us_cownet_lamps::PinballOutputController;
 
-class PinballOutputControllerTest: us_cownet_testing::Test {
+class PinballOutputControllerTest: public us_cownet_testing::Test {
 public:
 
 	PinballOutputControllerTest(PinballOutputController* testController) ;
 
-	PinballOutputControllerTest::~PinballOutputControllerTest();
+	~PinballOutputControllerTest();
 
 	void setup();
 

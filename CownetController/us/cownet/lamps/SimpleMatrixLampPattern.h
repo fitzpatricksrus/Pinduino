@@ -12,7 +12,7 @@
 
 namespace us_cownet_lamps {
 
-class SimpleMatrixLampPattern : MatrixLampPattern {
+class SimpleMatrixLampPattern : public MatrixLampPattern {
 public:
 	SimpleMatrixLampPattern(int* patternIn, int columnCountIn);
 
@@ -24,6 +24,8 @@ public:
 
 	virtual byte getColumn(int col);
 
+	virtual bool getLamp(int x, int y);
+
 	virtual void setLamp(int col, int row, boolean on);
 
 	virtual int getColCount();
@@ -32,7 +34,7 @@ public:
 
 	virtual void endOfMatrixSync();
 
-	virtual boolean isDone();
+	virtual bool isDone();
 
 	virtual void reset();
 
