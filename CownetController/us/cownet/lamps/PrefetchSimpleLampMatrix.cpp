@@ -85,7 +85,7 @@ void PrefetchSimpleLampMatrix::internalSetPattern(LampPattern* newPattern) {
 	}
 }
 
-void internalEndOfMatrixSync(LampPattern* pattern) {
+void PrefetchSimpleLampMatrix::internalEndOfMatrixSync(LampPattern* pattern) {
 	pattern->endOfMatrixSync();
 }
 

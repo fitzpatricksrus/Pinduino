@@ -19,7 +19,7 @@ PinballOutputControllerTest::PinballOutputControllerTest(PinballOutputController
 PinballOutputControllerTest::~PinballOutputControllerTest() {
 }
 
-void setup() {
+void PinballOutputControllerTest::setup() {
 }
 
 void PinballOutputControllerTest::loop() {
