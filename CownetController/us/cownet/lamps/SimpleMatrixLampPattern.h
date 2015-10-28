@@ -22,34 +22,15 @@ public:
 
 	virtual void setPattern(int* newPattern);
 
-	virtual byte getColumn(int col);
+	virtual bool getLamp(int col, int row);
 
-	virtual bool getLamp(int x, int y);
-
-	virtual void setLamp(int col, int row, boolean on);
+	virtual void setLamp(int col, int row, bool on);
 
 	virtual int getColCount();
 
-	virtual void attached();
-
-	virtual void endOfMatrixSync();
-
-	virtual bool isDone();
-
-	virtual void reset();
-
-	virtual void detached();
-
-//	virtual void allOn();
-
-//	virtual void allOff();
-
-//	virtual void unionPattern(LampPattern* other);
-
-//	virtual void difference(LampPattern* other);
-
 private:
 	int* pattern;
+	int columnCount;
 };
 
 } /* namespace us_cownet_lamps */
