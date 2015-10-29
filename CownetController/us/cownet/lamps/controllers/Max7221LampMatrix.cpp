@@ -39,7 +39,7 @@ void Max7221LampMatrix::setPattern(LampPattern* newPattern) {
 			// turn off timer
 			TimerUtil::INSTANCE.detachCallback(&thisCallback);
 			// turn off matrix
-			max7221.setIntensity(0);
+			max7221.setEnabled(false);
 		}
 		pattern->detached();
 	}
@@ -60,7 +60,8 @@ void Max7221LampMatrix::setPattern(LampPattern* newPattern) {
 
 void Max7221LampMatrix::tock() {
 	//refresh the lamp matrix
-	for (int i = 0; i < pattern->getColCount(); i++) {
+	int colCount = pattern->getColCount();
+	for (int i = 0; i < colCount; i++) {
 		max7221.setColumn(i, pattern->getColumn(i));
 	}
 
