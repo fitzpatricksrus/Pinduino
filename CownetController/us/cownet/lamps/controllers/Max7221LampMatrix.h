@@ -9,7 +9,9 @@
 #define us_cownet_lamps_tests_MAX7221LAMPMATRIX_H_
 
 #include "../LampPattern.h"
-#include "../timers/Callback.h"
+#include "../LampMatrix.h"
+#include "../../timers/Callback.h"
+#include <Max7221.h>
 
 namespace us_cownet_lamps_tests {
 
@@ -20,7 +22,7 @@ using us_cownet_timers::CallbackFor;
 class Max7221LampMatrix: public LampMatrix {
 public:
 	Max7221LampMatrix();
-	Max7221LampMatrix(long refreshFrequency);
+	Max7221LampMatrix(long refreshFrequency, int selectPin);
 	virtual ~Max7221LampMatrix();
 
 	virtual LampPattern* getPattern();
@@ -39,9 +41,12 @@ public:
 	virtual void setPattern(LampPattern* lamps);
 
 private:
+	void tock();
+
 	long refreshFrequency;
 	LampPattern* pattern;
 	CallbackFor<Max7221LampMatrix> thisCallback;
+	Max7221 max7221;
 };
 
 } /* namespace us_cownet_lamps_tests */
