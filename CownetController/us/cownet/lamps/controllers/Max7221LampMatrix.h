@@ -13,7 +13,7 @@
 #include "../../timers/Callback.h"
 #include <Max7221.h>
 
-namespace us_cownet_lamps_tests {
+namespace us_cownet_lamps_controllers {
 
 using us_cownet_lamps::LampPattern;
 using us_cownet_lamps::LampMatrix;

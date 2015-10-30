@@ -11,7 +11,7 @@
 
 namespace us_cownet_timers {
 
-static const PeriodicEvent NEVER_INSTANCE = PeriodicEvent::forTime(-1);
+static const PeriodicEvent NEVER_INSTANCE = PeriodicEvent::forTime(-1 >> 1);
 const PeriodicEvent& PeriodicEvent::NEVER = NEVER_INSTANCE;
 
 PeriodicEvent::PeriodicEvent()

@@ -9,12 +9,12 @@
 
 #include "../../timers/TimerUtil.h"
 
-namespace us_cownet_lamps_tests {
+namespace us_cownet_lamps_controllers {
 
 using us_cownet_timers::TimerUtil;
 
 Max7221LampMatrix::Max7221LampMatrix()
-: refreshFrequency(0), pattern(NULL), thisCallback(this, &Max7221LampMatrix::tock), max7221(12)
+: refreshFrequency(0), pattern(NULL), thisCallback(this, &Max7221LampMatrix::tock), max7221(10)
 {
 }
 
@@ -59,12 +59,16 @@ void Max7221LampMatrix::setPattern(LampPattern* newPattern) {
 }
 
 void Max7221LampMatrix::tock() {
+	Serial.println("Fire!");
+
 	//refresh the lamp matrix
 	int colCount = pattern->getColCount();
 	for (int i = 0; i < colCount; i++) {
+		Serial.println(pattern->getColumn(i));
 		max7221.setColumn(i, pattern->getColumn(i));
 	}
 
+	Serial.println();
 	pattern->endOfMatrixSync();
 }
 

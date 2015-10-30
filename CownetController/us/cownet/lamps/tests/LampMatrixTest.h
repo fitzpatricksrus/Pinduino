@@ -9,12 +9,14 @@
 #define us_cownet_lamps_tests_LAMPMATRIXTEST_H_
 
 #include "../LampMatrix.h"
+#include "../../testing/Test.h"
 
 namespace us_cownet_lamps_tests {
 
 using namespace::us_cownet_lamps;
+using us_cownet_testing::Test;
 
-class LampMatrixTest {
+class LampMatrixTest : public Test {
 public:
 
 	LampMatrixTest(LampMatrix* matrixIn);

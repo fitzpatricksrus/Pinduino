@@ -26,11 +26,15 @@ void SimpleMatrixLampPattern::setPattern(int* newPattern) {
 }
 
 bool SimpleMatrixLampPattern::getLamp(int col, int row) {
-	return pattern[col*8+row];
+	return (pattern[col] & (1 << row)) != 0;
 }
 
 void SimpleMatrixLampPattern::setLamp(int col, int row, bool on) {
-	pattern[col*8+row] = on;
+	if (on) {
+		pattern[col] |= (1 << row);
+	} else {
+		pattern[col] &= ~(1 << row);
+	}
 }
 
 int SimpleMatrixLampPattern::getColCount() {
