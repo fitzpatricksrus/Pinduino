@@ -9,36 +9,19 @@
 #define US_COWNET_UTILS_NOTIFIER_H_
 
 #include "List.h"
+#include "Listener.h"
 
 namespace us_cownet_utils {
 
-template <class T>
-class Listener {
+class BaseNotifier {
 public:
-	virtual ~Listener() {}
-	virtual void handle(T param) = 0;
-};
-
-template <class C, class T>
-class ListenerFor : public Listener<T> {
-public:
-	typedef void (C::*MemberFunction)();
-	ListenerFor(C* instanceIn, MemberFunction memberFunctionIn)
-	: instance(instanceIn), memberFunction(memberFunctionIn)
-	{
-	}
-	virtual ~ListenerFor() {}
-	virtual void handle(T param) {
-		(instance->*memberFunction)(param);
-	}
-
-private:
-	C* instance;
-	MemberFunction memberFunction;
+	BaseNotifier();
+	virtual ~BaseNotifier();
+	virtual void dispatchNotifications();
 };
 
 template <class T, int maxQueueSize, int maxListeners>
-class Notifier {
+class Notifier : public BaseNotifier {
 public:
 	Notifier();
 	virtual ~Notifier();
