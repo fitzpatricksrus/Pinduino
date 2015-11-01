@@ -25,13 +25,13 @@ public:
 	void attachTimerCallback(Callback* c, long micros);
 	void detachCallback(Callback* c);
 	void tick();
-	void enableHackTicks(bool useHacks);
 	long currentTimeMillis() const;
 	unsigned long currentTimeMicros() const;
 	long currentTicks() const;
 
 	static TimerUtil& INSTANCE;
 
+private:
 	class CallbackHandler {
 	public:
 		CallbackHandler();
@@ -43,7 +43,6 @@ public:
 		PeriodicEvent e;
 	};
 
-private:
 	void attachCallback(Callback* c, PeriodicEvent p);
 
 	typedef Map<Callback*, CallbackHandler, 10> MapType;

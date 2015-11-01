@@ -57,7 +57,7 @@ template <class K, class V, int maxSize>
 inline V Map<K, V, maxSize>::get(K key) {
 	int ndx = keyList.indexOf(key);
 	if (ndx != -1) {
-		valueList[ndx];
+		return valueList[ndx];
 	} else {
 		return notFoundValue;
 	}
