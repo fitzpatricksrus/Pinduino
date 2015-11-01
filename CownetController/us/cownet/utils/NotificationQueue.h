@@ -23,6 +23,8 @@ public:
 	virtual BaseNotifier* notifierFor(int tag);
 	virtual void dispatchNotifications();
 
+	static NotificationQueue& INSTANCE;
+
 private:
 	static const int maxNotifierTypes = 20;
 	typedef Map<int, BaseNotifier*, maxNotifierTypes> NotifierListType;

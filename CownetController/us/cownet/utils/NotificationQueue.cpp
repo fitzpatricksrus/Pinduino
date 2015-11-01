@@ -33,4 +33,8 @@ void NotificationQueue::dispatchNotifications() {
 	}
 }
 
+static NotificationQueue REAL_INSTANCE;
+NotificationQueue& NotificationQueue::INSTANCE = REAL_INSTANCE;
+
+
 } /* namespace us_cownet_utils */
