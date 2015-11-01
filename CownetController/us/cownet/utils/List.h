@@ -19,6 +19,7 @@ public:
 	void add(T object);
 	void remove(T object);
 	void removeNdx(int ndx);
+	void clear();
 	int size() const;
 	T operator[](int ndx);
 	int indexOf(T object);
@@ -55,6 +56,11 @@ template<class T, int maxSize>
 inline void us_cownet_utils::List<T, maxSize>::removeNdx(int ndx) {
 	currentSize--;
 	values[ndx] = values[currentSize];
+}
+
+template<class T, int maxSize>
+inline void us_cownet_utils::List<T, maxSize>::clear() {
+	currentSize = 0;
 }
 
 template<class T, int maxSize>
