@@ -1,0 +1,58 @@
+/*
+ * GreyscaleLampPattern.h
+ *
+ *  Created on: Oct 30, 2015
+ *      Author: jfitzpatrick
+ */
+
+#ifndef GREYSCALELAMPPATTERN_H_
+#define GREYSCALELAMPPATTERN_H_
+
+#include "LampPattern.h"
+
+namespace us_cownet_lamps {
+
+class GreyscaleLampPattern: public LinearLampPattern {
+public:
+	static const int GREYSCALE_BITS = 8;
+
+	GreyscaleLampPattern();
+
+	GreyscaleLampPattern(int greyPattern[]);
+
+	GreyscaleLampPattern(int greyPattern[], int startPosition);
+
+	virtual ~GreyscaleLampPattern();
+
+	virtual byte getColumn(int x);
+
+	virtual int getColCount();
+
+	virtual void setStartPosition(int startPosition);
+
+	virtual void attached();
+
+	virtual void endOfMatrixSync();
+
+	virtual void setPattern(int greyPattern[]);
+
+	virtual void setPattern(int greyPattern[], int startPosition);
+
+private:
+	// position in the refresh cycle
+	int cycleCount;
+	// position to start the cycle on attached()
+	int cycleStart;
+	// component lamp patters.  one for each greyscale bit
+	SimpleMatrixLampPattern patterns[GREYSCALE_BITS];
+	// how many ticks in greyscale cycle
+	int greyscaleCycleSize;
+	// mask for each bit in the cycle
+	int mask[GREYSCALE_BITS];
+	// which pattern to use for each stage in the cycle
+	int index[1 << GREYSCALE_BITS];
+};
+
+} /* namespace us_cownet_lamps */
+
+#endif /* GREYSCALELAMPPATTERN_H_ */

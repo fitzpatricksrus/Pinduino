@@ -25,6 +25,10 @@ void SimpleMatrixLampPattern::setPattern(int* newPattern) {
 	pattern = newPattern;
 }
 
+byte SimpleMatrixLampPattern::getColumn(int col) {
+	return pattern[col];
+}
+
 bool SimpleMatrixLampPattern::getLamp(int col, int row) {
 	return (pattern[col] & (1 << row)) != 0;
 }

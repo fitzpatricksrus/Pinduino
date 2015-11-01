@@ -22,6 +22,8 @@ public:
 
 	virtual void setPattern(int* newPattern);
 
+	virtual byte getColumn(int col);
+
 	virtual bool getLamp(int col, int row);
 
 	virtual void setLamp(int col, int row, bool on);
