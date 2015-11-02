@@ -9,8 +9,11 @@
 #define GREYSCALELAMPPATTERN_H_
 
 #include "LampPattern.h"
+#include "SimpleMatrixLampPattern.h"
+#include "LinearLampPattern.h"
 
 namespace us_cownet_lamps {
+
 
 class GreyscaleLampPattern: public LinearLampPattern {
 public:
@@ -18,9 +21,9 @@ public:
 
 	GreyscaleLampPattern();
 
-	GreyscaleLampPattern(int greyPattern[]);
+	GreyscaleLampPattern(int greyPattern[], int columnCount);
 
-	GreyscaleLampPattern(int greyPattern[], int startPosition);
+	GreyscaleLampPattern(int greyPattern[], int columnCount, int startPosition);
 
 	virtual ~GreyscaleLampPattern();
 
@@ -34,9 +37,9 @@ public:
 
 	virtual void endOfMatrixSync();
 
-	virtual void setPattern(int greyPattern[]);
+	virtual void setPattern(int greyPattern[], int columnCount);
 
-	virtual void setPattern(int greyPattern[], int startPosition);
+	virtual void setPattern(int greyPattern[], int columnCount, int startPosition);
 
 private:
 	// position in the refresh cycle
