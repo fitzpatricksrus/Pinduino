@@ -21,7 +21,8 @@ int* SimpleMatrixLampPattern::getPattern() {
 	return pattern;
 }
 
-void SimpleMatrixLampPattern::setPattern(int* newPattern) {
+void SimpleMatrixLampPattern::setPattern(int* newPattern, int columnCountIn) {
+	columnCount = columnCountIn;
 	pattern = newPattern;
 }
 

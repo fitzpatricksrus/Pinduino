@@ -21,7 +21,7 @@ public:
 
 	GreyscaleLampPattern();
 
-	// scratchSpace size == columnCount / 8 * GREYSCALE_BITS;
+	// scratchSpace size == columnCount * GREYSCALE_BITS;
 	GreyscaleLampPattern(int greyPattern[], int scratchSpace[], int columnCount);
 
 	GreyscaleLampPattern(int greyPattern[], int scratchSpace[], int columnCount, int startPosition);
@@ -49,12 +49,6 @@ private:
 	int cycleStart;
 	// component lamp patters.  one for each greyscale bit
 	SimpleMatrixLampPattern patterns[GREYSCALE_BITS];
-	// how many ticks in greyscale cycle
-	int greyscaleCycleSize;
-	// mask for each bit in the cycle
-	int mask[GREYSCALE_BITS];
-	// which pattern to use for each stage in the cycle
-	int index[1 << GREYSCALE_BITS];
 	// storage used when generating SimpleMatrixLampPatterns
 	int* scratchSpace;
 };
