@@ -67,10 +67,10 @@ void GreyscaleLampPattern::setPattern(int greyPattern[], int columnCount, int st
 	const int partitionSize = columnCount;
 	for (int i = 0; i < GREYSCALE_BITS; i++) {
 		int* patternStorage = scratchSpace + (partitionSize * i);
-		patterns[i].setPattern(patternStorage);
+		patterns[i].setPattern(patternStorage, columnCount);
 		for (int col = 0; col < columnCount; col++) {
 			for (int row = 0; row < columnCount; row++) {
-				bool isOn = (greyPattern[col][row] & mask[i]) != 0;
+				bool isOn = (greyPattern[col * 8 + row] & mask[i]) != 0;
 				patterns[i].setLamp(col, row, isOn);
 			}
 		}
