@@ -14,13 +14,15 @@ namespace us_cownet_lamps {
 
 class SimpleMatrixLampPattern : public MatrixLampPattern {
 public:
+	SimpleMatrixLampPattern();
+
 	SimpleMatrixLampPattern(int* patternIn, int columnCountIn);
 
 	virtual ~SimpleMatrixLampPattern();
 
 	virtual int* getPattern();
 
-	virtual void setPattern(int* newPattern);
+	virtual void setPattern(int* newPattern, int columnCountIn);
 
 	virtual byte getColumn(int col);
 

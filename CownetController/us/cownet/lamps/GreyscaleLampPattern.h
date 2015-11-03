@@ -21,9 +21,10 @@ public:
 
 	GreyscaleLampPattern();
 
-	GreyscaleLampPattern(int greyPattern[], int columnCount);
+	// scratchSpace size == columnCount / 8 * GREYSCALE_BITS;
+	GreyscaleLampPattern(int greyPattern[], int scratchSpace[], int columnCount);
 
-	GreyscaleLampPattern(int greyPattern[], int columnCount, int startPosition);
+	GreyscaleLampPattern(int greyPattern[], int scratchSpace[], int columnCount, int startPosition);
 
 	virtual ~GreyscaleLampPattern();
 
@@ -54,6 +55,8 @@ private:
 	int mask[GREYSCALE_BITS];
 	// which pattern to use for each stage in the cycle
 	int index[1 << GREYSCALE_BITS];
+	// storage used when generating SimpleMatrixLampPatterns
+	int* scratchSpace;
 };
 
 } /* namespace us_cownet_lamps */

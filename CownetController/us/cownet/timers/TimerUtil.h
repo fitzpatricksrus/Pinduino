@@ -31,7 +31,6 @@ public:
 
 	static TimerUtil& INSTANCE;
 
-private:
 	class CallbackHandler {
 	public:
 		CallbackHandler();
@@ -43,6 +42,7 @@ private:
 		PeriodicEvent e;
 	};
 
+private:
 	void attachCallback(Callback* c, PeriodicEvent p);
 
 	typedef Map<Callback*, CallbackHandler, 10> MapType;

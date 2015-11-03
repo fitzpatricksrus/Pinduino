@@ -1,8 +1,5 @@
 /*
  * GreyscaleLampPattern.cpp
- *
- *  Created on: Oct 30, 2015
- *      Author: jfitzpatrick
  */
 
 #include "GreyscaleLampPattern.h"
@@ -14,14 +11,14 @@ GreyscaleLampPattern::GreyscaleLampPattern()
 {
 }
 
-GreyscaleLampPattern::GreyscaleLampPattern(int greyPattern[], int columnCount)
-: cycleCount(0), cycleStart(0), patterns(), greyscaleCycleSize(0), mask(), index()
+GreyscaleLampPattern::GreyscaleLampPattern(int greyPattern[], int scratchSpaceIn[], int columnCount)
+: cycleCount(0), cycleStart(0), patterns(), greyscaleCycleSize(0), mask(), index(), scratchSpace(scratchSpaceIn)
 {
 	setPattern(greyPattern, columnCount);
 }
 
-GreyscaleLampPattern::GreyscaleLampPattern(int greyPattern[], int columnCount, int startPosition)
-: cycleCount(0), cycleStart(0), patterns(), greyscaleCycleSize(0), mask(), index()
+GreyscaleLampPattern::GreyscaleLampPattern(int greyPattern[], int scratchSpaceIn[], int columnCount, int startPosition)
+: cycleCount(0), cycleStart(0), patterns(), greyscaleCycleSize(0), mask(), index(), scratchSpace(scratchSpaceIn)
 {
 	setPattern(greyPattern, columnCount, startPosition);
 }
@@ -55,8 +52,9 @@ void GreyscaleLampPattern::setPattern(int greyPattern[], int columnCount) {
 
 void GreyscaleLampPattern::setPattern(int greyPattern[], int columnCount, int startPosition) {
 	cycleStart = startPosition;
-	greyscaleCycleSize = (1 << GREYSCALE_BITS) - 1;
 
+	//this section can be done once and statically initialized since GREYSCALE_BITS is constant
+	greyscaleCycleSize = (1 << GREYSCALE_BITS) - 1;
 	int next = 0;
 	for (int i = 0; i < GREYSCALE_BITS; i++) {
 		mask[i] = 1 << i;
@@ -65,8 +63,11 @@ void GreyscaleLampPattern::setPattern(int greyPattern[], int columnCount, int st
 		}
 	}
 
+	// generate the actual component patterns
+	const int partitionSize = columnCount;
 	for (int i = 0; i < GREYSCALE_BITS; i++) {
-		patterns[i] = new GREYSCALE_BITS(new int[columnCount]);
+		int* patternStorage = scratchSpace + (partitionSize * i);
+		patterns[i].setPattern(patternStorage);
 		for (int col = 0; col < columnCount; col++) {
 			for (int row = 0; row < columnCount; row++) {
 				bool isOn = (greyPattern[col][row] & mask[i]) != 0;
