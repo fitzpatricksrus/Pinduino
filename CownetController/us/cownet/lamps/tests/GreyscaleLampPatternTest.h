@@ -25,7 +25,7 @@ public:
 	virtual void loop();
 
 private:
-	LampMatrix* greyMatrix;
+	LampMatrix* greyLampMatrix;
 };
 
 
