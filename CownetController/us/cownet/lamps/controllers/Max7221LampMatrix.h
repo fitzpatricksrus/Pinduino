@@ -13,7 +13,7 @@
 #include "../../timers/Callback.h"
 #include "../../utils/Notifier.h"
 #include "../../utils/Listener.h"
-#include "../../utils/NotificationQueue.h"
+#include "../../utils/Notifier.h"
 #include <Max7221.h>
 
 namespace us_cownet_lamps_controllers {

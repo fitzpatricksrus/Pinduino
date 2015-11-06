@@ -37,7 +37,7 @@ public:
 	virtual void addListener(Listener<T>* listener);
 	virtual void removeListener(Listener<T>* listener);
 
-	virtual void notify(T param);
+	virtual void queueNotification(T param);
 	virtual void dispatchNotifications();
 
 private:
@@ -68,7 +68,12 @@ inline void Notifier<T, maxQueueSize, maxListeners>::removeListener(Listener<T>*
 }
 
 template<class T, int maxQueueSize, int maxListeners>
-inline void Notifier<T, maxQueueSize, maxListeners>::notify(T param) {
+inline void Notifier<T, maxQueueSize, maxListeners>::queueNotification(T param) {
+	queue.add(param);
+}
+
+template<class T, int maxQueueSize, int maxListeners>
+inline void Notifier<T, maxQueueSize, maxListeners>::dispatchNotifications() {
 	for (int e = 0; e < queue.size(); e++) {
 		T event = queue[e];
 		for (int l = 0; l < listeners.size(); l++) {
@@ -76,10 +81,6 @@ inline void Notifier<T, maxQueueSize, maxListeners>::notify(T param) {
 		}
 	}
 	queue.clear();
-}
-
-template<class T, int maxQueueSize, int maxListeners>
-inline void Notifier<T, maxQueueSize, maxListeners>::dispatchNotifications() {
 }
 
 } /* namespace us_cownet_utils */
