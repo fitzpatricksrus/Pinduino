@@ -9,4 +9,21 @@
 
 namespace us_cownet_utils {
 
+BaseNotifier::BaseNotifier() {
+}
+
+BaseNotifier::~BaseNotifier() {
+}
+
+void BaseNotifier::dispatchNotifications() {
+}
+
+void BaseNotifier::dispatchAllNotifications() {
+	for (int i = 0; i < notifiers.size(); i++) {
+		notifiers[i]->dispatchNotifications();
+	}
+}
+
+
 } /* namespace us_cownet_utils */
+

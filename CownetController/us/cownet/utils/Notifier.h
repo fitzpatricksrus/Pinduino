@@ -18,6 +18,14 @@ public:
 	BaseNotifier();
 	virtual ~BaseNotifier();
 	virtual void dispatchNotifications();
+
+	static void dispatchAllNotifications();
+
+protected:
+	static const int maxNotifierTypes = 20;
+	typedef List<BaseNotifier*, maxNotifierTypes> NotifierListType;
+
+	static NotifierListType notifiers;
 };
 
 template <class T, int maxQueueSize, int maxListeners>
@@ -41,10 +49,12 @@ template<class T, int maxQueueSize, int maxListeners>
 inline Notifier<T, maxQueueSize, maxListeners>::Notifier()
 : listeners(), queue()
 {
+	notifiers.add(this);
 }
 
 template<class T, int maxQueueSize, int maxListeners>
 inline Notifier<T, maxQueueSize, maxListeners>::~Notifier() {
+	notifiers.remove(this);
 }
 
 template<class T, int maxQueueSize, int maxListeners>
