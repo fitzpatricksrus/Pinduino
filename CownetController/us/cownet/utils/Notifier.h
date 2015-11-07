@@ -41,7 +41,7 @@ public:
 	virtual void dispatchNotifications();
 
 private:
-	List<Listener<T>, maxListeners> listeners;
+	List<Listener<T>*, maxListeners> listeners;
 	List<T, maxQueueSize> queue;
 };
 
@@ -65,11 +65,16 @@ inline void Notifier<T, maxQueueSize, maxListeners>::addListener(Listener<T>* li
 template<class T, int maxQueueSize, int maxListeners>
 inline void Notifier<T, maxQueueSize, maxListeners>::removeListener(Listener<T>* listener) {
 	listeners.remove(listener);
+	if (listeners.size() == 0) {
+		queue.clear();
+	}
 }
 
 template<class T, int maxQueueSize, int maxListeners>
 inline void Notifier<T, maxQueueSize, maxListeners>::queueNotification(T param) {
-	queue.add(param);
+	if (listeners.size() > 0) {
+		queue.add(param);
+	}
 }
 
 template<class T, int maxQueueSize, int maxListeners>

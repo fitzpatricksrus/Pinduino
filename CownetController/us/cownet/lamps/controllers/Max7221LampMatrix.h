@@ -21,6 +21,8 @@ namespace us_cownet_lamps_controllers {
 using us_cownet_lamps::LampPattern;
 using us_cownet_lamps::LampMatrix;
 using us_cownet_timers::CallbackFor;
+using us_cownet_utils::Listener;
+using us_cownet_utils::Notifier;
 
 class Max7221LampMatrix: public LampMatrix {
 public:
@@ -43,6 +45,13 @@ public:
 	 */
 	virtual void setPattern(LampPattern* lamps);
 
+	inline void addSyncListener(Listener<LampMatrix*>* listener) {
+		notifier.addListener(listener);
+	}
+	inline void removeSyncListener(Listener<LampMatrix*>* listener) {
+		notifier.removeListener(listener);
+	}
+
 private:
 	void tock();
 
@@ -50,6 +59,7 @@ private:
 	LampPattern* pattern;
 	CallbackFor<Max7221LampMatrix> thisCallback;
 	Max7221 max7221;
+	Notifier<LampMatrix*, 5, 5> notifier;
 };
 
 } /* namespace us_cownet_lamps_tests */

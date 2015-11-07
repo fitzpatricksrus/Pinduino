@@ -9,6 +9,8 @@
 
 namespace us_cownet_utils {
 
+BaseNotifier::NotifierListType BaseNotifier::notifiers;
+
 BaseNotifier::BaseNotifier() {
 }
 
