@@ -37,13 +37,13 @@ GreyscaleLampPattern::GreyscaleLampPattern()
 GreyscaleLampPattern::GreyscaleLampPattern(int greyPattern[], int scratchSpaceIn[], int columnCount)
 : cycleCount(0), cycleStart(0), patterns(), scratchSpace(scratchSpaceIn)
 {
-	setPattern(greyPattern, columnCount);
+	setPattern(greyPattern, scratchSpaceIn, columnCount);
 }
 
 GreyscaleLampPattern::GreyscaleLampPattern(int greyPattern[], int scratchSpaceIn[], int columnCount, int startPosition)
 : cycleCount(0), cycleStart(0), patterns(), scratchSpace(scratchSpaceIn)
 {
-	setPattern(greyPattern, columnCount, startPosition);
+	setPattern(greyPattern, scratchSpaceIn, columnCount, startPosition);
 }
 
 GreyscaleLampPattern::~GreyscaleLampPattern() {
@@ -69,14 +69,15 @@ void GreyscaleLampPattern::endOfMatrixSync() {
 	cycleCount = (cycleCount + 1) % (greyscaleCycleSize);
 }
 
-void GreyscaleLampPattern::setPattern(int greyPattern[], int columnCount) {
-	setPattern(greyPattern, columnCount, 0);
+void GreyscaleLampPattern::setPattern(int greyPattern[], int scratchSpaceIn[], int columnCount) {
+	setPattern(greyPattern, scratchSpaceIn, columnCount, 0);
 }
 
-void GreyscaleLampPattern::setPattern(int greyPattern[], int columnCount, int startPosition) {
+void GreyscaleLampPattern::setPattern(int greyPattern[], int scratchSpaceIn[], int columnCount, int startPosition) {
 	doInit();
 
 	// generate the actual component patterns
+	scratchSpace = scratchSpaceIn;
 	cycleStart = startPosition;
 
 	// generate the actual component patterns

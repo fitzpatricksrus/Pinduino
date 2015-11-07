@@ -38,9 +38,9 @@ public:
 
 	virtual void endOfMatrixSync();
 
-	virtual void setPattern(int greyPattern[], int columnCount);
+	virtual void setPattern(int greyPattern[], int scratchSpaceIn[], int columnCount);
 
-	virtual void setPattern(int greyPattern[], int columnCount, int startPosition);
+	virtual void setPattern(int greyPattern[], int scratchSpaceIn[], int columnCount, int startPosition);
 
 private:
 	// position in the refresh cycle
