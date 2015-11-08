@@ -59,8 +59,6 @@ void Max7221LampMatrix::setPattern(LampPattern* newPattern) {
 }
 
 void Max7221LampMatrix::tock() {
-	Serial.println("Fire!");
-
 	//refresh the lamp matrix
 	int colCount = pattern->getColCount();
 	for (int i = 0; i < colCount; i++) {
@@ -70,7 +68,7 @@ void Max7221LampMatrix::tock() {
 
 	Serial.println();
 	pattern->endOfMatrixSync();
-	notifier.queueNotification(this);
+	notifier.queueNotification(pattern);
 }
 
 } /* namespace us_cownet_lamps_tests */

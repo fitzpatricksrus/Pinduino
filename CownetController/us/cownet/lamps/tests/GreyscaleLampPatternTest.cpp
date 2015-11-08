@@ -92,7 +92,7 @@ static int patternValues[] = {
 	240, 245, 250, 251, 252, 253, 254, 255
 };
 
-static Pattern pattern1(patternValues);
+static Pattern testPattern1(patternValues);
 static Pattern2 testPattern2(0);
 
 GreyscaleLampPatternTest::GreyscaleLampPatternTest(LampMatrix* greyMatrixIn)
@@ -113,7 +113,7 @@ void GreyscaleLampPatternTest::setup() {
 
 //		GreyscaleLampPattern pattern = new GreyscaleLampPattern(patternValues);
 //		AbstractGreyscaleLampPattern pattern = new Pattern(patternValues);
-	greyLampMatrix->setPattern(&testPattern2);
+	greyLampMatrix->setPattern(&testPattern1);
 }
 
 void GreyscaleLampPatternTest::loop() {

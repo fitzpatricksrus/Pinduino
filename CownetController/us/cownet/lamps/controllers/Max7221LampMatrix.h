@@ -45,10 +45,10 @@ public:
 	 */
 	virtual void setPattern(LampPattern* lamps);
 
-	inline void addSyncListener(Listener<LampMatrix*>* listener) {
+	inline void addSyncListener(Listener<LampPattern*>* listener) {
 		notifier.addListener(listener);
 	}
-	inline void removeSyncListener(Listener<LampMatrix*>* listener) {
+	inline void removeSyncListener(Listener<LampPattern*>* listener) {
 		notifier.removeListener(listener);
 	}
 
@@ -59,7 +59,7 @@ private:
 	LampPattern* pattern;
 	CallbackFor<Max7221LampMatrix> thisCallback;
 	Max7221 max7221;
-	Notifier<LampMatrix*, 5, 5> notifier;
+	Notifier<LampPattern*, 5, 5> notifier;
 };
 
 } /* namespace us_cownet_lamps_tests */
