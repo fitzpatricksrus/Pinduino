@@ -10,28 +10,28 @@
 
 namespace us_cownet_utils {
 
-template <class T>
+template <class ParamClass>
 class Listener {
 public:
 	virtual ~Listener() {}
-	virtual void handle(T param) = 0;
+	virtual void handle(ParamClass param) = 0;
 };
 
-template <class C, class T>
-class ListenerFor : public Listener<T> {
+template <class ListenerClass, class ParamClass>
+class ListenerFor : public Listener<ParamClass> {
 public:
-	typedef void (C::*MemberFunction)();
-	ListenerFor(C* instanceIn, MemberFunction memberFunctionIn)
+	typedef void (ListenerClass::*MemberFunction)(ParamClass param);
+	ListenerFor(ListenerClass* instanceIn, MemberFunction memberFunctionIn)
 	: instance(instanceIn), memberFunction(memberFunctionIn)
 	{
 	}
 	virtual ~ListenerFor() {}
-	virtual void handle(T param) {
+	virtual void handle(ParamClass param) {
 		(instance->*memberFunction)(param);
 	}
 
 private:
-	C* instance;
+	ListenerClass* instance;
 	MemberFunction memberFunction;
 };
 

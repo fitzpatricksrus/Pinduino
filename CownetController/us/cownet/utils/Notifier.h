@@ -28,59 +28,59 @@ protected:
 	static NotifierListType notifiers;
 };
 
-template <class T, int maxQueueSize, int maxListeners>
+template <class NoteParamClass, int maxQueueSize, int maxListeners>
 class Notifier : public BaseNotifier {
 public:
 	Notifier();
 	virtual ~Notifier();
 
-	virtual void addListener(Listener<T>* listener);
-	virtual void removeListener(Listener<T>* listener);
+	virtual void addListener(Listener<NoteParamClass>* listener);
+	virtual void removeListener(Listener<NoteParamClass>* listener);
 
-	virtual void queueNotification(T param);
+	virtual void queueNotification(NoteParamClass param);
 	virtual void dispatchNotifications();
 
 private:
-	List<Listener<T>*, maxListeners> listeners;
-	List<T, maxQueueSize> queue;
+	List<Listener<NoteParamClass>*, maxListeners> listeners;
+	List<NoteParamClass, maxQueueSize> queue;
 };
 
-template<class T, int maxQueueSize, int maxListeners>
-inline Notifier<T, maxQueueSize, maxListeners>::Notifier()
+template<class NoteParamClass, int maxQueueSize, int maxListeners>
+inline Notifier<NoteParamClass, maxQueueSize, maxListeners>::Notifier()
 : listeners(), queue()
 {
 	notifiers.add(this);
 }
 
-template<class T, int maxQueueSize, int maxListeners>
-inline Notifier<T, maxQueueSize, maxListeners>::~Notifier() {
+template<class NoteParamClass, int maxQueueSize, int maxListeners>
+inline Notifier<NoteParamClass, maxQueueSize, maxListeners>::~Notifier() {
 	notifiers.remove(this);
 }
 
-template<class T, int maxQueueSize, int maxListeners>
-inline void Notifier<T, maxQueueSize, maxListeners>::addListener(Listener<T>* listener) {
+template<class NoteParamClass, int maxQueueSize, int maxListeners>
+inline void Notifier<NoteParamClass, maxQueueSize, maxListeners>::addListener(Listener<NoteParamClass>* listener) {
 	listeners.add(listener);
 }
 
-template<class T, int maxQueueSize, int maxListeners>
-inline void Notifier<T, maxQueueSize, maxListeners>::removeListener(Listener<T>* listener) {
+template<class NoteParamClass, int maxQueueSize, int maxListeners>
+inline void Notifier<NoteParamClass, maxQueueSize, maxListeners>::removeListener(Listener<NoteParamClass>* listener) {
 	listeners.remove(listener);
 	if (listeners.size() == 0) {
 		queue.clear();
 	}
 }
 
-template<class T, int maxQueueSize, int maxListeners>
-inline void Notifier<T, maxQueueSize, maxListeners>::queueNotification(T param) {
+template<class NoteParamClass, int maxQueueSize, int maxListeners>
+inline void Notifier<NoteParamClass, maxQueueSize, maxListeners>::queueNotification(NoteParamClass param) {
 	if (listeners.size() > 0) {
 		queue.add(param);
 	}
 }
 
-template<class T, int maxQueueSize, int maxListeners>
-inline void Notifier<T, maxQueueSize, maxListeners>::dispatchNotifications() {
+template<class NoteParamClass, int maxQueueSize, int maxListeners>
+inline void Notifier<NoteParamClass, maxQueueSize, maxListeners>::dispatchNotifications() {
 	for (int e = 0; e < queue.size(); e++) {
-		T event = queue[e];
+		NoteParamClass event = queue[e];
 		for (int l = 0; l < listeners.size(); l++) {
 			listeners[l]->handle(event);
 		}

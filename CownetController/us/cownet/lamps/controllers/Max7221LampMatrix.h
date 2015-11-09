@@ -11,9 +11,6 @@
 #include "../LampPattern.h"
 #include "../LampMatrix.h"
 #include "../../timers/Callback.h"
-#include "../../utils/Notifier.h"
-#include "../../utils/Listener.h"
-#include "../../utils/Notifier.h"
 #include <Max7221.h>
 
 namespace us_cownet_lamps_controllers {
@@ -21,8 +18,6 @@ namespace us_cownet_lamps_controllers {
 using us_cownet_lamps::LampPattern;
 using us_cownet_lamps::LampMatrix;
 using us_cownet_timers::CallbackFor;
-using us_cownet_utils::Listener;
-using us_cownet_utils::Notifier;
 
 class Max7221LampMatrix: public LampMatrix {
 public:
@@ -45,13 +40,6 @@ public:
 	 */
 	virtual void setPattern(LampPattern* lamps);
 
-	inline void addSyncListener(Listener<LampPattern*>* listener) {
-		notifier.addListener(listener);
-	}
-	inline void removeSyncListener(Listener<LampPattern*>* listener) {
-		notifier.removeListener(listener);
-	}
-
 private:
 	void tock();
 
@@ -59,7 +47,6 @@ private:
 	LampPattern* pattern;
 	CallbackFor<Max7221LampMatrix> thisCallback;
 	Max7221 max7221;
-	Notifier<LampPattern*, 5, 5> notifier;
 };
 
 } /* namespace us_cownet_lamps_tests */

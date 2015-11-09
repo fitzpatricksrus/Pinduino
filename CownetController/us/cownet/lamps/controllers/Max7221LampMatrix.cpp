@@ -14,12 +14,12 @@ namespace us_cownet_lamps_controllers {
 using us_cownet_timers::TimerUtil;
 
 Max7221LampMatrix::Max7221LampMatrix()
-: refreshFrequency(0), pattern(NULL), thisCallback(this, &Max7221LampMatrix::tock), max7221(10), notifier()
+: refreshFrequency(0), pattern(NULL), thisCallback(this, &Max7221LampMatrix::tock), max7221(10)
 {
 }
 
 Max7221LampMatrix::Max7221LampMatrix(long refreshFrequencyIn, int selectPin)
-: refreshFrequency(refreshFrequencyIn), pattern(NULL), thisCallback(this, &Max7221LampMatrix::tock), max7221(selectPin), notifier()
+: refreshFrequency(refreshFrequencyIn), pattern(NULL), thisCallback(this, &Max7221LampMatrix::tock), max7221(selectPin)
 {
 }
 

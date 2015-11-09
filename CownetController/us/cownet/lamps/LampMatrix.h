@@ -10,10 +10,14 @@
 
 #include "LampPattern.h"
 #include "../timers/Callback.h"
+#include "../utils/Listener.h"
+#include "../utils/Notifier.h"
 
 namespace us_cownet_lamps {
 
 using us_cownet_timers::Callback;
+using us_cownet_utils::Listener;
+using us_cownet_utils::Notifier;
 
 class LampMatrix {
 public:
@@ -35,6 +39,15 @@ public:
 	 */
 	virtual void setPattern(LampPattern* lamps) = 0;
 
+	inline void addSyncListener(Listener<LampPattern*>* listener) {
+		notifier.addListener(listener);
+	}
+	inline void removeSyncListener(Listener<LampPattern*>* listener) {
+		notifier.removeListener(listener);
+	}
+
+protected:
+	Notifier<LampPattern*, 5, 5> notifier;
 };
 
 } /* namespace us_cownet_lamps */
