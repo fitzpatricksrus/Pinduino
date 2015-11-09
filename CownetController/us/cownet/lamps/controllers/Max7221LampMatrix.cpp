@@ -68,7 +68,7 @@ void Max7221LampMatrix::tock() {
 
 	Serial.println();
 	pattern->endOfMatrixSync();
-	notifier.queueNotification(pattern);
+	notifyListenersOfSync();
 }
 
 } /* namespace us_cownet_lamps_tests */

@@ -40,14 +40,19 @@ public:
 	virtual void setPattern(LampPattern* lamps) = 0;
 
 	inline void addSyncListener(Listener<LampPattern*>* listener) {
-		notifier.addListener(listener);
+		syncNotifier.addListener(listener);
 	}
 	inline void removeSyncListener(Listener<LampPattern*>* listener) {
-		notifier.removeListener(listener);
+		syncNotifier.removeListener(listener);
 	}
 
 protected:
-	Notifier<LampPattern*, 5, 5> notifier;
+	inline void notifyListenersOfSync() {
+		syncNotifier.queueNotification(getPattern());
+	}
+
+private:
+	Notifier<LampPattern*, 5, 5> syncNotifier;
 };
 
 } /* namespace us_cownet_lamps */
