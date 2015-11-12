@@ -49,23 +49,27 @@ template<class NoteParamClass, int maxQueueSize, int maxListeners>
 inline Notifier<NoteParamClass, maxQueueSize, maxListeners>::Notifier()
 : listeners(), queue()
 {
-	notifiers.add(this);
 }
 
 template<class NoteParamClass, int maxQueueSize, int maxListeners>
 inline Notifier<NoteParamClass, maxQueueSize, maxListeners>::~Notifier() {
-	notifiers.remove(this);
 }
 
 template<class NoteParamClass, int maxQueueSize, int maxListeners>
 inline void Notifier<NoteParamClass, maxQueueSize, maxListeners>::addListener(Listener<NoteParamClass>* listener) {
 	listeners.add(listener);
+	if (listeners.size() == 1) {
+		// first listener
+		notifiers.add(this);
+	}
 }
 
 template<class NoteParamClass, int maxQueueSize, int maxListeners>
 inline void Notifier<NoteParamClass, maxQueueSize, maxListeners>::removeListener(Listener<NoteParamClass>* listener) {
 	listeners.remove(listener);
 	if (listeners.size() == 0) {
+		// no more listeners
+		notifiers.remove(this);
 		queue.clear();
 	}
 }
