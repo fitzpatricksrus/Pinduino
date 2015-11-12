@@ -45,7 +45,7 @@ private:
 
 	long refreshFrequency;
 	LampPattern* pattern;
-	CallbackFor<Max7221LampMatrix> thisCallback;
+	CallbackFor<Max7221LampMatrix> tockCallback;
 	Max7221 max7221;
 };
 
