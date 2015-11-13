@@ -7,6 +7,7 @@
 
 #include "DebugLampMatrix.h"
 #include "../../timers/TimerUtil.h"
+#include <Debug.h>
 
 namespace us_cownet_lamps_controllers {
 
@@ -53,8 +54,7 @@ void DebugLampMatrix::setPattern(LampPattern* newPattern) {
 void DebugLampMatrix::tock() {
 	int colCount = pattern->getColCount();
 	for (int i = 0; i < colCount; i++) {
-		Serial.print(pattern->getColumn(i));
-		Serial.print(" ");
+		Serial << _BIN(pattern->getColumn(i)) << " ";
 	}
 
 	Serial.println();
