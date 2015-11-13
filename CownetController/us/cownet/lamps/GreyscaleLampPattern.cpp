@@ -30,7 +30,7 @@ static void doInit() {
 }
 
 GreyscaleLampPattern::GreyscaleLampPattern()
-: cycleCount(0), cycleStart(0), patterns()
+: cycleCount(0), cycleStart(0), patterns(), scratchSpace(NULL)
 {
 }
 
