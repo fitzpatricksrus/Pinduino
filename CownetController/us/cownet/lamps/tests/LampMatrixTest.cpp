@@ -27,8 +27,8 @@ static int patternValues[] = {
 	0b00100010,
 	0b01000001
 };
-static SimpleMatrixLampPattern pattern(patternValues, 8);
 
+static SimpleMatrixLampPattern pattern(patternValues, 8);
 
 LampMatrixTest::LampMatrixTest(LampMatrix* matrixIn)
 : matrix(matrixIn)
@@ -39,10 +39,12 @@ LampMatrixTest::~LampMatrixTest() {
 }
 
 void LampMatrixTest::setup() {
+	Serial.println("LampMatrixTest::setup");
 	matrix->setPattern(&pattern);
 }
 
 void LampMatrixTest::loop() {
+	Serial.println("LampMatrixTest::loop");
 	TimerUtil::INSTANCE.tick();
 }
 

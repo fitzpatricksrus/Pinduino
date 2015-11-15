@@ -10,18 +10,20 @@ using namespace us_cownet_testing;
 using namespace us_cownet_lamps_controllers;
 
 
-static LampMatrix* wpcLampMatrix = LampMatrixTest::createTestMatrix();
-static Max7221LampMatrix max7221LampMatrix(10L*1000L, 10);
-static DebugLampMatrix debugMatrix(1000);
+//static LampMatrix* wpcLampMatrix = LampMatrixTest::createTestMatrix();
+//static Max7221LampMatrix max7221LampMatrix(10L*1000L, 10);
+static Max7221LampMatrix max7221LampMatrix(0, 10);
+//static DebugLampMatrix debugMatrix(1000);
 
-static PinballOutputControllerTest pinballOutputControllerTest(PinballOutputControllerTest::createTestController());
-static LampMatrixTest lampMatrixTest(&max7221LampMatrix);
-static GreyscaleLampPatternTest greyPatternTest(&debugMatrix);
+//static PinballOutputControllerTest pinballOutputControllerTest(PinballOutputControllerTest::createTestController());
+//static LampMatrixTest lampMatrixTest(&max7221LampMatrix);
+static GreyscaleLampPatternTest greyPatternTest(&max7221LampMatrix);
 
 static Test& test = greyPatternTest;
 
 void setup()
 {
+	Serial.println("SETUP");
 	Serial.begin(57600);
 	test.setup();
 }
@@ -29,5 +31,5 @@ void setup()
 void loop()
 {
 	test.loop();
-	delay(1);
+	delay(0);
 }

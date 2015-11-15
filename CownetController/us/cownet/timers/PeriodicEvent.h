@@ -10,6 +10,8 @@
 
 namespace us_cownet_timers {
 
+//-std=c++0x
+
 class PeriodicEvent {
 public:
 	PeriodicEvent();

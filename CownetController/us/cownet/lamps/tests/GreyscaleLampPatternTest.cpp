@@ -91,8 +91,18 @@ static int patternValues[] = {
 	200, 205, 210, 215, 220, 225, 230, 235,
 	240, 245, 250, 251, 252, 253, 254, 255
 };
+static int patternValues1[] = {
+		1, 2, 4, 8, 16, 32, 64, 128,
+		1, 2, 4, 8, 16, 32, 64, 128,
+		1, 2, 4, 8, 16, 32, 64, 128,
+		1, 2, 4, 8, 16, 32, 64, 128,
+		1, 2, 4, 8, 16, 32, 64, 128,
+		1, 2, 4, 8, 16, 32, 64, 128,
+		1, 2, 4, 8, 16, 32, 64, 128,
+		1, 2, 4, 8, 16, 32, 64, 128,
+};
 
-static Pattern testPattern1(patternValues);
+static Pattern testPattern1(patternValues1);
 static Pattern2 testPattern2(0);
 
 GreyscaleLampPatternTest::GreyscaleLampPatternTest(LampMatrix* greyMatrixIn)

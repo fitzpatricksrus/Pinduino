@@ -54,10 +54,11 @@ void DebugLampMatrix::setPattern(LampPattern* newPattern) {
 void DebugLampMatrix::tock() {
 	int colCount = pattern->getColCount();
 	for (int i = 0; i < colCount; i++) {
-		Serial << _BIN(pattern->getColumn(i)) << " ";
+//		Serial << _BIN(pattern->getColumn(i)) << endl;
+		Serial.print(pattern->getColumn(i));
 	}
 
-	Serial.println();
+	Serial.println(".");
 	pattern->endOfMatrixSync();
 	notifyListenersOfSync();
 }

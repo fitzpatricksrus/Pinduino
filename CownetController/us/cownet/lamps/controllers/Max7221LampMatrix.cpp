@@ -8,6 +8,7 @@
 #include "Max7221LampMatrix.h"
 
 #include "../../timers/TimerUtil.h"
+#include <Debug.h>
 
 namespace us_cownet_lamps_controllers {
 
@@ -40,6 +41,7 @@ void Max7221LampMatrix::setPattern(LampPattern* newPattern) {
 			TimerUtil::INSTANCE.detachCallback(&tockCallback);
 			// turn off matrix
 			max7221.setEnabled(false);
+			Serial.println("Max7221LampMatrix::setPattern detaching from timer");
 		}
 		pattern->detached();
 	}
@@ -53,6 +55,7 @@ void Max7221LampMatrix::setPattern(LampPattern* newPattern) {
 			// turn on matrix
 			max7221.init();
 			// turn on timer
+			Serial.println("Max7221LampMatrix::setPattern attaching to timer");
 			TimerUtil::INSTANCE.attachTickerCallback(&tockCallback, refreshFrequency);
 		}
 	}
@@ -60,13 +63,14 @@ void Max7221LampMatrix::setPattern(LampPattern* newPattern) {
 
 void Max7221LampMatrix::tock() {
 	//refresh the lamp matrix
+	Serial << "Time: " << TimerUtil::INSTANCE.currentTicks() << endl;
 	int colCount = pattern->getColCount();
 	for (int i = 0; i < colCount; i++) {
-//		Serial.println(pattern->getColumn(i));
+		Serial << "col=" << "  " << i << "  " << _BIN(pattern->getColumn(i)) << endl;
 		max7221.setColumn(i, pattern->getColumn(i));
 	}
 
-//	Serial.println();
+	Serial.println();
 	pattern->endOfMatrixSync();
 	notifyListenersOfSync();
 }
