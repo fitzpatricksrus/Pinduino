@@ -8,12 +8,15 @@
 #ifndef RGBLAMPPATTERN_H_
 #define RGBLAMPPATTERN_H_
 
+#include <Arduino.h>
+
 namespace us_cownet_lamps {
 
 class RGBLampPattern {
 public:
 	class RGB {
 	public:
+		RGB() {}
 		RGB(byte r, byte g, byte b)
 		: R(r), G(g), B(b)
 		{
