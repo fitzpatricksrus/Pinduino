@@ -16,7 +16,9 @@ class RGBLampPattern {
 public:
 	class RGB {
 	public:
-		RGB() {}
+		RGB()
+		: R(0), G(0), B(0)
+		{}
 		RGB(byte r, byte g, byte b)
 		: R(r), G(g), B(b)
 		{
