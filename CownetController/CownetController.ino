@@ -16,10 +16,11 @@ static Max7221LampMatrix max7221LampMatrix(0, 10);
 //static DebugLampMatrix debugMatrix(1000);
 
 //static PinballOutputControllerTest pinballOutputControllerTest(PinballOutputControllerTest::createTestController());
-//static LampMatrixTest lampMatrixTest(&max7221LampMatrix);
+static LampMatrixTest lampMatrixTest(&max7221LampMatrix);
 static GreyscaleLampPatternTest greyPatternTest(&max7221LampMatrix);
 
-static Test& test = greyPatternTest;
+static Test& test = lampMatrixTest;
+//static Test& test = greyPatternTest;
 
 void setup()
 {
@@ -31,5 +32,5 @@ void setup()
 void loop()
 {
 	test.loop();
-	delay(0);
+//	delay(0);
 }

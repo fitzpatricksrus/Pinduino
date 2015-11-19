@@ -17,6 +17,9 @@ using us_cownet_timers::TimerUtil;
 Max7221LampMatrix::Max7221LampMatrix()
 : refreshFrequency(0), pattern(NULL), tockCallback(this, &Max7221LampMatrix::tock), max7221(10)
 {
+	pinMode(51, OUTPUT);
+	pinMode(52, OUTPUT);
+	pinMode(53, OUTPUT);
 }
 
 Max7221LampMatrix::Max7221LampMatrix(long refreshFrequencyIn, int selectPin)

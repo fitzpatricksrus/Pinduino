@@ -21,8 +21,9 @@ int* SimpleLampPattern::getPattern() {
 	return pattern;
 }
 
-void SimpleLampPattern::setPattern(int* newPattern) {
+void SimpleLampPattern::setPattern(int* newPattern, int columnCountIn) {
 	pattern = newPattern;
+	columnCount = columnCountIn;
 }
 
 byte SimpleLampPattern::getColumn(int col) {

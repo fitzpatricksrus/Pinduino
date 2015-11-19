@@ -16,11 +16,24 @@ class SimpleLampPattern: virtual MatrixLampPattern {
 public:
 	SimpleLampPattern(int* patternIn, int columnCountIn);
 
+	template <int columnCountIn>
+	SimpleLampPattern(int (&patternIn)[columnCountIn])
+	: pattern(patternIn), columnCount(columnCountIn)
+	{
+	}
+
 	virtual ~SimpleLampPattern();
 
 	virtual int* getPattern();
 
-	virtual void setPattern(int* newPattern);
+	virtual void setPattern(int* newPattern, int columnCountIn);
+
+	template <int columnCountIn>
+	void setPattern(int (&newPattern)[columnCountIn])
+	{
+		pattern = newPattern;
+		columnCount = columnCountIn;
+	}
 
 	virtual byte getColumn(int col);
 
