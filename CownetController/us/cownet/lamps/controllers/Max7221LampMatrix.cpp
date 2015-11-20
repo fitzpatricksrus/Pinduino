@@ -15,11 +15,8 @@ namespace us_cownet_lamps_controllers {
 using us_cownet_timers::TimerUtil;
 
 Max7221LampMatrix::Max7221LampMatrix()
-: refreshFrequency(0), pattern(NULL), tockCallback(this, &Max7221LampMatrix::tock), max7221(10)
+: refreshFrequency(0), pattern(NULL), tockCallback(this, &Max7221LampMatrix::tock), max7221(9)
 {
-	pinMode(51, OUTPUT);
-	pinMode(52, OUTPUT);
-	pinMode(53, OUTPUT);
 }
 
 Max7221LampMatrix::Max7221LampMatrix(long refreshFrequencyIn, int selectPin)
@@ -58,7 +55,7 @@ void Max7221LampMatrix::setPattern(LampPattern* newPattern) {
 			// turn on matrix
 			max7221.init();
 			// turn on timer
-			Serial.println("Max7221LampMatrix::setPattern attaching to timer");
+//			Serial.println("Max7221LampMatrix::setPattern attaching to timer");
 			TimerUtil::INSTANCE.attachTickerCallback(&tockCallback, refreshFrequency);
 		}
 	}
@@ -66,14 +63,14 @@ void Max7221LampMatrix::setPattern(LampPattern* newPattern) {
 
 void Max7221LampMatrix::tock() {
 	//refresh the lamp matrix
-	Serial << "Time: " << TimerUtil::INSTANCE.currentTicks() << endl;
+//	Serial << "Time: " << TimerUtil::INSTANCE.currentTicks() << endl;
 	int colCount = pattern->getColCount();
 	for (int i = 0; i < colCount; i++) {
-		Serial << "col=" << "  " << i << "  " << _BIN(pattern->getColumn(i)) << endl;
+//		Serial << "col=" << "  " << i << "  " << _BIN(pattern->getColumn(i)) << endl;
 		max7221.setColumn(i, pattern->getColumn(i));
 	}
 
-	Serial.println();
+//	Serial.println();
 	pattern->endOfMatrixSync();
 	notifyListenersOfSync();
 }
