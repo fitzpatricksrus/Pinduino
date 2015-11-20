@@ -30,7 +30,11 @@ public:
 
 	virtual byte getColumn(int x);
 
+	virtual bool getLamp(int x);
+
 	virtual int getColCount();
+
+	virtual int getLampCount();
 
 	virtual void setStartPosition(int startPosition);
 

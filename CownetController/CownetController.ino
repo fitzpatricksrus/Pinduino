@@ -44,6 +44,7 @@ static int cnt = 0;
 void loop()
 {
 	test.loop();
+	delay(1);
 	if (event.isTime()) {
 		Serial.println(cnt);
 		cnt = 0;

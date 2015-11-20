@@ -56,8 +56,16 @@ byte SimpleGreyscaleLampPattern::getColumn(int x) {
 	return patterns[index[cycleCount]].getColumn(x);
 }
 
+bool SimpleGreyscaleLampPattern::getLamp(int ndx) {
+	return (getColumn(ndx >> 3) & (1 << ndx)) != 0;
+}
+
 int SimpleGreyscaleLampPattern::getColCount() {
 	return patterns[0].getColCount();
+}
+
+int SimpleGreyscaleLampPattern::getLampCount() {
+	return patterns[0].getColCount() * 8;
 }
 
 void SimpleGreyscaleLampPattern::setStartPosition(int startPosition) {

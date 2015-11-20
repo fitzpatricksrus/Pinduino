@@ -7,11 +7,13 @@
 
 #include "GreyscaleLampPatternTest.h"
 #include "../AbstractGreyscaleLampPattern.h"
+#include "../SimpleGreyscaleLampPattern.h"
 #include "../../timers/TimerUtil.h"
 
 namespace us_cownet_lamps_tests {
 
 using us_cownet_lamps::AbstractGreyscaleLampPattern;
+using us_cownet_lamps::SimpleGreyscaleLampPattern;
 using us_cownet_timers::TimerUtil;
 
 // simple greyscale from lamp 0 - 63
@@ -101,9 +103,22 @@ static int patternValues1[] = {
 		64, 128, 1, 2, 4, 8, 16, 32,
 		128, 1, 2, 4, 8, 16, 32, 64,
 };
+static int patternValues3[] = {
+		1, 2, 4, 8, 1, 2, 4, 8,
+		2, 4, 8, 1, 2, 4, 8, 1,
+		4, 8, 1, 2, 4, 8, 1, 2,
+		8, 1, 2, 4, 8, 1, 2, 4,
+		4, 8, 1, 2, 4, 8, 1, 2,
+		2, 4, 8, 1, 2, 4, 8, 1,
+		1, 2, 4, 8, 1, 2, 4, 8,
+		1, 2, 4, 8, 4, 2, 1, 0
+};
+
+static int scratch[64];
 
 static Pattern testPattern1(patternValues1);
-static Pattern2 testPattern2(0);
+static Pattern testPattern2(patternValues);
+static SimpleGreyscaleLampPattern testPattern3(patternValues3, &scratch[0], 8);
 
 GreyscaleLampPatternTest::GreyscaleLampPatternTest(LampMatrix* greyMatrixIn)
 : greyLampMatrix(greyMatrixIn)
@@ -123,7 +138,7 @@ void GreyscaleLampPatternTest::setup() {
 
 //		GreyscaleLampPattern pattern = new GreyscaleLampPattern(patternValues);
 //		AbstractGreyscaleLampPattern pattern = new Pattern(patternValues);
-	greyLampMatrix->setPattern(&testPattern1);
+	greyLampMatrix->setPattern(&testPattern2);
 }
 
 void GreyscaleLampPatternTest::loop() {
