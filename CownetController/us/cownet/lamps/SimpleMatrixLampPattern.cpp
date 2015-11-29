@@ -9,6 +9,11 @@
 
 namespace us_cownet_lamps {
 
+SimpleMatrixLampPattern::SimpleMatrixLampPattern()
+: pattern(NULL), columnCount(0)
+{
+}
+
 SimpleMatrixLampPattern::SimpleMatrixLampPattern(int* patternIn, int columnCountIn)
 : pattern(patternIn), columnCount(columnCountIn)
 {
