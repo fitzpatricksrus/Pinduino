@@ -9,7 +9,9 @@
 
 namespace us_cownet_lamps_patterns {
 
-SimpleRGBLampPattern::SimpleRGBLampPattern() {
+SimpleRGBLampPattern::SimpleRGBLampPattern()
+: pattern(NULL), lampCount(0)
+{
 }
 
 SimpleRGBLampPattern::~SimpleRGBLampPattern() {

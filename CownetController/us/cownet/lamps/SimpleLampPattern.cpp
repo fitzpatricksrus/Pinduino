@@ -10,12 +10,12 @@
 namespace us_cownet_lamps {
 
 SimpleLampPattern::SimpleLampPattern()
-: columnCount(0), pattern(NULL)
+: bankCount(0), pattern(NULL)
 {
 }
 
-SimpleLampPattern::SimpleLampPattern(int* patternIn, int columnCountIn)
-: columnCount(columnCountIn), pattern(patternIn)
+SimpleLampPattern::SimpleLampPattern(int* patternIn, int lampCountIn)
+: bankCount((lampCountIn + 7) / 8), pattern(patternIn)
 {
 }
 
@@ -26,9 +26,9 @@ int* SimpleLampPattern::getPattern() {
 	return pattern;
 }
 
-void SimpleLampPattern::setPattern(int* newPattern, int columnCountIn) {
+void SimpleLampPattern::setPattern(int* newPattern, int lampCountIn) {
 	pattern = newPattern;
-	columnCount = columnCountIn;
+	bankCount = (lampCountIn + 7) / 8;
 }
 
 byte SimpleLampPattern::getLampBank(int col) {
@@ -36,11 +36,11 @@ byte SimpleLampPattern::getLampBank(int col) {
 }
 
 int SimpleLampPattern::getLampBankCount() {
-	return columnCount;
+	return bankCount;
 }
 
 int SimpleLampPattern::getLampCount() {
-	return columnCount * 8;
+	return bankCount * 8;
 }
 
 bool SimpleLampPattern::getLamp(int ndx) {
@@ -77,15 +77,16 @@ void SimpleLampPattern::detached() {
 }
 
 void SimpleLampPattern::allOn() {
+	// hey jf - this potentially turns on lamps that don't exist at the end of the bank.
 	int* p = getPattern();
-	for (int i = 0; i < columnCount; i++) {
+	for (int i = 0; i < bankCount; i++) {
 		p[i] = -1;
 	}
 }
 
 void SimpleLampPattern::allOff() {
 	int* p = getPattern();
-	for (int i = 0; i < columnCount; i++) {
+	for (int i = 0; i < bankCount; i++) {
 		p[i] = 0;
 	}
 }

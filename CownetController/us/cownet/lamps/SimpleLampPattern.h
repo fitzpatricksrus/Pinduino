@@ -16,11 +16,11 @@ class SimpleLampPattern: public LampPattern {
 public:
 	SimpleLampPattern();
 
-	SimpleLampPattern(int* patternIn, int columnCountIn);
+	SimpleLampPattern(int* patternIn, int lampCountIn);
 
-	template <int columnCountIn>
-	SimpleLampPattern(int (&patternIn)[columnCountIn])
-	: pattern(patternIn), columnCount(columnCountIn)
+	template <int lampCountIn>
+	SimpleLampPattern(int (&patternIn)[lampCountIn])
+	: pattern(patternIn), bankCount(lampCountIn)
 	{
 	}
 
@@ -30,11 +30,11 @@ public:
 
 	virtual void setPattern(int* newPattern, int columnCountIn);
 
-	template <int columnCountIn>
-	void setPattern(int (&newPattern)[columnCountIn])
+	template <int lampCountIn>
+	void setPattern(int (&newPattern)[lampCountIn])
 	{
 		pattern = newPattern;
-		columnCount = columnCountIn;
+		bankCount = lampCountIn;
 	}
 
 	virtual int getLampBankCount();
@@ -66,7 +66,7 @@ public:
 	virtual void differencePattern(LampPattern* other);
 
 private:
-	int columnCount;
+	int bankCount;
 	int* pattern;
 };
 
