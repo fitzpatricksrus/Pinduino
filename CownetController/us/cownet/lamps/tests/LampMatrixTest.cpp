@@ -9,12 +9,12 @@
 
 #include "../PinballOutputController.h"
 #include "../PrefetchSimpleLampMatrix.h"
-#include "../SimpleMatrixLampPattern.h"
+#include "../SimpleLampPattern.h"
 #include "PinballOutputControllerTest.h"
 
 namespace us_cownet_lamps_tests {
 
-using us_cownet_lamps::SimpleMatrixLampPattern;
+using us_cownet_lamps::SimpleLampPattern;
 using us_cownet_lamps::PrefetchSimpleLampMatrix;
 
 static int patternValues[] = {
@@ -28,7 +28,7 @@ static int patternValues[] = {
 	0b01000001
 };
 
-static SimpleMatrixLampPattern pattern(patternValues);
+static SimpleLampPattern pattern(patternValues);
 
 LampMatrixTest::LampMatrixTest(LampMatrix* matrixIn)
 : matrix(matrixIn)

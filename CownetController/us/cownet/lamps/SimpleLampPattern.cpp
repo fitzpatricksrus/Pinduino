@@ -9,6 +9,11 @@
 
 namespace us_cownet_lamps {
 
+SimpleLampPattern::SimpleLampPattern()
+: columnCount(0), pattern(NULL)
+{
+}
+
 SimpleLampPattern::SimpleLampPattern(int* patternIn, int columnCountIn)
 : columnCount(columnCountIn), pattern(patternIn)
 {
@@ -30,16 +35,24 @@ byte SimpleLampPattern::getColumn(int col) {
 	return (byte)pattern[col];
 }
 
-void SimpleLampPattern::setLamp(int col, int row, boolean on) {
+int SimpleLampPattern::getLampCount() {
+	return columnCount * 8;
+}
+
+bool SimpleLampPattern::getLamp(int ndx) {
+	int col = ndx / 8;
+	int row = ndx % 8;
+	return (pattern[col] & (1 << row)) != 0;
+}
+
+void SimpleLampPattern::setLamp(int ndx, boolean on) {
+	int col = ndx / 8;
+	int row = ndx % 8;
 	if (on) {
 		pattern[col] |= (1 << row);
 	} else {
 		pattern[col] &= ~(1 << row);
 	}
-}
-
-int SimpleLampPattern::getColCount() {
-	return columnCount;
 }
 
 void SimpleLampPattern::attached() {
@@ -74,23 +87,18 @@ void SimpleLampPattern::allOff() {
 }
 
 void SimpleLampPattern::unionPattern(LampPattern* other) {
-	int colCount = min(getColCount(), other->getColCount());
-	for (int col = 0; col < colCount; col++) {
-		for (int row = 0; row < 8; row++) {
-			if (!getLamp(col, row)) {
-				setLamp(col, row, other->getLamp(col, row));
-			}
+	int maxNdx = min(getLampCount(), other->getLampCount());
+	for (int ndx = 0; ndx < maxNdx; ndx++) {
+		if (!getLamp(ndx)) {
+			setLamp(ndx, other->getLamp(ndx));
 		}
 	}
 }
 
 void SimpleLampPattern::differencePattern(LampPattern* other) {
-	// hey jf - this method doesn't deal with column counts correctly
-	int colCount = min(getColCount(), other->getColCount());
-	for (int col = 0; col < colCount; col++) {
-		for (int row = 0; row < 8; row++) {
-			setLamp(col, row, getLamp(col, row) != other->getLamp(col, row));
-		}
+	int maxNdx = min(getLampCount(), other->getLampCount());
+	for (int ndx = 0; ndx < maxNdx; ndx++) {
+		setLamp(ndx, getLamp(ndx) != other->getLamp(ndx));
 	}
 }
 

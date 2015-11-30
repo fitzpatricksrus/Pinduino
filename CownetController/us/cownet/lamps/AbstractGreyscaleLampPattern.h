@@ -8,19 +8,17 @@
 #ifndef us_cownet_lamps_ABSTRACTGREYSCALELAMPPATTERN_H_
 #define us_cownet_lamps_ABSTRACTGREYSCALELAMPPATTERN_H_
 
-#include "LinearLampPattern.h"
+#include "LampPattern.h"
 
 namespace us_cownet_lamps {
 
-class AbstractGreyscaleLampPattern : public LinearLampPattern {
+class AbstractGreyscaleLampPattern : public LampPattern {
 public:
 	static const int GREYSCALE_BITS = 8;
 
 	AbstractGreyscaleLampPattern();
 	AbstractGreyscaleLampPattern(int startPosition);
 	virtual ~AbstractGreyscaleLampPattern();
-	virtual byte getColumn(int x);
-	virtual bool getLamp(int col, int row);
 	virtual bool getLamp(int index);
 	virtual void setStartPosition(int startPosition);
 	virtual void attached();

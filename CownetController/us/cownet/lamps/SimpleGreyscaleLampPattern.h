@@ -10,7 +10,7 @@
 
 #include "GreyscaleLampPattern.h"
 #include "LampPattern.h"
-#include "SimpleMatrixLampPattern.h"
+#include "SimpleLampPattern.h"
 
 
 namespace us_cownet_lamps {
@@ -52,7 +52,7 @@ private:
 	// position to start the cycle on attached()
 	int cycleStart;
 	// component lamp patters.  one for each greyscale bit
-	SimpleMatrixLampPattern patterns[GREYSCALE_BITS];
+	SimpleLampPattern patterns[GREYSCALE_BITS];
 	// storage used when generating SimpleMatrixLampPatterns
 	int* scratchSpace;
 };

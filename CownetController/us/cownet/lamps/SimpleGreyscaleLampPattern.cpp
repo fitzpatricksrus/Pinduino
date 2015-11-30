@@ -84,22 +84,20 @@ void SimpleGreyscaleLampPattern::setPattern(int greyPattern[], int columnCount) 
 	setPattern(greyPattern, columnCount, 0);
 }
 
-void SimpleGreyscaleLampPattern::setPattern(int greyPattern[], int columnCount, int startPosition) {
+void SimpleGreyscaleLampPattern::setPattern(int greyPattern[], int lampCount, int startPosition) {
 	doInit();
 
 	// generate the actual component patterns
 	cycleStart = startPosition;
 
 	// generate the actual component patterns
-	const int partitionSize = columnCount;				//one byte per column
+	const int partitionSize = lampCount;				//one byte per column
 	for (int i = 0; i < GREYSCALE_BITS; i++) {			//one matrix per greyscale bit
 		int* patternStorage = scratchSpace + (partitionSize * i);
-		patterns[i].setPattern(patternStorage, columnCount);
-		for (int col = 0; col < columnCount; col++) {
-			for (int row = 0; row < columnCount; row++) {
-				bool isOn = (greyPattern[col * 8 + row] & mask[i]) != 0;
-				patterns[i].setLamp(col, row, isOn);
-			}
+		patterns[i].setPattern(patternStorage, lampCount);
+		for (int lampNdx = 0; lampNdx < lampCount; lampNdx++) {
+			bool isOn = (greyPattern[lampNdx] & mask[i]) != 0;
+			patterns[i].setLamp(lampNdx, isOn);
 		}
 	}
 }

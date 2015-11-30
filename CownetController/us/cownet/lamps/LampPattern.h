@@ -17,13 +17,11 @@ public:
 	LampPattern();
 	virtual ~LampPattern();
 
-	virtual byte getColumn(int x) = 0;
+	virtual byte getColumn(int x);
 
-	virtual int getColCount() = 0;
+	virtual int getColCount();
 
 	virtual int getLampCount() = 0;
-
-	virtual bool getLamp(int x, int y) = 0;
 
 	virtual bool getLamp(int index) = 0;
 

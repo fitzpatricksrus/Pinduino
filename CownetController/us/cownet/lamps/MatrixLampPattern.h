@@ -12,6 +12,8 @@
 
 namespace us_cownet_lamps {
 
+using us_cownet_lamps::LampPattern;
+
 class MatrixLampPattern: public LampPattern {
 public:
 	MatrixLampPattern();

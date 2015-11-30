@@ -12,8 +12,10 @@
 
 namespace us_cownet_lamps {
 
-class SimpleLampPattern: virtual MatrixLampPattern {
+class SimpleLampPattern: public LampPattern {
 public:
+	SimpleLampPattern();
+
 	SimpleLampPattern(int* patternIn, int columnCountIn);
 
 	template <int columnCountIn>
@@ -37,9 +39,11 @@ public:
 
 	virtual byte getColumn(int col);
 
-	virtual void setLamp(int col, int row, boolean on);
+	virtual int getLampCount();
 
-	virtual int getColCount();
+	virtual bool getLamp(int index);
+
+	virtual void setLamp(int ndx, boolean on);
 
 	virtual void attached();
 

@@ -43,21 +43,6 @@ AbstractGreyscaleLampPattern::AbstractGreyscaleLampPattern(int startPosition)
 AbstractGreyscaleLampPattern::~AbstractGreyscaleLampPattern() {
 }
 
-byte AbstractGreyscaleLampPattern::getColumn(int x) {
-	byte result = 0;
-	for (int i = getColCount() - 1; i >= 0; i--) {
-		result <<= 1;
-		if (getLamp(x, i)) {
-			result |= 1;
-		}
-	}
-	return result;
-}
-
-bool AbstractGreyscaleLampPattern::getLamp(int col, int row) {
-	return getLamp((col << 3) + row);
-}
-
 bool AbstractGreyscaleLampPattern::getLamp(int index) {
 	return (getLampGreyValue(index) & mask[cycleCount]) != 0;
 }
