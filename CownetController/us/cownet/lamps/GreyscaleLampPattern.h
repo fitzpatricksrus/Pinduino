@@ -33,8 +33,6 @@ public:
 
 	virtual byte getColumn(int x);
 
-	virtual int getColCount();
-
 	virtual void setStartPosition(int startPosition);
 
 	virtual void attached();

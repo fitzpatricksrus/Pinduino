@@ -47,10 +47,6 @@ byte GreyscaleLampPattern::getColumn(int x) {
 	return patterns[index[cycleCount]].getColumn(x);
 }
 
-int GreyscaleLampPattern::getColCount() {
-	return patterns[0].getColCount();
-}
-
 void GreyscaleLampPattern::setStartPosition(int startPosition) {
 	cycleStart = startPosition;
 }
