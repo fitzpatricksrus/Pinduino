@@ -17,17 +17,41 @@ public:
 	LampPattern();
 	virtual ~LampPattern();
 
-	virtual byte getColumn(int x);
+	/*
+	 The life cycle for using a pattern looks like this
 
-	virtual int getColCount();
+	 attached()
+	 --getLampCount()
+	 --getLamp()
+	 --endOfMatrixSync() // callback is called here
+	 detached()
+
+	 */
+
+	virtual void attached();
 
 	virtual int getLampCount() = 0;
 
 	virtual bool getLamp(int index) = 0;
 
-	virtual void attached();
-
 	virtual void endOfMatrixSync();
+
+	virtual void detached();
+
+	/*
+	 Optimization points.  By defaul these just call getLampCount and getLamp.  Some matrix implementations
+	 are more efficient working on banks of 8 lamps at a time.  Subclasses can override these to make
+	 a more efficient implementation.
+	 */
+
+	virtual int getLampBankCount();
+
+	virtual byte getLampBank(int x);
+
+	/*
+	 Start the refresh sequence from the beginning.
+	 */
+	virtual void reset();
 
 	/*
 	 Used only by pattern containers.  isDone() should return true when the
@@ -37,13 +61,6 @@ public:
 	 continue to refresh the matrix with it.
 	 */
 	virtual bool isDone();
-
-	/*
-	 Start the refresh sequence from the beginning.
-	 */
-	virtual void reset();
-
-	virtual void detached();
 };
 
 } /* namespace us_cownet_lamps */

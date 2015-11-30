@@ -19,11 +19,11 @@ public:
 	MatrixLampPattern();
 	virtual ~MatrixLampPattern();
 
-	virtual byte getColumn(int x);
+	virtual byte getLampBank(int x);
 
 	virtual int getLampCount();
 
-	virtual int getColCount() = 0;
+	virtual int getLampBankCount() = 0;
 
 	virtual bool getLamp(int x, int y) = 0;
 

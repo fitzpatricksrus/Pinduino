@@ -58,12 +58,12 @@ public:
 	{
 	}
 
-	int getColCount() {
+	int getLampBankCount() {
 		return 8;
 	}
 
 	int getLampCount() {
-		return getColCount()*8;
+		return getLampBankCount()*8;
 	}
 
 	int getLampGreyValue(int ndx) {

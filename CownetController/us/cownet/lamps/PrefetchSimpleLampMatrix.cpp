@@ -48,7 +48,7 @@ void PrefetchSimpleLampMatrix::tock() {
 	// turn on the proper column
 	controller->writeCol((byte)(1 << currentColumn));
 	// calculate the next column to light
-	currentColumn = (currentColumn + 1) % attachedPattern->getColCount();
+	currentColumn = (currentColumn + 1) % attachedPattern->getLampBankCount();
 	if (currentColumn == 0) {
 		// we've finished refreshing the matrix one complete cycle.
 		if (syncCallback != NULL) {
@@ -69,7 +69,7 @@ void PrefetchSimpleLampMatrix::setSyncCallback(Callback* callback) {
 }
 
 byte PrefetchSimpleLampMatrix::internalGetColumn(LampPattern* pattern, int columnNumber) {
-	return pattern->getColumn(columnNumber);
+	return pattern->getLampBank(columnNumber);
 }
 
 void PrefetchSimpleLampMatrix::internalSetPattern(LampPattern* newPattern) {
@@ -80,7 +80,7 @@ void PrefetchSimpleLampMatrix::internalSetPattern(LampPattern* newPattern) {
 		attachedPattern = newPattern;
 		if (attachedPattern != NULL) {
 			attachedPattern->attached();
-			prefetchedColumnValue = attachedPattern->getColumn(currentColumn);
+			prefetchedColumnValue = attachedPattern->getLampBank(currentColumn);
 		}
 	}
 }

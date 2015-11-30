@@ -43,8 +43,12 @@ GreyscaleLampPattern::GreyscaleLampPattern(int greyPattern[], int scratchSpaceIn
 GreyscaleLampPattern::~GreyscaleLampPattern() {
 }
 
-byte GreyscaleLampPattern::getColumn(int x) {
-	return patterns[index[cycleCount]].getColumn(x);
+int GreyscaleLampPattern::getLampBankCount() {
+	return patterns[0].getLampBankCount();
+}
+
+byte GreyscaleLampPattern::getLampBank(int x) {
+	return patterns[index[cycleCount]].getLampBank(x);
 }
 
 void GreyscaleLampPattern::setStartPosition(int startPosition) {

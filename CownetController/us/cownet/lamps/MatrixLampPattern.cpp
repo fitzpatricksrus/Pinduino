@@ -16,7 +16,7 @@ MatrixLampPattern::MatrixLampPattern() {
 MatrixLampPattern::~MatrixLampPattern() {
 }
 
-byte MatrixLampPattern::getColumn(int x) {
+byte MatrixLampPattern::getLampBank(int x) {
 	byte result = 0;
 	for (int row = 0; row < 8; row++) {
 		result <<= 1;
@@ -28,7 +28,7 @@ byte MatrixLampPattern::getColumn(int x) {
 }
 
 int MatrixLampPattern::getLampCount() {
-	return (getColCount() + 7) / 8;
+	return (getLampBankCount() + 7) / 8;
 }
 
 bool MatrixLampPattern::getLamp(int index) {

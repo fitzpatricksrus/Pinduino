@@ -37,7 +37,9 @@ public:
 		columnCount = columnCountIn;
 	}
 
-	virtual byte getColumn(int col);
+	virtual int getLampBankCount();
+
+	virtual byte getLampBank(int col);
 
 	virtual int getLampCount();
 

@@ -31,8 +31,12 @@ void SimpleLampPattern::setPattern(int* newPattern, int columnCountIn) {
 	columnCount = columnCountIn;
 }
 
-byte SimpleLampPattern::getColumn(int col) {
+byte SimpleLampPattern::getLampBank(int col) {
 	return (byte)pattern[col];
+}
+
+int SimpleLampPattern::getLampBankCount() {
+	return columnCount;
 }
 
 int SimpleLampPattern::getLampCount() {

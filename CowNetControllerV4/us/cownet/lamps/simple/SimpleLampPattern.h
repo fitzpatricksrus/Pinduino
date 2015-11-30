@@ -26,7 +26,7 @@ public:
 	virtual bool getLamp(int col, int row);
 	virtual void setLamp(int col, int row, bool on);
 
-	virtual byte getColCount();
+	virtual byte getLampBankCount();
 
 	static SimpleLampPattern& ALL_OFF;
 

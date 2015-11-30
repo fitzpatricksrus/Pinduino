@@ -31,7 +31,9 @@ public:
 
 	virtual ~GreyscaleLampPattern();
 
-	virtual byte getColumn(int x);
+	virtual int getLampBankCount();
+
+	virtual byte getLampBank(int x);
 
 	virtual void setStartPosition(int startPosition);
 

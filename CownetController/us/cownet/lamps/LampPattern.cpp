@@ -15,7 +15,20 @@ LampPattern::LampPattern() {
 LampPattern::~LampPattern() {
 }
 
-byte LampPattern::getColumn(int x) {
+void LampPattern::attached() {
+}
+
+void LampPattern::endOfMatrixSync() {
+}
+
+void LampPattern::detached() {
+}
+
+int LampPattern::getLampBankCount() {
+	return (getLampCount() + 7) / 8;
+}
+
+byte LampPattern::getLampBank(int x) {
 	int colBase = x * 8;
 	byte result = 0;
 	for (int row = 0; row < 8; row++) {
@@ -27,24 +40,11 @@ byte LampPattern::getColumn(int x) {
 	return result;
 }
 
-int LampPattern::getColCount() {
-	return (getLampCount() + 7) / 8;
-}
-
-void LampPattern::attached() {
-}
-
-void LampPattern::endOfMatrixSync() {
-}
-
 bool LampPattern::isDone() {
 	return false;
 }
 
 void LampPattern::reset() {
-}
-
-void LampPattern::detached() {
 }
 
 } /* namespace us_cownet_lamps */

@@ -19,7 +19,7 @@ public:
 
 	virtual byte* getPattern() = 0;
 	virtual bool getLamp(int x, int y) = 0;
-	virtual byte getColCount() = 0;
+	virtual byte getLampBankCount() = 0;
 };
 
 } /* namespace us_cownet_lamps */

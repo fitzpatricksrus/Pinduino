@@ -64,10 +64,10 @@ void Max7221LampMatrix::setPattern(LampPattern* newPattern) {
 void Max7221LampMatrix::tock() {
 	//refresh the lamp matrix
 //	Serial << "Time: " << TimerUtil::INSTANCE.currentTicks() << endl;
-	int colCount = pattern->getColCount();
+	int colCount = pattern->getLampBankCount();
 	for (int i = 0; i < colCount; i++) {
 //		Serial << "col=" << "  " << i << "  " << _BIN(pattern->getColumn(i)) << endl;
-		max7221.setColumn(i, pattern->getColumn(i));
+		max7221.setColumn(i, pattern->getLampBank(i));
 	}
 
 //	Serial.println();

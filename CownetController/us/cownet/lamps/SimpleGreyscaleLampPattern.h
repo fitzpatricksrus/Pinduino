@@ -28,11 +28,11 @@ public:
 
 	virtual ~SimpleGreyscaleLampPattern();
 
-	virtual byte getColumn(int x);
+	virtual byte getLampBank(int x);
 
 	virtual bool getLamp(int x);
 
-	virtual int getColCount();
+	virtual int getLampBankCount();
 
 	virtual int getLampCount();
 

@@ -52,20 +52,20 @@ SimpleGreyscaleLampPattern::SimpleGreyscaleLampPattern(int greyPattern[], int sc
 SimpleGreyscaleLampPattern::~SimpleGreyscaleLampPattern() {
 }
 
-byte SimpleGreyscaleLampPattern::getColumn(int x) {
-	return patterns[index[cycleCount]].getColumn(x);
+byte SimpleGreyscaleLampPattern::getLampBank(int x) {
+	return patterns[index[cycleCount]].getLampBank(x);
 }
 
 bool SimpleGreyscaleLampPattern::getLamp(int ndx) {
-	return (getColumn(ndx >> 3) & (1 << ndx)) != 0;
+	return (getLampBank(ndx >> 3) & (1 << ndx)) != 0;
 }
 
-int SimpleGreyscaleLampPattern::getColCount() {
-	return patterns[0].getColCount();
+int SimpleGreyscaleLampPattern::getLampBankCount() {
+	return patterns[0].getLampBankCount();
 }
 
 int SimpleGreyscaleLampPattern::getLampCount() {
-	return patterns[0].getColCount() * 8;
+	return patterns[0].getLampBankCount() * 8;
 }
 
 void SimpleGreyscaleLampPattern::setStartPosition(int startPosition) {

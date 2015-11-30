@@ -45,7 +45,7 @@ void SimpleLampPattern::setLamp(int col, int row, bool on) {
 	}
 }
 
-byte SimpleLampPattern::getColCount() {
+byte SimpleLampPattern::getLampBankCount() {
 	return colCount;
 }
 
