@@ -20,7 +20,7 @@ public:
 
 	template <int lampCountIn>
 	SimpleLampPattern(int (&patternIn)[lampCountIn])
-	: pattern(patternIn), bankCount(lampCountIn)
+	: SimpleLampPattern(patternIn, lampCountIn)
 	{
 	}
 
@@ -33,8 +33,7 @@ public:
 	template <int lampCountIn>
 	void setPattern(int (&newPattern)[lampCountIn])
 	{
-		pattern = newPattern;
-		bankCount = lampCountIn;
+		setPattern(newPattern, lampCountIn);
 	}
 
 	virtual int getLampBankCount();
