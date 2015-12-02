@@ -18,9 +18,14 @@ class SimpleRGBLampPattern: public RGBLampPattern {
 public:
 	SimpleRGBLampPattern();
 
+	SimpleRGBLampPattern(RGB* patternIn, int patternSize)
+	: lampCount(patternSize), pattern(patternIn)
+	{
+	}
+
 	template <int patternSize>
 	SimpleRGBLampPattern(RGB (&newPattern)[patternSize])
-	: lampCount(patternSize), pattern(newPattern)
+	: SimpleRGBLampPattern(newPattern, patternSize)
 	{
 	}
 
@@ -36,8 +41,12 @@ public:
 
 	template <int patternSize>
 	void setPattern(RGB (&newPattern)[patternSize])  {
+		setPattern(newPattern, patternSize);
+	}
+
+	virtual void setPattern(RGB* patternIn, int patternSize) {
 		lampCount = patternSize;
-		pattern = &newPattern;
+		pattern = patternIn;
 	}
 
 private:
