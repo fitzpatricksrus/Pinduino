@@ -14,29 +14,72 @@ namespace us_cownet_lamps {
 
 class RGBLampPattern {
 public:
-	class RGB {
+
+	class Color {
 	public:
-		RGB()
-		: R(0), G(0), B(0)
-		{}
-		RGB(byte r, byte g, byte b)
-		: R(r), G(g), B(b)
-		{
+	};
+
+	class RGB : public Color {
+	public:
+		RGB() : R(0), G(0), B(0) {}
+		RGB(const RGB& other) : R(other.R), G(other.G), B(other.B) {}
+		RGB(RGB&& other) : R(other.R), G(other.G), B(other.B) {}
+		RGB(byte r, byte g, byte b) : R(r), G(g), B(b) {}
+		RGB& operator=(const RGB& other) {
+			if (other != *this) {
+				R = other.R;
+				G = other.G;
+				B = other.B;
+			}
+			return *this;
 		}
 
+		RGB(const Color& other) : R(0), G(0), B(0) { toRGB(other); }
+
 		byte R, G, B;
+
+	private:
+		void toRGB(const Color& other);
+	};
+
+	class HSV : public Color {
+	public:
+		HSV() : H(0), S(0), V(0) {}
+		HSV(const HSV& other) : H(other.H), S(other.S), V(other.V) {}
+		HSV(HSV&& other) : H(other.H), S(other.S), V(other.V) {}
+		HSV(byte r, byte g, byte b) : H(r), S(g), V(b) {}
+		HSV& operator=(const HSV& other) {
+			if (other != *this) {
+				H = other.H;
+				S = other.S;
+				V = other.V;
+			}
+			return *this;
+		}
+
+		HSV(const Color& other) : H(0), S(0), V(0) { toHSV(other); }
+
+		byte H, S, V;
+	private:
+		void toHSV(const Color& other);
 	};
 
 	RGBLampPattern();
 	virtual ~RGBLampPattern();
 
-	virtual int getLampCount() = 0;
-
-	virtual RGB getLamp(int index) = 0;
-
 	virtual void attached();
 
+	virtual int getLampCount() = 0;
+
+	virtual void getLamp(int index, Color& lampColor) = 0;
+
+	virtual RGB getLampRGB(int index) = 0;
+
+	virtual HSV getLampHSV(int index) = 0;
+
 	virtual void endOfMatrixSync();
+
+	virtual void detached();
 
 	/*
 	 Used only by pattern containers.  isDone() should return true when the
@@ -51,8 +94,6 @@ public:
 	 Start the refresh sequence from the beginning.
 	 */
 	virtual void reset();
-
-	virtual void detached();
 
 //	template <int size>
 //	void setBuffer(int (&newBuffer)[size]);
