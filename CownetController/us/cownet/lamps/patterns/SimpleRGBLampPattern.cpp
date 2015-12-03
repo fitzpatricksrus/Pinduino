@@ -17,7 +17,7 @@ SimpleRGBLampPattern::SimpleRGBLampPattern()
 SimpleRGBLampPattern::~SimpleRGBLampPattern() {
 }
 
-static SimpleRGBLampPattern::RGB temp[100];
+static SimpleRGBLampPattern::Color temp[100];
 static SimpleRGBLampPattern testPattern(temp);
 
 } /* namespace us_cownet_lamps_patterns */

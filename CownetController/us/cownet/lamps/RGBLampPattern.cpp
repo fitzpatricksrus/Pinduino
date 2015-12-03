@@ -9,6 +9,104 @@
 
 namespace us_cownet_lamps {
 
+typedef struct HsvColor
+{
+    unsigned char h;
+    unsigned char s;
+    unsigned char v;
+} HsvColor;
+
+byte RGBLampPattern::Color::getHue() {
+    byte rgbMax = getValue();
+
+    if (rgbMax == 0) {
+        return 0;
+    }
+
+    byte rgbMin = R < G ? (R < B ? R : B) : (G < B ? G : B);
+
+    byte s = 255 * ((long)(rgbMax - rgbMin)) / rgbMax;
+    if (s == 0) {
+        return 0;
+    }
+
+    if (rgbMax == R)
+        return 0 + 43 * (G - B) / (rgbMax - rgbMin);
+    else if (rgbMax == G)
+        return 85 + 43 * (B - R) / (rgbMax - rgbMin);
+    else
+        return 171 + 43 * (R - G) / (rgbMax - rgbMin);
+}
+
+byte RGBLampPattern::Color::getSaturation() {
+    byte rgbMax = getValue();
+
+    if (rgbMax == 0) {
+        return 0;
+    }
+
+    byte rgbMin = R < G ? (R < B ? R : B) : (G < B ? G : B);
+
+    return 255 * ((long)(rgbMax - rgbMin)) / rgbMax;
+}
+
+byte RGBLampPattern::Color::getValue() {
+    return R > G ? (R > B ? R : B) : (G > B ? G : B);
+}
+
+void RGBLampPattern::Color::setHSV(byte hue, byte saturation, byte value) {
+    if (saturation == 0) {
+        R = value;
+        G = value;
+        B = value;
+    } else {
+		// converting to 16 bit to prevent overflow
+		unsigned int h = hue;
+		unsigned int s = saturation;
+		unsigned int v = value;
+
+		byte region = h / 43;
+		unsigned int remainder = (h - (region * 43)) * 6;
+
+		byte p = (v * (255 - s)) >> 8;
+		byte q = (v * (255 - ((s * remainder) >> 8))) >> 8;
+		byte t = (v * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
+
+		switch (region) {
+		case 0:
+			R = v;
+			G = t;
+			B = p;
+			break;
+		case 1:
+			R = q;
+			G = v;
+			B = p;
+			break;
+		case 2:
+			R = p;
+			G = v;
+			B = t;
+			break;
+		case 3:
+			R = p;
+			G = q;
+			B = v;
+			break;
+		case 4:
+			R = t;
+			G = p;
+			B = v;
+			break;
+		default:
+			R = v;
+			G = p;
+			B = q;
+			break;
+		}
+    }
+}
+
 RGBLampPattern::RGBLampPattern() {
 }
 
@@ -32,7 +130,6 @@ void RGBLampPattern::detached() {
 }
 
 } /* namespace us_cownet_lamps */
-
 
 /*
 

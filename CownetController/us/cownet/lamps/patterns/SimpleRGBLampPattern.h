@@ -18,13 +18,13 @@ class SimpleRGBLampPattern: public RGBLampPattern {
 public:
 	SimpleRGBLampPattern();
 
-	SimpleRGBLampPattern(RGB* patternIn, int patternSize)
+	SimpleRGBLampPattern(Color* patternIn, int patternSize)
 	: lampCount(patternSize), pattern(patternIn)
 	{
 	}
 
 	template <int patternSize>
-	SimpleRGBLampPattern(RGB (&newPattern)[patternSize])
+	SimpleRGBLampPattern(Color (&newPattern)[patternSize])
 	: SimpleRGBLampPattern(newPattern, patternSize)
 	{
 	}
@@ -35,23 +35,23 @@ public:
 		return lampCount;
 	}
 
-	virtual RGB getLamp(int index) {
+	virtual Color getLamp(int index) {
 		return pattern[index];
 	}
 
 	template <int patternSize>
-	void setPattern(RGB (&newPattern)[patternSize])  {
+	void setPattern(Color (&newPattern)[patternSize])  {
 		setPattern(newPattern, patternSize);
 	}
 
-	virtual void setPattern(RGB* patternIn, int patternSize) {
+	virtual void setPattern(Color* patternIn, int patternSize) {
 		lampCount = patternSize;
 		pattern = patternIn;
 	}
 
 private:
+	Color* pattern;
 	int lampCount;
-	RGB* pattern;
 };
 
 } /* namespace us_cownet_lamps_patterns */
