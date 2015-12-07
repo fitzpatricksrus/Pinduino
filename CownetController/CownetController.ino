@@ -13,17 +13,17 @@ using namespace us_cownet_timers;
 
 
 //static LampMatrix* wpcLampMatrix = LampMatrixTest::createTestMatrix();
-//static Max7221LampMatrix max7221LampMatrix(10L*1000L, 10);
-static Max7221LampMatrix max7221LampMatrix(0, 9);
+static Max7221LampMatrix max7221LampMatrix(10L*1000L, 10);
+//static Max7221LampMatrix max7221LampMatrix(0, 9);
 //static DebugLampMatrix debugMatrix(1000);
 
 //static PinballOutputControllerTest pinballOutputControllerTest(PinballOutputControllerTest::createTestController());
-//static LampMatrixTest lampMatrixTest(&max7221LampMatrix);
-static GreyscaleLampPatternTest greyPatternTest(&max7221LampMatrix);
+static LampMatrixTest lampMatrixTest(&max7221LampMatrix);
+//static GreyscaleLampPatternTest greyPatternTest(&max7221LampMatrix);
 
 //static Test& test = pinballOutputControllerTest;
-//static Test& test = lampMatrixTest;
-static Test& test = greyPatternTest;
+static Test& test = lampMatrixTest;
+//static Test& test = greyPatternTest;
 
 static PeriodicEvent event;
 
@@ -44,7 +44,6 @@ static int cnt = 0;
 void loop()
 {
 	test.loop();
-	delay(1);
 	if (event.isTime()) {
 		Serial.println(cnt);
 		cnt = 0;
