@@ -21,8 +21,7 @@ using us_cownet_timers::CallbackFor;
 
 class Max7221LampMatrix: public LampMatrix {
 public:
-	Max7221LampMatrix();
-	Max7221LampMatrix(long refreshFrequency, int selectPin);
+	Max7221LampMatrix(long refreshFrequencyIn = 0, int selectPin = 9);
 	virtual ~Max7221LampMatrix();
 
 	virtual LampPattern* getPattern();

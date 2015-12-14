@@ -19,7 +19,7 @@ public:
 	SimpleRGBLampPattern();
 
 	SimpleRGBLampPattern(Color* patternIn, int patternSize)
-	: lampCount(patternSize), pattern(patternIn)
+	: pattern(patternIn), lampCount(patternSize)
 	{
 	}
 

@@ -14,11 +14,6 @@ namespace us_cownet_lamps_controllers {
 
 using us_cownet_timers::TimerUtil;
 
-Max7221LampMatrix::Max7221LampMatrix()
-: refreshFrequency(0), pattern(NULL), tockCallback(this, &Max7221LampMatrix::tock), max7221(9)
-{
-}
-
 Max7221LampMatrix::Max7221LampMatrix(long refreshFrequencyIn, int selectPin)
 : refreshFrequency(refreshFrequencyIn), pattern(NULL), tockCallback(this, &Max7221LampMatrix::tock), max7221(selectPin)
 {
@@ -63,14 +58,14 @@ void Max7221LampMatrix::setPattern(LampPattern* newPattern) {
 
 void Max7221LampMatrix::tock() {
 	//refresh the lamp matrix
-	Serial << "Time: " << TimerUtil::INSTANCE.currentTicks() << endl;
+//	Serial << "Time: " << TimerUtil::INSTANCE.currentTicks() << endl;
 	int colCount = pattern->getLampBankCount();
 	for (int i = 0; i < colCount; i++) {
-		Serial << "col=" << "  " << i << "  " << _BIN(pattern->getLampBank(i)) << endl;
+//		Serial << "col=" << "  " << i << "  " << _BIN(pattern->getLampBank(i)) << endl;
 		max7221.setColumn(i, pattern->getLampBank(i));
 	}
 
-	Serial.println();
+//	Serial.println();
 	pattern->endOfMatrixSync();
 	notifyListenersOfSync();
 }
