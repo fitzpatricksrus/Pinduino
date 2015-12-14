@@ -33,16 +33,16 @@ void loop() {
 
 #define LED_PIN     13
 #define DATA_PIN     13
-#define NUM_LEDS    99
+#define NUM_LEDS    199
 #define COLOR_ORDER RGB
 #define CHIPSET     WS2811
 #define LED_TYPE    WS2811
 
-#define colorpallete
+#define colorpalleteX
 #define fireX
 #define firewithpalletteX
 #define noisePlusPalletteX
-#define demoReelX
+#define demoReel
 #define campFireX
 
 
@@ -238,7 +238,7 @@ const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM =
 #include <FastLED.h>
 
 #define BRIGHTNESS  200
-#define FRAMES_PER_SECOND 60
+#define UPDATES_PER_SECOND 60
 
 bool gReverseDirection = false;
 
@@ -258,7 +258,7 @@ void loop()
   Fire2012(); // run simulation frame
 
   FastLED.show(); // display this frame
-  FastLED.delay(1000 / FRAMES_PER_SECOND);
+  FastLED.delay(1000 / UPDATES_PER_SECOND);
 }
 
 
@@ -346,7 +346,7 @@ void Fire2012()
 //#define NUM_LEDS    99
 
 #define BRIGHTNESS  200
-#define FRAMES_PER_SECOND 100
+#define UPDATES_PER_SECOND 100
 
 bool gReverseDirection = false;
 
@@ -422,7 +422,7 @@ void loop()
   Fire2012WithPalette(); // run simulation frame, using palette colors
 
   FastLED.show(); // display this frame
-  FastLED.delay(1000 / FRAMES_PER_SECOND);
+  FastLED.delay(1000 / UPDATES_PER_SECOND);
 }
 
 
@@ -808,7 +808,7 @@ FASTLED_USING_NAMESPACE
 CRGB leds[NUM_LEDS];
 
 #define BRIGHTNESS          96
-#define FRAMES_PER_SECOND  120
+#define UPDATES_PER_SECOND  120
 
 void setup() {
   delay(3000); // 3 second delay for recovery
@@ -837,11 +837,11 @@ void loop()
   // send the 'leds' array out to the actual LED strip
   FastLED.show();
   // insert a delay to keep the framerate modest
-  FastLED.delay(1000/FRAMES_PER_SECOND);
+  FastLED.delay(1000/UPDATES_PER_SECOND);
 
   // do some periodic updates
   EVERY_N_MILLISECONDS( 20 ) { gHue++; } // slowly cycle the "base color" through the rainbow
-  EVERY_N_SECONDS( 10 ) { nextPattern(); } // change patterns periodically
+  EVERY_N_SECONDS( 20 ) { nextPattern(); } // change patterns periodically
 }
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
