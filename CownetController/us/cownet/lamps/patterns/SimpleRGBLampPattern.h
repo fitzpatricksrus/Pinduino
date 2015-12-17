@@ -24,8 +24,9 @@ public:
 	}
 
 	template <int patternSize>
-	SimpleRGBLampPattern(Color (&newPattern)[patternSize])
-	: SimpleRGBLampPattern(newPattern, patternSize)
+	SimpleRGBLampPattern(Color (&patternIn)[patternSize])
+	: pattern(patternIn), lampCount(patternSize)
+//	: SimpleRGBLampPattern(newPattern, patternSize)
 	{
 	}
 
