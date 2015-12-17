@@ -824,7 +824,7 @@ void setup() {
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
-SimplePatternList gPatterns = { rainbow, rainbowWithGlitter, confetti, sinelon, juggle, confetti /*, bpm */ };
+SimplePatternList gPatterns = { juggle, solid, confetti, rainbow, rainbowWithGlitter, confetti, juggle, confetti /*, bpm */ };
 
 uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 uint8_t gHue = 0; // rotating "base color" used by many of the patterns
@@ -850,6 +850,19 @@ void nextPattern()
 {
   // add one to the current pattern number, and wrap around at the end
   gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( gPatterns);
+}
+
+void solid()
+{
+  // FastLED's built-in rainbow generator
+	CHSV hsv;
+	hsv.val = 200; //255;
+	hsv.sat = 200; //240;
+	hsv.hue = gHue;
+
+	fill_solid( leds, NUM_LEDS, hsv);
+
+	//	fill_rainbow( leds, NUM_LEDS, gHue, 0);
 }
 
 void rainbow()
