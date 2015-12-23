@@ -91,6 +91,10 @@ void SimpleLampPattern::allOff() {
 	}
 }
 
+#ifndef min
+#define min(a,b) ((a)<(b)?(a):(b))
+#endif // min
+
 void SimpleLampPattern::unionPattern(LampPattern* other) {
 	int maxNdx = min(getLampCount(), other->getLampCount());
 	for (int ndx = 0; ndx < maxNdx; ndx++) {

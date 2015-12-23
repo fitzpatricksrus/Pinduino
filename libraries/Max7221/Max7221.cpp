@@ -42,7 +42,7 @@ Max7221::~Max7221() {
 
 void Max7221::init() {
 	SPI.begin();
-	SPI.setClockDivider(SPI_CLOCK_DIV2);
+//	SPI.setClockDivider(SPI_CLOCK_DIV2);
 	pinMode(selectPin, OUTPUT);
 	pinMode(11, OUTPUT);
 	pinMode(13, OUTPUT);

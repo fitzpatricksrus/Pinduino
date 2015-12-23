@@ -28,7 +28,7 @@ static int patternValues[] = {
 	0b01000001
 };
 
-static SimpleLampPattern pattern(patternValues, 8);
+static SimpleLampPattern pattern(patternValues, 64);
 
 LampMatrixTest::LampMatrixTest(LampMatrix* matrixIn)
 : matrix(matrixIn)

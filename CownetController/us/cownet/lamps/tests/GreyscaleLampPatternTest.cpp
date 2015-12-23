@@ -71,6 +71,9 @@ public:
 //			if (ndx == 0) {
 //				System.out.println(Math.min(adj * 4, 255));
 //			}
+#ifndef min
+#define min(a,b) ((a)<(b)?(a):(b))
+#endif // min
 		return min(adj * 4, 255);
 	}
 
