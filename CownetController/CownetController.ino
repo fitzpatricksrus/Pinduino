@@ -20,12 +20,12 @@ static Max7221LampMatrix max7221LampMatrix(10L*1000L, 10);
 LampMatrix* matrix = &max7221LampMatrix;
 
 //static PinballOutputControllerTest pinballOutputControllerTest(PinballOutputControllerTest::createTestController());
-static LampMatrixTest lampMatrixTest(matrix);
-//static GreyscaleLampPatternTest greyPatternTest(matrix);
+//static LampMatrixTest lampMatrixTest(matrix);
+static GreyscaleLampPatternTest greyPatternTest(matrix);
 
 //static Test& test = pinballOutputControllerTest;
-static Test& test = lampMatrixTest;
-//static Test& test = greyPatternTest;
+//static Test& test = lampMatrixTest;
+static Test& test = greyPatternTest;
 
 static PeriodicEvent event;
 
