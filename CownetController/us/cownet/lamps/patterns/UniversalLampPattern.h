@@ -5,12 +5,12 @@
  *      Author: Dad
  */
 
-#ifndef US_COWNET_LAMPS_UNIVERSALLAMPPATTERN_H_
-#define US_COWNET_LAMPS_UNIVERSALLAMPPATTERN_H_
+#ifndef US_COWNET_LAMPS_PATTERNS_UNIVERSALLAMPPATTERN_H_
+#define US_COWNET_LAMPS_PATTERNS_UNIVERSALLAMPPATTERN_H_
 
-#include "../color/RGBColor.h"
+#include "../../color/RGBColor.h"
 
-namespace us_cownet_lamps {
+namespace us_cownet_lamps_patterns {
 
 using us_cownet_color::RGBColor;
 
@@ -21,13 +21,13 @@ public:
 
 	virtual int getLampCount() = 0;
 
-	virtual bool getLamp(int index);
+	virtual bool getLamp(int index) = 0;
 
-	virtual int getGrayLamp(int index);
+	virtual byte getGreyLamp(int index) = 0;
 
 	virtual RGBColor getRGBLamp(int index) = 0;
 };
 
 } /* namespace us_cownet_lamps */
 
-#endif /* US_COWNET_LAMPS_UNIVERSALLAMPPATTERN_H_ */
+#endif /* US_COWNET_LAMPS_PATTERNS_UNIVERSALLAMPPATTERN_H_ */

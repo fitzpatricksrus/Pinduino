@@ -7,20 +7,12 @@
 
 #include "UniversalLampPattern.h"
 
-namespace us_cownet_lamps {
+namespace us_cownet_lamps_patterns {
 
 UniversalLampPattern::UniversalLampPattern() {
 }
 
 UniversalLampPattern::~UniversalLampPattern() {
-}
-
-bool UniversalLampPattern::getLamp(int index) {
-	return getRGBLamp(index).toOnOffValue();
-}
-
-int UniversalLampPattern::getGrayLamp(int index) {
-	return getRGBLamp(index).toGreyValue();
 }
 
 } /* namespace us_cownet_lamps */

@@ -22,8 +22,8 @@ public:
 
 	RGBColor& operator=(const RGBColor& other);
 
-	bool toOnOffValue();
-	byte toGreyValue();
+	bool asBoolean();
+	byte asGreyscale();
 
 	byte r;
 	byte g;
@@ -66,11 +66,11 @@ inline RGBColor& RGBColor::operator=(const RGBColor& other) {
 	return *this;
 }
 
-inline bool RGBColor::toOnOffValue() {
+inline bool RGBColor::asBoolean() {
 	return 0 < (r + g + b);
 }
 
-inline byte RGBColor::toGreyValue() {
+inline byte RGBColor::asGreyscale() {
 	return ((int)(r + g + b)) / 3;
 }
 
