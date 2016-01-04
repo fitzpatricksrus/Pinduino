@@ -10,7 +10,7 @@
 namespace us_cownet_lamps_patterns {
 
 BooleanLampPattern::BooleanLampPattern()
-: lampCount(0), lampData(0) {
+: lampCount(0), lampData(NULL) {
 }
 
 BooleanLampPattern::~BooleanLampPattern() {
@@ -21,13 +21,17 @@ int BooleanLampPattern::getLampCount() {
 }
 
 bool BooleanLampPattern::getLamp(int index) {
-	int byteNdx = index >> 3 & 0b00011111;
+	int byteNdx = (index >> 3) & 0b00011111;
 	int mask = 1 << (index & 0b00000111);
 	return (lampData[byteNdx] & mask) != 0;
 }
 
+byte BooleanLampPattern::getLampBank(int bankIndex) {
+	return lampData[bankIndex];
+}
+
 void BooleanLampPattern::setLamp(int index, bool on) {
-	int byteNdx = index >> 3 & 0b00011111;
+	int byteNdx = (index >> 3) & 0b00011111;
 	int mask = 1 << (index & 0b00000111);
 	if (on) {
 		lampData[byteNdx] |= mask;

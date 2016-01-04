@@ -22,6 +22,7 @@ public:
 	virtual int getLampCount() = 0;
 
 	virtual bool getLamp(int index) = 0;
+	virtual byte getLampBank(int bankIndex);
 
 	virtual byte getGreyLamp(int index) = 0;
 
