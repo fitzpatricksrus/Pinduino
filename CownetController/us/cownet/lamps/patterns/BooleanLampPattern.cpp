@@ -7,10 +7,16 @@
 
 #include "BooleanLampPattern.h"
 
+#include <debug.h>
+
 namespace us_cownet_lamps_patterns {
 
 BooleanLampPattern::BooleanLampPattern()
 : lampCount(0), lampData(NULL) {
+}
+
+BooleanLampPattern::BooleanLampPattern(byte* data, int lampCountIn)
+: lampCount(lampCountIn), lampData(data) {
 }
 
 BooleanLampPattern::~BooleanLampPattern() {
@@ -38,6 +44,17 @@ void BooleanLampPattern::setLamp(int index, bool on) {
 	} else {
 		lampData[byteNdx] &= (~mask);
 	}
+}
+
+void BooleanLampPattern::setLampData(byte* lampDataIn, int lampCountIn) {
+	lampData = lampDataIn;
+	lampCount = lampCountIn;
+	Serial << "lampCount = "<<lampCount<<" lampData[] = {";
+	int stop = (lampCount + 7) / 8;
+	for (int i = 0; i < stop; i++) {
+		Serial << lampData[i] << ",";
+	}
+	Serial << "}" << endl;
 }
 
 byte* BooleanLampPattern::getLampData() {

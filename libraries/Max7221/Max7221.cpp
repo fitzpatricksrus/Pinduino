@@ -40,6 +40,15 @@ Max7221::Max7221(byte selectPinIn)
 Max7221::~Max7221() {
 }
 
+void Max7221::send7221Command(byte command, byte value)
+{
+   //2-byte data transfer to the 7221
+	digitalWrite(selectPin, LOW);
+	SPI.transfer(command);
+	SPI.transfer(value);
+	digitalWrite(selectPin, HIGH);
+}
+
 void Max7221::init() {
 	SPI.begin();
 //	SPI.setClockDivider(SPI_CLOCK_DIV2);
@@ -66,19 +75,10 @@ void Max7221::setEnabled(bool on) {
 }
 
 void Max7221::setTest(bool on) {
-	send7221Command(MAX7221_COMMAND::enable, on);
+	send7221Command(MAX7221_COMMAND::test, on);
 }
 
 void Max7221::setColumn(byte column, byte values) {
 	send7221Command(MAX7221_COMMAND::digit0+(column % 8), values);
-}
-
-inline void Max7221::send7221Command(byte command, byte value)
-{
-   //2-byte data transfer to the 7221
-	digitalWrite(selectPin, LOW);
-	SPI.transfer(command);
-	SPI.transfer(value);
-	digitalWrite(selectPin, HIGH);
 }
 

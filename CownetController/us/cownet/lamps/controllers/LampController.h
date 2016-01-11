@@ -9,10 +9,9 @@
 #define US_COWNET_LAMPS_CONTROLLERS_LAMPCONTROLLER_H_
 
 #include "../patterns/UniversalLampPattern.h"
+using us_cownet_lamps_patterns::UniversalLampPattern;
 
 namespace us_cownet_lamps_controllers {
-
-using us_cownet_lamps_patterns::UniversalLampPattern;
 
 class LampController {
 public:

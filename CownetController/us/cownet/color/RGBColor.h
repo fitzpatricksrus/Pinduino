@@ -71,7 +71,12 @@ inline bool RGBColor::asBoolean() {
 }
 
 inline byte RGBColor::asGreyscale() {
-	return ((int)(r + g + b)) / 3;
+	// the real formula is 0.2989R+0.5870G+.1140B
+	// quick and dirty, slightly dark is  0.25R + 0.5G + 0.25B
+
+	//going with (3R + 6G + B) / 10
+
+	return ((int)(3*r + 6*g + b)) / 10;
 }
 
 } /* namespace us_cownet_color */

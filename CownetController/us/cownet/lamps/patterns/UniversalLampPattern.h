@@ -20,6 +20,7 @@ public:
 	virtual ~UniversalLampPattern();
 
 	virtual int getLampCount() = 0;
+	virtual int getLampBankCount();
 
 	virtual bool getLamp(int index) = 0;
 	virtual byte getLampBank(int bankIndex);

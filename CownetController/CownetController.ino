@@ -1,9 +1,12 @@
 #include "us/cownet/lamps/tests/PinballOutputControllerTest.h"
 #include "us/cownet/lamps/tests/LampMatrixTest.h"
 #include "us/cownet/lamps/tests/GreyscaleLampPatternTest.h"
+#include "us/cownet/lamps/tests/LampControllerTest.h"
 #include "us/cownet/testing/Test.h"
+#include "us/cownet/lamps/controllers/Max7221LampController.h"
 #include "us/cownet/lamps/controllers/Max7221LampMatrix.h"
 #include "us/cownet/lamps/controllers/DebugLampMatrix.h"
+#include "us/cownet/lamps/controllers/DebugLampController.h"
 #include "us/cownet/timers/PeriodicEvent.h"
 
 using namespace us_cownet_lamps_tests;
@@ -13,19 +16,25 @@ using namespace us_cownet_timers;
 
 
 //static LampMatrix* wpcLampMatrix = LampMatrixTest::createTestMatrix();
-static Max7221LampMatrix max7221LampMatrix(10L*1000L, 10);
+//static Max7221LampMatrix max7221LampMatrix(10L*1000L, 10);
 //static Max7221LampMatrix max7221LampMatrix(0, 9);
 //static DebugLampMatrix debugMatrix(1);
+//static LampMatrix* matrix = &max7221LampMatrix;
 
-LampMatrix* matrix = &max7221LampMatrix;
+static Max7221LampController max7221LampController(9);
+static LampController* lampController = &max7221LampController;
+//static DebugLampController debugLampController;
+//static LampController* lampController = &debugLampController;
 
 //static PinballOutputControllerTest pinballOutputControllerTest(PinballOutputControllerTest::createTestController());
 //static LampMatrixTest lampMatrixTest(matrix);
-static GreyscaleLampPatternTest greyPatternTest(matrix);
+//static GreyscaleLampPatternTest greyPatternTest(matrix);
+static LampControllerTest lampControllerTest(lampController);
 
 //static Test& test = pinballOutputControllerTest;
 //static Test& test = lampMatrixTest;
-static Test& test = greyPatternTest;
+//static Test& test = greyPatternTest;
+static Test& test = lampControllerTest;
 
 static PeriodicEvent event;
 
