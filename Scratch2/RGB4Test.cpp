@@ -169,7 +169,7 @@ static int greyIndex1[] = { //  0x01
 
 static const int *GREY_MASK = greyIndex4;
 
-void RGBTest4::refreshOneRGBColumn(int col, byte* values) {
+void RGBTest4::refreshOneRGBColumn(int phase, int col, byte* values) {
 	// turn off all columns
 	for (int i = 0; i < COLUMN_SIZE; i++) {
 		off(i);
@@ -178,7 +178,7 @@ void RGBTest4::refreshOneRGBColumn(int col, byte* values) {
 
 	// write rows
 	for (int i = 0; i < COLUMN_SIZE; i++) {
-		if (values[i] & GREY_MASK[position]) {
+		if (values[i] & GREY_MASK[phase]) {
 			on(i);
 		} else {
 			off(i);
@@ -198,6 +198,10 @@ void RGBTest4::refreshOneRGBColumn(int col, byte* values) {
 }
 
 void RGBTest4::refreshOneRGBComlumn() {
+	// for each phase
+	//    for each column
+	//      refresh column
+
 	refreshOneRGBColumn(position / COLUMN_SIZE, data + position);
 	position = (position + COLUMN_SIZE) % dataCount;
 }

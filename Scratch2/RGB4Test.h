@@ -20,7 +20,7 @@ public:
 	void loop();
 
 private:
-	void refreshOneRGBColumn(int col, byte* values);
+	void refreshOneRGBColumn(int phase, int col, byte* values);
 	void refreshOneRGBComlumn();
 
 	int cycleSize;
