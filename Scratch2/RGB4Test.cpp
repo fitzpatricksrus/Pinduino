@@ -62,16 +62,6 @@ static inline void signal(int ndx) {
     pinOff(pins[ndx]);
 }
 
-RGBTest4::RGBTest4(byte* dataIn, int columnCountIn, int greyBitsIn)
-: cycleSize(0), position(0), data(dataIn), columnCount(columnCountIn), greyBits(greyBitsIn)
-{
-	cycleSize = (1 << greyBits) - 1;
-}
-
-RGBTest4::~RGBTest4() {
-
-}
-
 /*
 128 = 1/2   128
  64 = 1/4    64
@@ -167,9 +157,16 @@ static int greyIndex1[] = { //  0x01
 		0xb11111111, // 0xb00000000,
 };
 
-static const int *GREY_MASK = greyIndex4;
+RGBTest4::RGBTest4(byte* dataIn, int dataSizeIn)
+: cyclePosition(0), columnPosition(0), data(dataIn), dataSize(dataSizeIn)
+{
+}
 
-void RGBTest4::refreshOneRGBColumn(int phase, int col, byte* values) {
+RGBTest4::~RGBTest4() {
+
+}
+
+void RGBTest4::refreshOneRGBColumn(int mask, int col, byte* values) {
 	// turn off all columns
 	for (int i = 0; i < COLUMN_SIZE; i++) {
 		off(i);
@@ -178,7 +175,7 @@ void RGBTest4::refreshOneRGBColumn(int phase, int col, byte* values) {
 
 	// write rows
 	for (int i = 0; i < COLUMN_SIZE; i++) {
-		if (values[i] & GREY_MASK[phase]) {
+		if (values[i] & mask) {
 			on(i);
 		} else {
 			off(i);
@@ -197,13 +194,20 @@ void RGBTest4::refreshOneRGBColumn(int phase, int col, byte* values) {
 	signal(CONTROL_COLUMNS);
 }
 
+static const int *GREY_MASK = greyIndex4;
+static const int CYCLE_SIZE = (1 << 4);
+
 void RGBTest4::refreshOneRGBComlumn() {
 	// for each phase
 	//    for each column
 	//      refresh column
 
-	refreshOneRGBColumn(position / COLUMN_SIZE, data + position);
-	position = (position + COLUMN_SIZE) % dataCount;
+	refreshOneRGBColumn(GREY_MASK[cyclePosition], columnPosition / COLUMN_SIZE, data + columnPosition);
+	columnPosition = columnPosition + COLUMN_SIZE;
+	if (columnPosition > dataSize) {
+		columnPosition = 0;
+		cyclePosition = (cyclePosition + 1) % CYCLE_SIZE;
+	}
 }
 
 

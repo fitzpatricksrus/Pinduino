@@ -13,22 +13,21 @@
 
 class RGBTest4 {
 public:
-	RGBTest4(byte* data, int colCount = 8, int greyBits = 4);
+	RGBTest4(byte* data, int dataSize = 64);
 	virtual ~RGBTest4();
 
 	void setup();
 	void loop();
 
 private:
-	void refreshOneRGBColumn(int phase, int col, byte* values);
+	void refreshOneRGBColumn(int mask, int col, byte* values);
 	void refreshOneRGBComlumn();
 
-	int cycleSize;
-	int position;
+	int cyclePosition;
+	int columnPosition;
 
 	byte* data;
-	int columnCount;
-	int greyBits;
+	int dataSize;
 };
 
 #endif /* RGB4TEST_H_ */
