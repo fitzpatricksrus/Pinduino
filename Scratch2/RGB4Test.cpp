@@ -167,6 +167,7 @@ RGBTest4::~RGBTest4() {
 }
 
 void RGBTest4::refreshOneRGBColumn(int mask, int col, byte* values) {
+#ifdef WPC
 	// turn off all columns
 	for (int i = 0; i < COLUMN_SIZE; i++) {
 		off(i);
@@ -192,6 +193,17 @@ void RGBTest4::refreshOneRGBColumn(int mask, int col, byte* values) {
 		}
 	}
 	signal(CONTROL_COLUMNS);
+#endif
+#ifdef MAX7221
+	int val = 0;
+	// write rows
+	for (int i = 0; i < COLUMN_SIZE; i++) {
+		if (values[i] & mask) {
+			value = value | (1 << i);
+		}
+	}
+
+#endif
 }
 
 static const int *GREY_MASK = greyIndex4;
