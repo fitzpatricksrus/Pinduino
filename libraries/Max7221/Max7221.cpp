@@ -43,18 +43,24 @@ Max7221::~Max7221() {
 void Max7221::send7221Command(byte command, byte value)
 {
    //2-byte data transfer to the 7221
+	SPI.beginTransaction(SPISettings());
 	digitalWrite(selectPin, LOW);
 	SPI.transfer(command);
 	SPI.transfer(value);
 	digitalWrite(selectPin, HIGH);
+	SPI.endTransaction();
 }
 
 void Max7221::init() {
+	init(selectPin);
+}
+void Max7221::init(byte selectPinIn) {
+	selectPin = selectPinIn;
 	SPI.begin();
-//	SPI.setClockDivider(SPI_CLOCK_DIV2);
+	SPI.setClockDivider(SPI_CLOCK_DIV128);
 	pinMode(selectPin, OUTPUT);
-	pinMode(11, OUTPUT);
-	pinMode(13, OUTPUT);
+	pinMode(11, OUTPUT);	// SPI
+	pinMode(13, OUTPUT);	// SPI
 	send7221Command(MAX7221_COMMAND::test, false);
 	send7221Command(MAX7221_COMMAND::intensity, 0x01);
 	send7221Command(MAX7221_COMMAND::decode, false);
