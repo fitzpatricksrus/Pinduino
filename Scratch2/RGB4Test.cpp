@@ -7,14 +7,21 @@
 
 #include "RGB4Test.h"
 
+//#define WPC
+#define MAX7221
+
+
 #include <Arduino.h>
-#include <DueTimer.h>
+//#include <DueTimer.h>
 #include "BitVector.h"
+#ifdef MAX7221
+#include <Max7221.h>
+#endif
 
 static const int COLUMN_SIZE = 8;
 
 static int pins[] = { 22,23,24,25, 26,27,28,29, 34,35,36,37, 38,39,40,41 };
-enum {
+typedef enum {
 	DATA0,
 	DATA1,
 	DATA2,
@@ -157,9 +164,15 @@ static int greyIndex1[] = { //  0x01
 		0xb11111111, // 0xb00000000,
 };
 
+#ifdef MAX7221
+static Max7221 max7221(9);
+
+#endif
+
 RGBTest4::RGBTest4(byte* dataIn, int dataSizeIn)
 : cyclePosition(0), columnPosition(0), data(dataIn), dataSize(dataSizeIn)
 {
+	max7221.init();
 }
 
 RGBTest4::~RGBTest4() {
@@ -199,9 +212,10 @@ void RGBTest4::refreshOneRGBColumn(int mask, int col, byte* values) {
 	// write rows
 	for (int i = 0; i < COLUMN_SIZE; i++) {
 		if (values[i] & mask) {
-			value = value | (1 << i);
+			val = val | (1 << i);
 		}
 	}
+	max7221.setColumn(col, val);
 
 #endif
 }
