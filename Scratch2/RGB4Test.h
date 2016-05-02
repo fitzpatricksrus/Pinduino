@@ -21,7 +21,7 @@ public:
 
 private:
 	void refreshOneRGBColumn(int mask, int col, byte* values);
-	void refreshOneRGBComlumn();
+	void refreshOneRGBColumn();
 
 	int cyclePosition;
 	int columnPosition;

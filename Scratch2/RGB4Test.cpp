@@ -220,10 +220,10 @@ void RGBTest4::refreshOneRGBColumn(int mask, int col, byte* values) {
 #endif
 }
 
-static const int *GREY_MASK = greyIndex4;
-static const int CYCLE_SIZE = (1 << 4);
+static const int *GREY_MASK = greyIndex8;
+static const int CYCLE_SIZE = (1 << 8) - 1;
 
-void RGBTest4::refreshOneRGBComlumn() {
+void RGBTest4::refreshOneRGBColumn() {
 	// for each phase
 	//    for each column
 	//      refresh column
