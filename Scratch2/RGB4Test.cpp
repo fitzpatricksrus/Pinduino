@@ -149,12 +149,12 @@ static int greyIndex3[] = { // 0x04, 0x02, 0x01
 };
 
 static int greyIndex2[] = { // 0x02, 0x01
-		0xb10101010, 0xb01010101,
-		0xb10101010, // 0xb00000000,
+		0b10101010, 0b01010101,
+		0b10101010, // 0xb00000000,
 };
 
 static int greyIndex1[] = { //  0x01
-		0xb11111111, // 0xb00000000,
+		0b11111111, // 0xb00000000,
 };
 
 RGBTest4::RGBTest4(byte* dataIn, int dataSizeIn)

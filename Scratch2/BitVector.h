@@ -21,6 +21,13 @@ public:
 	int size() {
 		return 8;
 	}
+	void set(int ndx, bool valueIn) {
+		if (valueIn) {
+			value |= mask[ndx];
+		} else {
+			value &= ~mask[ndx];
+		}
+	}
 
 private:
 	byte value;
