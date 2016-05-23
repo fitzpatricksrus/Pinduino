@@ -214,6 +214,11 @@ void RGBTest4::refreshOneRGBComlumn() {
 	//    for each column
 	//      refresh column
 
+
+
+
+
+
 	refreshOneRGBColumn(GREY_MASK[cyclePosition], columnPosition / COLUMN_SIZE, data + columnPosition);
 	columnPosition = columnPosition + COLUMN_SIZE;
 	if (columnPosition > dataSize) {
