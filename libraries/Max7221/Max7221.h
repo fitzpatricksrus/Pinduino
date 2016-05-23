@@ -16,6 +16,7 @@ public:
 	virtual ~Max7221();
 
 	void init();
+	void init(byte selectPin);
 	void setIntensity(byte value0_15);
 	void setScanLimit(byte lines0_7);
 	void setEnabled(bool on);

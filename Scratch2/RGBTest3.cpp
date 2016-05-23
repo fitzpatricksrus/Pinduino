@@ -8,7 +8,7 @@
 #include "RGBTest3.h"
 
 #include <Arduino.h>
-#include <DueTimer.h>
+//#include <DueTimer.h>
 #include "BitVector.h"
 
 static const int COLUMN_SIZE = 8;
