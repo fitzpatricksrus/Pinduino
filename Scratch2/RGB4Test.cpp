@@ -179,6 +179,28 @@ RGBTest4::~RGBTest4() {
 
 }
 
+//virtual void refreshOneRGBColumn(int col, bool* values) = 0;
+
+
+void RGBTest4::setup() {
+	cyclePosition = 0;
+	columnPosition = 0;
+}
+
+void RGBTest4::loop() {
+	bool values[8];
+
+	for (int i = 0; i < 8; i++) {
+		values[i] = data[columnPosition+i] & greyIndex8[cyclePosition];
+	}
+	refreshOneRGBColumn(columnPosition, values);
+	columnPosition = columnPosition + 8;
+	if (columnPosition > dataSize) {
+		cyclePosition = (cyclePosition + 1) % 255;
+	}
+
+}
+
 void RGBTest4::refreshOneRGBColumn(int mask, int col, byte* values) {
 #ifdef WPC
 	// turn off all columns
