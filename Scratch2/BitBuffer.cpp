@@ -7,7 +7,7 @@
 
 #include "BitBuffer.h"
 
-BitBuffer::BitBuffer() {
+BitBuffer::BitBuffer(byte* storage, int size) {
 	// TODO Auto-generated constructor stub
 
 }

@@ -8,7 +8,7 @@
 #include "RGB4Test.h"
 
 //#define WPC
-#define MAX7221
+//#define MAX7221
 
 
 #include <Arduino.h>
@@ -20,6 +20,7 @@
 
 static const int COLUMN_SIZE = 8;
 
+static int pinCount = 16;
 static int pins[] = { 22,23,24,25, 26,27,28,29, 34,35,36,37, 38,39,40,41 };
 typedef enum {
 	DATA0,
@@ -172,14 +173,31 @@ static Max7221 max7221(9);
 RGBTest4::RGBTest4(byte* dataIn, int dataSizeIn)
 : cyclePosition(0), columnPosition(0), data(dataIn), dataSize(dataSizeIn)
 {
+#ifdef MAX7221
 	max7221.init();
+#else
+	for (int i = 0; i < pinCount; i++) {
+		pinMode(pins[i], OUTPUT);
+	}
+#endif
 }
 
 RGBTest4::~RGBTest4() {
 
 }
 
-//virtual void refreshOneRGBColumn(int col, bool* values) = 0;
+void RGBTest4::refreshOneRGBColumn(int col, bool* values) {
+#ifdef MAX7221
+#else
+	for (int i = 0; i < COLUMN_SIZE; i++) {
+		if (values[i]) {
+			on(i);
+		} else {
+			off(i);
+		}
+	}
+#endif
+}
 
 
 void RGBTest4::setup() {
@@ -188,79 +206,15 @@ void RGBTest4::setup() {
 }
 
 void RGBTest4::loop() {
-	bool values[8];
+	bool values[COLUMN_SIZE];
 
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < COLUMN_SIZE; i++) {
 		values[i] = data[columnPosition+i] & greyIndex8[cyclePosition];
 	}
-	refreshOneRGBColumn(columnPosition, values);
-	columnPosition = columnPosition + 8;
+	refreshOneRGBColumn(columnPosition / COLUMN_SIZE, values);
+	columnPosition = columnPosition + COLUMN_SIZE;
 	if (columnPosition > dataSize) {
 		cyclePosition = (cyclePosition + 1) % 255;
 	}
 
 }
-
-void RGBTest4::refreshOneRGBColumn(int mask, int col, byte* values) {
-#ifdef WPC
-	// turn off all columns
-	for (int i = 0; i < COLUMN_SIZE; i++) {
-		off(i);
-	}
-	signal(CONTROL_COLUMNS);
-
-	// write rows
-	for (int i = 0; i < COLUMN_SIZE; i++) {
-		if (values[i] & mask) {
-			on(i);
-		} else {
-			off(i);
-		}
-	}
-	signal(CONTROL_ROWS);
-
-	// select the proper column
-	for (int i = 0; i < COLUMN_SIZE; i++) {
-		if (i == col) {
-			on(i);
-		} else {
-			off(i);
-		}
-	}
-	signal(CONTROL_COLUMNS);
-#endif
-#ifdef MAX7221
-	int val = 0;
-	// write rows
-	for (int i = 0; i < COLUMN_SIZE; i++) {
-		if (values[i] & mask) {
-			val = val | (1 << i);
-		}
-	}
-	max7221.setColumn(col, val);
-
-#endif
-}
-
-static const int *GREY_MASK = greyIndex8;
-static const int CYCLE_SIZE = (1 << 8) - 1;
-
-void RGBTest4::refreshOneRGBColumn() {
-	// for each phase
-	//    for each column
-	//      refresh column
-
-
-
-
-
-
-	refreshOneRGBColumn(GREY_MASK[cyclePosition], columnPosition / COLUMN_SIZE, data + columnPosition);
-	columnPosition = columnPosition + COLUMN_SIZE;
-	if (columnPosition > dataSize) {
-		columnPosition = 0;
-		cyclePosition = (cyclePosition + 1) % CYCLE_SIZE;
-	}
-}
-
-

@@ -8,12 +8,14 @@
 #ifndef BITBUFFER_H_
 #define BITBUFFER_H_
 
+#include <arduino.h>
+
 class BitBuffer {
 public:
 	BitBuffer(byte* storage, int size);
 	virtual ~BitBuffer();
 
-	byte* push(bool valueIn) = 0;
+	virtual byte* push(bool valueIn) = 0;
 
 private:
 	byte buffer;

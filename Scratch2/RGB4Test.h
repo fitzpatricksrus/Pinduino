@@ -20,7 +20,7 @@ public:
 	void loop();
 
 protected:
-	virtual void refreshOneRGBColumn(int col, bool* values) = 0;
+	virtual void refreshOneRGBColumn(int col, bool* values);
 
 private:
 	int cyclePosition;
