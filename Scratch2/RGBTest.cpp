@@ -100,7 +100,7 @@ static byte rawData[] = {
 	0x0F
 };
 
-void setup() {
+void setupX() {
 	for (int i = 0; i < 16; i++) {
 		pinMode(pins[i], OUTPUT);
 		on(i);
@@ -110,7 +110,7 @@ void setup() {
 	lampData.data = &rawData[0];
 }
 
-void loop() {
+void loopX() {
 //    while (true) {
     	refreshOnePWMCycle();
 //    }
