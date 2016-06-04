@@ -19,10 +19,10 @@ public:
 	void setup();
 	void loop();
 
-protected:
+//protected:
 	virtual void refreshOneRGBColumn(int col, bool* values);
 
-private:
+//private:
 	int cyclePosition;
 	int columnPosition;
 

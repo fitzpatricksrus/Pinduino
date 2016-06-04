@@ -203,18 +203,25 @@ void RGBTest4::refreshOneRGBColumn(int col, bool* values) {
 void RGBTest4::setup() {
 	cyclePosition = 0;
 	columnPosition = 0;
+//	Serial.begin(57600);
 }
 
 void RGBTest4::loop() {
 	bool values[COLUMN_SIZE];
 
+//	Serial.print(columnPosition);
+//	Serial.print("  ");
+//	Serial.print(cyclePosition);
+//	Serial.print("  ");
 	for (int i = 0; i < COLUMN_SIZE; i++) {
 		values[i] = data[columnPosition+i] & greyIndex8[cyclePosition];
+//		Serial.print(values[i] ? "1" : "0");
 	}
+//	Serial.println();
 	refreshOneRGBColumn(columnPosition / COLUMN_SIZE, values);
 	columnPosition = columnPosition + COLUMN_SIZE;
-	if (columnPosition > dataSize) {
+	if (columnPosition >= dataSize) {
 		cyclePosition = (cyclePosition + 1) % 255;
+		columnPosition = 0;
 	}
-
 }
