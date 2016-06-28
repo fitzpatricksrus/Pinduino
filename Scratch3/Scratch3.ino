@@ -1,87 +1,153 @@
 #include <Arduino.h>
+#include <debug.h>
+
+static int ADDRESS_BITS = 2;
+static int DATA_BITS = 2;
+static int MAX_DATA_VALUE = (1 << DATA_BITS);
+enum {
+	WE_ = A0,
+	OE_,
+	CE_,
+	ADDR0 = A3,
+	ADDR1,
+	ADDR2,
+	ADDR3,
+	ADDR4,
+	DATA0 = A8,
+	DATA1,
+	DATA2,
+	DATA3,
+	DATA4,
+	DATA5,
+	DATA6,
+	DATA7,
+	END_PINS
+};
+
+static void writeBits(int address, int value) {
+	digitalWrite(WE_, HIGH);
+	digitalWrite(OE_, HIGH);
+
+	for (int i = 0; i < DATA_BITS; i++) {
+		int pin = DATA0 + i;
+		pinMode(pin, OUTPUT);
+		digitalWrite(pin, (value & 0x01) ? HIGH : LOW);
+		value = value >> 1;
+	}
+
+	for (int i = 0; i < ADDRESS_BITS; i++) {
+		digitalWrite(ADDR0+i, (address & 0x01) ? HIGH : LOW);
+		address = address >> 1;
+	}
+
+	digitalWrite(WE_, LOW);
+	digitalWrite(OE_, HIGH);
+
+	delay(10);
+
+	digitalWrite(OE_, HIGH);
+	digitalWrite(WE_, HIGH);
+
+	for (int i = 0; i < 8; i++) {
+		pinMode(DATA0 + i, INPUT);
+	}
+
+}
+
+static int readBits(int address) {
+	digitalWrite(WE_, HIGH);
+	digitalWrite(OE_, HIGH);
+
+	for (int i = 0; i < ADDRESS_BITS; i++) {
+		digitalWrite(ADDR0+i, (address & 0x01) ? HIGH : LOW);
+		address = address >> 1;
+	}
+
+	for (int i = 0; i < 8; i++) {
+		pinMode(DATA0 + i, INPUT);
+	}
+
+	digitalWrite(WE_, HIGH);
+	digitalWrite(OE_, LOW);
+
+	delay(10);
+
+	int value = 0;
+	for (int i = 0; i < DATA_BITS; i++) {
+		int pin = DATA0 + i;
+		value = value << 1;
+		value = value | (digitalRead(pin) ? 0x01: 0x00);
+	}
+
+	digitalWrite(OE_, HIGH);
+	digitalWrite(WE_, HIGH);
+
+	return value;
+}
+
+static void writeMemory(int values[]) {
+	for (int i = 0; i < MAX_DATA_VALUE; i++) {
+		Serial << "writeBits(" << i << ", " << values[i] << ")" << endl;
+		writeBits(i, values[i]);
+	}
+}
+
+static void readMemory(int* values) {
+	for (int i = 0; i < MAX_DATA_VALUE; i++) {
+		values[i] = readBits(i);
+		Serial << "readBits(" << i << ") = " << values[i] << endl;
+	}
+}
 
 //The setup function is called once at startup of the sketch
 void setup()
 {
-	pinMode(2, INPUT);
-	pinMode(3, INPUT);
-	pinMode(4, INPUT);
-	pinMode(5, INPUT);
+	for (int i = WE_; i < END_PINS; i++) {
+		pinMode(WE_+i, INPUT);
+	}
 
-	pinMode(10, INPUT_PULLUP);
-	pinMode(11, INPUT_PULLUP);
-	pinMode(12, INPUT_PULLUP);
-	pinMode(13, INPUT_PULLUP);
+	digitalWrite(WE_, HIGH);
+	digitalWrite(OE_, HIGH);
+	digitalWrite(CE_, HIGH);
+	pinMode(WE_, OUTPUT);
+	pinMode(OE_, OUTPUT);
+	pinMode(CE_, OUTPUT);
+
+	// so they're low if they're ever output
+	for (int i = ADDR0; i <= ADDR4; i++) {
+		digitalWrite(i, LOW);
+		pinMode(i, OUTPUT);
+	}
+
+	for (int i = DATA0; i <= DATA7; i++) {
+		digitalWrite(i, LOW);
+	}
 
 	Serial.begin(57600);
 }
 
-/*
- * row 1 - 2
- * row 2 - 3
- * col 1 - 4
- * col 2 - 5
- */
 
-#define bitValue(x, y) ((x & (1<<y)) ? 1 : 0)
-
-static int switches[2][2];
-static unsigned long lastLoop = 0;
-static unsigned long lastLoop2 = 0;
 void loop()
 {
-#if 0
-	if (millis() - lastLoop > 200) {
-		int p10 = digitalRead(10);
-		int p11 = digitalRead(11);
-		int p12 = digitalRead(12);
-		int p13 = digitalRead(13);
-		Serial.print("row(");
-		Serial.print(p10);
-		Serial.print("  ");
-		Serial.print(p11);
-		Serial.print(") col(");
-		Serial.print(p12);
-		Serial.print("  ");
-		Serial.print(p13);
-		Serial.print(")    ");
+	Serial.println();
+	Serial.println("-------------------------------------");
+	Serial << "MAX_DATA_VALUE = " << MAX_DATA_VALUE << endl;
+	digitalWrite(WE_, HIGH);
+	digitalWrite(OE_, HIGH);
+	digitalWrite(CE_, LOW);
 
-		switches[p12][0] = p10;
-		switches[p12][1] = p11;
-
-		Serial.print("(");
-		Serial.print(switches[0][0]);
-		Serial.print("  ");
-		Serial.print(switches[0][1]);
-		Serial.print(") (");
-		Serial.print(switches[1][0]);
-		Serial.print("  ");
-		Serial.print(switches[1][1]);
-		Serial.println(")");
-		lastLoop = millis();
-	}
-#else
-	if (millis() - lastLoop > 10) {
-		int p10 = digitalRead(10);
-		int p11 = digitalRead(11);
-		int p12 = digitalRead(12);
-		int p13 = digitalRead(13);
-		switches[p12][0] = p10;
-		switches[p12][1] = p11;
-		lastLoop = millis();
+	int dataOut[] = {3, 2, 1, 0};
+	int dataIn[4];
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			dataOut[j] = (i + j) % 4;
+		}
+		writeMemory(dataOut);
+		readMemory(dataIn);
 	}
 
-	if (millis() - lastLoop2 > 200) {
-		Serial.print("(");
-		Serial.print(switches[0][0]);
-		Serial.print("  ");
-		Serial.print(switches[0][1]);
-		Serial.print(") (");
-		Serial.print(switches[1][0]);
-		Serial.print("  ");
-		Serial.print(switches[1][1]);
-		Serial.println(")");
-		lastLoop2 = millis();
-	}
-#endif
+	digitalWrite(WE_, HIGH);
+	digitalWrite(OE_, HIGH);
+	digitalWrite(CE_, HIGH);
+	delay(500);
 }
