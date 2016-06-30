@@ -24,6 +24,13 @@ enum {
 	END_PINS
 };
 
+static void writeAddress(int address) {
+	for (int i = 0; i < ADDRESS_BITS; i++) {
+		digitalWrite(ADDR0+i, (address & 0x01) ? HIGH : LOW);
+		address = address >> 1;
+	}
+}
+
 static void writeBits(int address, int value) {
 	digitalWrite(WE_, HIGH);
 	digitalWrite(OE_, HIGH);
@@ -35,6 +42,7 @@ static void writeBits(int address, int value) {
 		value = value >> 1;
 	}
 
+//	writeAddress(address);
 	for (int i = 0; i < ADDRESS_BITS; i++) {
 		digitalWrite(ADDR0+i, (address & 0x01) ? HIGH : LOW);
 		address = address >> 1;
@@ -58,6 +66,7 @@ static int readBits(int address) {
 	digitalWrite(WE_, HIGH);
 	digitalWrite(OE_, HIGH);
 
+	//	writeAddress(address);
 	for (int i = 0; i < ADDRESS_BITS; i++) {
 		digitalWrite(ADDR0+i, (address & 0x01) ? HIGH : LOW);
 		address = address >> 1;
@@ -72,11 +81,14 @@ static int readBits(int address) {
 
 	delay(10);
 
+	int mask = 0x01;
 	int value = 0;
 	for (int i = 0; i < DATA_BITS; i++) {
 		int pin = DATA0 + i;
-		value = value << 1;
-		value = value | (digitalRead(pin) ? 0x01: 0x00);
+		if (digitalRead(pin)) {
+			value = value || mask;
+		}
+		mask = mask << 1;
 	}
 
 	digitalWrite(OE_, HIGH);
